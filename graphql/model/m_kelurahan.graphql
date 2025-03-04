@@ -1,0 +1,11 @@
+type MKelurahan {
+    id: ID!
+    provinsi_id: ID!
+    kota_id: ID!
+    kecamatan_id: ID!
+    nama: String!
+
+    provinsi: MProvinsi @belongsTo(relation: "mProvinsi")
+    kota: MKota @belongsTo(relation: "mKota")
+    kecamatan: MKecamatan @belongsTo(relation: "mKecamatan")
+}

@@ -1,0 +1,9 @@
+type MKecamatan {
+    id: ID!
+    provinsi_id: ID!
+    kota_id: ID!
+    nama: String!
+
+    provinsi: MProvinsi @belongsTo(relation: "mProvinsi")
+    kota: MKota @belongsTo(relation: "mKota")
+}

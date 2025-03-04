@@ -1,0 +1,24 @@
+type Instansi @namespace(
+    field: "\\App\\GraphQL\\Types\\Resolvers"
+){
+    id: ID!
+    nama: String
+    provinsi_id: ID
+    kota_id: ID
+    kecamatan_id: ID
+    kelurahan_id: ID
+    rw: String
+    rt: String
+    alamat: String
+    creator_id: ID!
+    jumlah_warga: String
+
+    provinsi: MProvinsi @belongsTo(relation: "mProvinsi")
+    kota: MKota @belongsTo(relation: "mKota")
+    kecamatan: MKecamatan @belongsTo(relation: "mKecamatan")
+    kelurahan: MKelurahan @belongsTo(relation: "mKelurahan")
+    creator: User @belongsTo(relation: "user")
+
+    is_owner: Boolean @field(resolver: "InstansiResolver@isOwner")
+    is_pengurus: Boolean @field(resolver: "InstansiResolver@isPengurus")
+}

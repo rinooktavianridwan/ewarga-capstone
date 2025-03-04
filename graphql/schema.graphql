@@ -1,0 +1,21 @@
+"A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
+scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+
+type Query @guard(with: ["sanctum", "web"]) @namespace(
+    paginate: "\\App\\GraphQL\\Queries\\Resolvers"
+    field: "\\App\\GraphQL\\Queries\\Resolvers",
+){
+    self: User @auth
+
+    wargas(
+        instansi_id: Int!
+        keyword: String
+    ): [Warga!]!
+    @paginate(builder: "WargasResolver@daftar", defaultCount: 10)
+
+}
+
+#import model/*.graphql
+#import input/*.graphql
+#import mutation/*.graphql
+

@@ -1,0 +1,4 @@
+type MProvinsi {
+    id: ID!
+    nama: String!
+}

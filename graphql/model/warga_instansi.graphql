@@ -1,0 +1,12 @@
+type WargaInstansi {
+    id: ID!
+    warga_id: ID!
+    user_id: ID
+    instansi_id: ID!
+    alamat: String
+
+    warga: Warga @belongsTo(relation: "warga")
+    user: User @belongsTo(relation: "user")
+    instansi: Instansi @belongsTo(relation: "instansi")
+
+}

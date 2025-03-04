@@ -1,0 +1,19 @@
+type Warga  @namespace(
+    field: "\\App\\GraphQL\\Types\\Resolvers"
+){
+    id: ID!
+    nama: String
+    nik: String
+    nomor_induk: String
+    no_kk: String
+    no_tlp: String
+    tempat_lahir: String
+    tgl_lahir: String
+    jenis_kelamin: String
+    alamat: String
+    kewarganegaraan: String
+    email: String
+
+    user: User @belongsTo(relation: "user")
+
+}

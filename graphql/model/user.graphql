@@ -1,0 +1,14 @@
+type User @namespace(
+    field: "\\App\\GraphQL\\Types\\Resolvers"
+){
+    id: ID!
+    name: String!
+    email: String!
+    token: String
+
+    instansis: [Instansi!]! @belongsToMany(relation: "instansi")
+    warga_instansi: [WargaInstansi!] @hasMany(relation: "wargaInstansi")
+    warga: Warga @field(resolver: "UserResolver@warga")
+    is_owner(instansi_id:ID!): Boolean @field(resolver: "UserResolver@isOwner")
+    is_pengurus(instansi_id:ID!): Boolean @field(resolver: "UserResolver@isPengurus")
+}

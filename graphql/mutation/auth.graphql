@@ -1,0 +1,19 @@
+extend type Mutation @namespace(
+    field: "\\App\\GraphQL\\Mutations\\Resolvers\\User"
+) {
+    login(
+        email: String!
+        password: String!
+    ): User
+    @field(resolver: "AutentikasiResolver@login")
+
+}
+
+extend type Query @guard(with: ["sanctum", "web"]) @namespace(
+    field: "\\App\\GraphQL\\Mutations\\Resolvers\\User"
+) {
+    LogoutToken(token_fcm: String): User
+    @field(resolver: "AutentikasiResolver@logout")
+
+}
+
