@@ -1,0 +1,11 @@
+{
+    "name": "Galery",
+    "alias": "galery",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Galery\\Providers\\GaleryServiceProvider"
+    ],
+    "files": []
+}
