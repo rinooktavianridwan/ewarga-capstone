@@ -6,6 +6,8 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Modules\Umkm\Database\Seeders\ProdukSeederTableSeeder;
+use Modules\Umkm\Database\Seeders\UmkmSeederTableSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -63,7 +65,61 @@ class DatabaseSeeder extends Seeder
             ],
         ]);
 
-        for ($i = 1; $i <= 20; $i++) {
+        DB::table('instansi')->insert([
+            [
+                'parent_id' => 1,
+                'nama' => 'Instansi Contoh',
+                'provinsi_id' => 1,
+                'kota_id' => 1,
+                'kecamatan_id' => 1,
+                'kelurahan_id' => 1,
+                'rw' => '01',
+                'rt' => '02',
+                'creator_id' => 1,
+                'alamat' => 'Jl. Contoh No. 1',
+                'created_at' => now(),
+                'updated_at' => now(),
+                'is_deleted' => false,
+            ],
+        ]);
+
+        DB::table('instansi')->insert([
+            [
+                'parent_id' => null,
+                'nama' => 'Instansi Contoh',
+                'provinsi_id' => 1,
+                'kota_id' => 1,
+                'kecamatan_id' => 1,
+                'kelurahan_id' => 1,
+                'rw' => '01',
+                'rt' => '02',
+                'creator_id' => 1,
+                'alamat' => 'Jl. Contoh No. 1',
+                'created_at' => now(),
+                'updated_at' => now(),
+                'is_deleted' => false,
+            ],
+        ]);
+
+        DB::table('instansi')->insert([
+            [
+                'parent_id' => 3,
+                'nama' => 'Instansi Contoh',
+                'provinsi_id' => 1,
+                'kota_id' => 1,
+                'kecamatan_id' => 1,
+                'kelurahan_id' => 1,
+                'rw' => '01',
+                'rt' => '02',
+                'creator_id' => 1,
+                'alamat' => 'Jl. Contoh No. 1',
+                'created_at' => now(),
+                'updated_at' => now(),
+                'is_deleted' => false,
+            ],
+        ]);
+
+        for ($i = 1; $i <= 1; $i++) {
             DB::table('warga')->insert([
                 'instansi_id' => null,
                 'user_id' => $i,
@@ -102,6 +158,25 @@ class DatabaseSeeder extends Seeder
                 'is_deleted' => false,
             ]);
 
+            $id = DB::table('warga')->insertGetId([
+                'instansi_id' => 2,
+                'user_id' => $i,
+                'nama' => 'Warga ' . $i,
+                'nomor_induk' => 'NI' . str_pad($i, 4, '0', STR_PAD_LEFT),
+                'nik' => str_pad($i, 16, '0', STR_PAD_LEFT),
+                'no_kk' => str_pad($i + 1000, 16, '0', STR_PAD_LEFT),
+                'no_tlp' => '081234567' . str_pad($i, 2, '0', STR_PAD_LEFT),
+                'tempat_lahir' => 'Kota ' . $i,
+                'tgl_lahir' => now()->subYears(rand(18, 60))->toDateString(),
+                'jenis_kelamin' => $i % 2 == 0 ? 'L' : 'P',
+                'alamat' => 'Alamat Warga ' . $i,
+                'email' => 'warga' . $i . '@example.com',
+                'created_by' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+                'is_deleted' => false,
+            ]);
+
             DB::table('warga_instansi')->insert([
                 'warga_id' => $id,
                 'user_id' => $i,
@@ -112,6 +187,71 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
+        for ($i = 2; $i <= 2; $i++) {
+            DB::table('warga')->insert([
+                'instansi_id' => null,
+                'user_id' => $i,
+                'nama' => 'Warga ' . $i,
+                'nomor_induk' => 'NI' . str_pad($i, 4, '0', STR_PAD_LEFT),
+                'nik' => str_pad($i, 16, '0', STR_PAD_LEFT),
+                'no_kk' => str_pad($i + 1000, 16, '0', STR_PAD_LEFT),
+                'no_tlp' => '081234567' . str_pad($i, 2, '0', STR_PAD_LEFT),
+                'tempat_lahir' => 'Kota ' . $i,
+                'tgl_lahir' => now()->subYears(rand(18, 60))->toDateString(),
+                'jenis_kelamin' => $i % 2 == 0 ? 'L' : 'P',
+                'alamat' => 'Alamat Warga ' . $i,
+                'email' => 'warga' . $i . '@example.com',
+                'created_by' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+                'is_deleted' => false,
+            ]);
+
+            $id = DB::table('warga')->insertGetId([
+                'instansi_id' => 3,
+                'user_id' => $i,
+                'nama' => 'Warga ' . $i,
+                'nomor_induk' => 'NI' . str_pad($i, 4, '0', STR_PAD_LEFT),
+                'nik' => str_pad($i, 16, '0', STR_PAD_LEFT),
+                'no_kk' => str_pad($i + 1000, 16, '0', STR_PAD_LEFT),
+                'no_tlp' => '081234567' . str_pad($i, 2, '0', STR_PAD_LEFT),
+                'tempat_lahir' => 'Kota ' . $i,
+                'tgl_lahir' => now()->subYears(rand(18, 60))->toDateString(),
+                'jenis_kelamin' => $i % 2 == 0 ? 'L' : 'P',
+                'alamat' => 'Alamat Warga ' . $i,
+                'email' => 'warga' . $i . '@example.com',
+                'created_by' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+                'is_deleted' => false,
+            ]);
+
+            $id = DB::table('warga')->insertGetId([
+                'instansi_id' => 4,
+                'user_id' => $i,
+                'nama' => 'Warga ' . $i,
+                'nomor_induk' => 'NI' . str_pad($i, 4, '0', STR_PAD_LEFT),
+                'nik' => str_pad($i, 16, '0', STR_PAD_LEFT),
+                'no_kk' => str_pad($i + 1000, 16, '0', STR_PAD_LEFT),
+                'no_tlp' => '081234567' . str_pad($i, 2, '0', STR_PAD_LEFT),
+                'tempat_lahir' => 'Kota ' . $i,
+                'tgl_lahir' => now()->subYears(rand(18, 60))->toDateString(),
+                'jenis_kelamin' => $i % 2 == 0 ? 'L' : 'P',
+                'alamat' => 'Alamat Warga ' . $i,
+                'email' => 'warga' . $i . '@example.com',
+                'created_by' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+                'is_deleted' => false,
+            ]);
+        }
+
+
+
+        $this->call([
+            UmkmSeederTableSeeder::class,
+            ProdukSeederTableSeeder::class
+        ]);
 
     }
 }

@@ -4,6 +4,7 @@ namespace App\GraphQL\Types\Resolvers;
 
 use App\Models\User;
 use App\Models\Warga;
+
 class UserResolver
 {
     public function warga(User $user, array $args)
@@ -22,3 +23,4 @@ class UserResolver
         return $user->isPengurus($instansi_id);
     }
 }
+

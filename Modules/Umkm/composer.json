@@ -17,7 +17,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Modules\\Umkm\\": ""
+            "Modules\\Umkm\\": "Modules/Umkm/"
         }
     }
 }

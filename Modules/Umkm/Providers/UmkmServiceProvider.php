@@ -4,6 +4,7 @@ namespace Modules\Umkm\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
+use Modules\Umkm\Services\UmkmService;
 
 class UmkmServiceProvider extends ServiceProvider
 {
@@ -38,6 +39,7 @@ class UmkmServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->register(RouteServiceProvider::class);
+
     }
 
     /**

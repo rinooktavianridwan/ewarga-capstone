@@ -11,6 +11,6 @@
 |
 */
 
-Route::prefix('umkm')->group(function() {
-    Route::get('/', 'UmkmController@index');
-});
+// Route::prefix('umkm')->group(function() {
+//     Route::get('/', 'UmkmController@index');
+// });

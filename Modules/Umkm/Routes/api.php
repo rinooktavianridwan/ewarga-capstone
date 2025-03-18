@@ -1,6 +1,9 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use Modules\Umkm\Http\Controllers\UmkmController;
+use Modules\Umkm\Http\Controllers\ProdukController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +16,25 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/umkm', function (Request $request) {
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/umkm/all', [UmkmController::class, 'index']);
+    Route::get('/umkm/{id}', [UmkmController::class, 'show']);
+    Route::post('/umkm', [UmkmController::class, 'store']);
+    Route::put('/umkm/{id}', [UmkmController::class, 'update']);
+    Route::delete('/umkm/{id}', [UmkmController::class, 'destroy']);
+});
+
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/produk/all/{id}', [ProdukController::class, 'index']);
+    Route::get('/produk/{id}', [ProdukController::class, 'show']);
+    Route::post('/produk', [ProdukController::class, 'store']);
+    Route::put('/produk/{id}', [ProdukController::class, 'update']);
+    Route::delete('/produk/{id}', [ProdukController::class, 'destroy']);
+});
+
+
+Route::middleware('auth:sanctum')->get('/umkm', function (Request $request) {
     return $request->user();
 });
