@@ -20,6 +20,7 @@ return new class extends Migration
             $table->point('alamat');
             $table->string('pemilik', 100);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

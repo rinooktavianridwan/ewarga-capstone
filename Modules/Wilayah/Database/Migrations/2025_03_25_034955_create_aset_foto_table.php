@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('aset_id')->constrained('aset')->onDelete('cascade');
             $table->string('nama', 100);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -3,6 +3,7 @@
 namespace Modules\Wilayah\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Warga;
 use App\Models\Instansi;
@@ -10,6 +11,7 @@ use App\Models\Instansi;
 class Penghuni extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $table = 'penghuni';
 
