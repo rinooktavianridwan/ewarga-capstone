@@ -16,6 +16,10 @@ Route::middleware('auth:sanctum')->prefix('umkm')->group(function () {
     Route::get('/search', [PendataanUmkmController::class, 'index']);
     Route::get('/{id}', [PendataanUmkmController::class, 'show']);
     Route::post('/', [PendataanUmkmController::class, 'store']);
+
+    // saya ingin update/edit data tidak bisa menggunakan PUT atau PATCH
+    // karena data tidak terkirim dan susah dumo and die di controller kosong datanya
+    // bisa terkirim datanya hanya menggunakan POST
     Route::post('/{id}', [PendataanUmkmController::class, 'update']);
     Route::delete('/{id}', [PendataanUmkmController::class, 'destroy']);
 
@@ -23,7 +27,14 @@ Route::middleware('auth:sanctum')->prefix('umkm')->group(function () {
     Route::prefix('produk')->group(function () {
         Route::get('/search', [PendataanProdukController::class, 'index']);
         Route::get('/{id}', [PendataanProdukController::class, 'show']);
-        Route::post('/c', [PendataanProdukController::class, 'store']);
+
+        // ini mnenggunakan /api/umkm/produk tidak bisa mengirim data dan not found response di postman
+        // tapi jika setelah //umkm/produk/[suatu kata] bisa mengirim
+        Route::post('/', [PendataanProdukController::class, 'store']);
+
+        // saya ingin update/edit data tidak bisa menggunakan PUT atau PATCH
+        // karena data tidak terkirim dan susah dumo and die di controller kosong datanya
+        // bisa terkirim datanya hanya menggunakan POST
         Route::post('/{id}', [PendataanProdukController::class, 'update']);
         Route::delete('/{id}', [PendataanProdukController::class, 'destroy']);
     });
