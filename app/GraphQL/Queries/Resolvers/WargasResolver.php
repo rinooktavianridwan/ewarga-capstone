@@ -12,12 +12,12 @@ use Nuwave\Lighthouse\Execution\ResolveInfo;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 use Illuminate\Support\Collection;
 
-final class WargasResolver
-{
-    public function daftar(mixed $root, array $args, GraphQLContext $context, ResolveInfo $resolveInfo): Builder
-    {
-        $user = auth()->user();
-        return app(WargaService::class)->listWarga($args, $user);
-    }
+// final class WargasResolver
+// {
+//     public function daftar(mixed $root, array $args, GraphQLContext $context, ResolveInfo $resolveInfo): Builder
+//     {
+//         $user = auth()->user();
+//         return app(WargaService::class)->listWarga($args, $user);
+//     }
 
-}
+// }

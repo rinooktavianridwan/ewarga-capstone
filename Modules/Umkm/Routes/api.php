@@ -1,40 +1,38 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
-use Modules\Umkm\Http\Controllers\UmkmController;
-use Modules\Umkm\Http\Controllers\ProdukController;
+use Modules\Umkm\Http\Controllers\DashboardUmkmController;
+use Modules\Umkm\Http\Controllers\PendataanProdukController;
+use Modules\Umkm\Http\Controllers\PendataanUmkmController;
+use Modules\Umkm\Http\Controllers\ReferensiUmkmController;
+use Modules\Umkm\Http\Controllers\UmkmDashboardController; // pastikan ini sudah diimport
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
+Route::middleware('auth:sanctum')->prefix('umkm')->group(function () {
+
+    Route::get('/bentuk-usaha', [ReferensiUmkmController::class, 'getBentukUsaha']);
+    Route::get('/jenis-usaha', [ReferensiUmkmController::class, 'getJenisUsaha']);
 
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/umkm/all', [UmkmController::class, 'index']);
-    Route::get('/umkm/{id}', [UmkmController::class, 'show']);
-    Route::post('/umkm', [UmkmController::class, 'store']);
-    Route::put('/umkm/{id}', [UmkmController::class, 'update']);
-    Route::delete('/umkm/{id}', [UmkmController::class, 'destroy']);
-});
+    Route::get('/search', [PendataanUmkmController::class, 'index']);
+    Route::get('/{id}', [PendataanUmkmController::class, 'show']);
+    Route::post('/', [PendataanUmkmController::class, 'store']);
+    Route::post('/{id}', [PendataanUmkmController::class, 'update']);
+    Route::delete('/{id}', [PendataanUmkmController::class, 'destroy']);
 
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/produk/all/{id}', [ProdukController::class, 'index']);
-    Route::get('/produk/{id}', [ProdukController::class, 'show']);
-    Route::post('/produk', [ProdukController::class, 'store']);
-    Route::put('/produk/{id}', [ProdukController::class, 'update']);
-    Route::delete('/produk/{id}', [ProdukController::class, 'destroy']);
-});
+    Route::prefix('produk')->group(function () {
+        Route::get('/search', [PendataanProdukController::class, 'index']);
+        Route::get('/{id}', [PendataanProdukController::class, 'show']);
+        Route::post('/c', [PendataanProdukController::class, 'store']);
+        Route::post('/{id}', [PendataanProdukController::class, 'update']);
+        Route::delete('/{id}', [PendataanProdukController::class, 'destroy']);
+    });
 
 
-Route::middleware('auth:sanctum')->get('/umkm', function (Request $request) {
-    return $request->user();
+    Route::prefix('dashboard')->group(function () {
+        Route::get('/summary', [DashboardUmkmController::class, 'index']);
+        Route::get('/latest', [DashboardUmkmController::class, 'latestUmkm']);
+        Route::get('/growth', [DashboardUmkmController::class, 'growthByMonth']);
+    });
+
 });

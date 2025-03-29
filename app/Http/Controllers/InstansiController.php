@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Instansi;
+use App\Models\Warga;
 use Illuminate\Http\Request;
 
 class InstansiController extends Controller
@@ -15,8 +16,13 @@ class InstansiController extends Controller
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
-        $instansi = Instansi::findOrFail($instansiId);
-        return response()->json(['is_owner' => $user->isOwner($instansi->id)]);
+        $warga = Warga::where('user_id', $user->id)->first();
+
+        if (!$warga) {
+            return response()->json(['message' => 'Warga tidak ditemukan'], 404);
+        }
+
+        return response()->json(['is_owner' => $warga->isOwner($instansiId)]);
     }
 
     // Mengecek apakah user adalah pengurus dari instansi tertentu
@@ -27,7 +33,12 @@ class InstansiController extends Controller
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
-        $instansi = Instansi::findOrFail($instansiId);
-        return response()->json(['is_pengurus' => $user->isPengurus($instansi->id)]);
+        $warga = Warga::where('user_id', $user->id)->first();
+
+        if (!$warga) {
+            return response()->json(['message' => 'Warga tidak ditemukan'], 404);
+        }
+
+        return response()->json(['is_pengurus' => $warga->isPengurus($instansiId)]);
     }
 }

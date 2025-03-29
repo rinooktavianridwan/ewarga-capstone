@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Services\Softdelete\SoftDeletesBoolean;
+use Modules\Umkm\Entities\Umkm;
+use Modules\UMKM\Entities\UmkmProduk;
 
 /**
  * App\Models\Instansi
@@ -68,10 +70,20 @@ class Instansi extends Model
         return $this->wargaInstansi()->count();
     }
 
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'creator_id');
     }
+
+    public function umkms(): HasMany
+    {
+        return $this->hasMany(Umkm::class, 'instansi_id');
+    }
+
+    public function umkmProduks(): HasMany
+{
+    return $this->hasMany(UmkmProduk::class, 'instansi_id');
+}
+
 
 }

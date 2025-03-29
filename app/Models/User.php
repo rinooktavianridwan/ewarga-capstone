@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Modules\Umkm\Entities\Umkm;
 
 class User extends Authenticatable
 {
@@ -56,8 +55,13 @@ class User extends Authenticatable
         return $this->HasMany(WargaInstansi::class, 'user_id');
     }
 
-    public function umkm() : HasMany
+    public function isPengurus($instansi_id): bool
     {
-        return $this->HasMany(Umkm::class);
+        return true;
+    }
+
+    public function isOwner($instansi_id): bool
+    {
+        return true;
     }
 }
