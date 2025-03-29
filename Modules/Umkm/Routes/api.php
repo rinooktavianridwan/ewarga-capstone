@@ -13,7 +13,7 @@ Route::middleware('auth:sanctum')->prefix('umkm')->group(function () {
     Route::get('/jenis-usaha', [ReferensiUmkmController::class, 'getJenisUsaha']);
 
 
-    Route::get('/search', [PendataanUmkmController::class, 'index']);
+    Route::get('/', [PendataanUmkmController::class, 'index']);
     Route::get('/{id}', [PendataanUmkmController::class, 'show']);
     Route::post('/', [PendataanUmkmController::class, 'store']);
 
@@ -25,11 +25,13 @@ Route::middleware('auth:sanctum')->prefix('umkm')->group(function () {
 
 
     Route::prefix('produk')->group(function () {
-        Route::get('/search', [PendataanProdukController::class, 'index']);
+        // jika saya hanya menggunakan /api/umkm/produk tidak bisa
+        // jika saya menggunakan /api/umkm/produk/[suatu kata] bisa
+        Route::get('/', [PendataanProdukController::class, 'index']);
         Route::get('/{id}', [PendataanProdukController::class, 'show']);
 
-        // ini mnenggunakan /api/umkm/produk tidak bisa mengirim data dan not found response di postman
-        // tapi jika setelah //umkm/produk/[suatu kata] bisa mengirim
+        // ini hanya mnenggunakan /api/umkm/produk tidak bisa mengirim data dan not found response di postman
+        // tapi jika setelah /umkm/produk/[suatu kata] bisa mengirim
         Route::post('/', [PendataanProdukController::class, 'store']);
 
         // saya ingin update/edit data tidak bisa menggunakan PUT atau PATCH
