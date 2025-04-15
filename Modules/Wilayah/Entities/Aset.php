@@ -18,7 +18,9 @@ class Aset extends Model
         'nama',
         'alamat',
         'pemilik',
-        'instansi_id'
+        'instansi_id',
+        'aset_m_jenis_id',
+        'aset_m_status_id',
     ];
 
     public function instansi()
@@ -26,13 +28,18 @@ class Aset extends Model
         return $this->belongsTo(Instansi::class, 'instansi_id');
     }
 
+    public function jenisAset()
+    {
+        return $this->belongsTo(AsetMJenis::class, 'aset_m_jenis_id');
+    }
+    
+    public function statusAset()
+    {
+        return $this->belongsTo(AsetMStatus::class, 'aset_m_status_id');
+    }
+
     public function fotos()
     {
         return $this->hasMany(AsetFoto::class, 'aset_id');
-    }
-
-    public function jenis()
-    {
-        return $this->hasMany(AsetJenis::class, 'aset_id');
     }
 }

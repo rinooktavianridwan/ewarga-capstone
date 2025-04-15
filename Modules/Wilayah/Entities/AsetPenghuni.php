@@ -27,9 +27,4 @@ class AsetPenghuni extends Model
     {
         return $this->belongsTo(Aset::class, 'aset_id');
     }
-
-    public function status()
-    {
-        return $this->hasMany(AsetStatus::class, 'aset_penghuni_id');
-    }
 }

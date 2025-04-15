@@ -15,6 +15,7 @@ class AsetFoto extends Model
 
     protected $fillable = [
         'nama',
+        'file_path',
         'aset_id'
     ];
 

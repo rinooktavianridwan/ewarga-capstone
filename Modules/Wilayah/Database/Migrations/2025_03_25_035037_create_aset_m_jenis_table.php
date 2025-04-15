@@ -13,12 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('aset', function (Blueprint $table) {
+        Schema::create('aset_m_jenis', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('instansi_id')->constrained('instansi')->onDelete('cascade');
             $table->string('nama', 100);
-            $table->point('alamat');
-            $table->string('pemilik', 100);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -31,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('aset');
+        Schema::dropIfExists('aset_m_jenis');
     }
 };

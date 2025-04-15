@@ -13,9 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('aset_foto', function (Blueprint $table) {
+        Schema::create('aset_m_status', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('aset_id')->constrained('aset')->onDelete('cascade');
             $table->string('nama', 100);
             $table->timestamps();
             $table->softDeletes();
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('aset_foto');
+        Schema::dropIfExists('aset_m_status');
     }
 };

@@ -13,10 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('aset_jenis', function (Blueprint $table) {
+        Schema::create('aset_foto', function (Blueprint $table) {
             $table->id();
             $table->foreignId('aset_id')->constrained('aset')->onDelete('cascade');
-            $table->foreignId('aset_daftar_jenis_id')->constrained('aset_daftar_jenis')->onDelete('cascade');
+            $table->string('nama', 100);
+            $table->string('file_path', 255);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -29,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('aset_jenis');
+        Schema::dropIfExists('aset_foto');
     }
 };

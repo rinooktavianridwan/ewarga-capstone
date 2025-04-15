@@ -13,9 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('aset_status_penghuni', function (Blueprint $table) {
+        Schema::create('aset', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('instansi_id')->constrained('instansi')->onDelete('cascade');
+            $table->foreignId('aset_m_jenis_id')->constrained('aset_m_jenis')->onDelete('cascade');
+            $table->foreignId('aset_m_status_id')->constrained('aset_m_status')->onDelete('cascade');
             $table->string('nama', 100);
+            $table->point('alamat');
+            $table->string('pemilik', 100);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -28,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('aset_status_penghuni');
+        Schema::dropIfExists('aset');
     }
 };

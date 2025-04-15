@@ -6,12 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class AsetDaftarJenis extends Model
+class AsetMJenis extends Model
 {
     use HasFactory;
     use SoftDeletes;
 
-    protected $table = 'aset_daftar_jenis';
+    protected $table = 'aset_m_jenis';
 
     protected $fillable = [
         'nama'
@@ -19,6 +19,6 @@ class AsetDaftarJenis extends Model
 
     public function asetJenis()
     {
-        return $this->hasMany(AsetJenis::class, 'aset_daftar_jenis_id');
+        return $this->hasMany(Aset::class, 'aset_m_jenis_id');
     }
 }
