@@ -2,6 +2,7 @@
 
 namespace Modules\Wilayah\Entities;
 
+use App\Models\Warga;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,13 +15,20 @@ class AsetPenghuni extends Model
     protected $table = 'aset_penghuni';
 
     protected $fillable = [
-        'penghuni_id',
-        'aset_id'
+        'warga_id',
+        'aset_m_status_id',
+        'aset_id',
+
     ];
 
-    public function penghuni()
+    public function warga()
     {
-        return $this->belongsTo(Penghuni::class, 'penghuni_id');
+        return $this->belongsTo(Warga::class, 'warga_id');
+    }
+
+    public function status()
+    {
+        return $this->belongsTo(AsetMStatus::class, 'aset_m_status_id');
     }
 
     public function aset()

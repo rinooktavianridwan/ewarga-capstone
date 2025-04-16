@@ -19,6 +19,6 @@ class AsetMStatus extends Model
 
     public function asetStatus()
     {
-        return $this->hasMany(Aset::class, 'aset_m_status_id');
+        return $this->hasMany(AsetPenghuni::class, 'aset_m_status_id');
     }
 }
