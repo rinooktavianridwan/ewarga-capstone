@@ -15,12 +15,12 @@ return new class extends Migration
     {
         Schema::create('aset', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('warga_id')->constrained('warga')->onDelete('cascade');
             $table->foreignId('instansi_id')->constrained('instansi')->onDelete('cascade');
             $table->foreignId('aset_m_jenis_id')->constrained('aset_m_jenis')->onDelete('cascade');
-            $table->foreignId('aset_m_status_id')->constrained('aset_m_status')->onDelete('cascade');
             $table->string('nama', 100);
-            $table->point('alamat');
-            $table->string('pemilik', 100);
+            $table->text('alamat');
+            $table->point('lokasi');
             $table->timestamps();
             $table->softDeletes();
         });

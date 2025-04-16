@@ -15,7 +15,8 @@ return new class extends Migration
     {
         Schema::create('aset_penghuni', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('penghuni_id')->constrained('penghuni')->onDelete('cascade');
+            $table->foreignId('warga_id')->constrained('warga')->onDelete('cascade');
+            $table->foreignId('aset_m_status_id')->constrained('aset_m_status')->onDelete('cascade');
             $table->foreignId('aset_id')->constrained('aset')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
