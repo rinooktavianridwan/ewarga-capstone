@@ -34,7 +34,7 @@ class Aset extends Model
         return $this->belongsTo(Warga::class, 'warga_id');
     }
 
-    public function jenisAset()
+    public function jenis()
     {
         return $this->belongsTo(AsetMJenis::class, 'aset_m_jenis_id');
     }
