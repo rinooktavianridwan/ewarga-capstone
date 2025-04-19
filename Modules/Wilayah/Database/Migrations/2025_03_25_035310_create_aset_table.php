@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreignId('aset_m_jenis_id')->constrained('aset_m_jenis')->onDelete('cascade');
             $table->string('nama', 100);
             $table->text('alamat');
-            $table->point('lokasi');
+            $table->point('lokasi')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

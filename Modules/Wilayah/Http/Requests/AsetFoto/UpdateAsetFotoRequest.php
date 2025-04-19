@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\Wilayah\Http\Requests;
+namespace Modules\Wilayah\Http\Requests\AsetFoto;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AsetRequest extends FormRequest
+class UpdateAsetFotoRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -14,12 +14,9 @@ class AsetRequest extends FormRequest
     public function rules()
     {
         return [
-            'nama' => 'required|string|max:100',
-            'warga_id' => 'required|exists:warga,id',
-            'instansi_id' => 'required|exists:instansi,id',
-            'aset_m_jenis_id' => 'required|exists:aset_m_jenis,id',
-            'alamat' => 'required|string',
-            'lokasi' => 'required',
+            'nama' => 'sometimes|required|string|max:100',
+            'file_path' => 'sometimes|required|string|max:255',
+            'aset_id' => 'sometimes|required|exists:aset,id',
         ];
     }
 

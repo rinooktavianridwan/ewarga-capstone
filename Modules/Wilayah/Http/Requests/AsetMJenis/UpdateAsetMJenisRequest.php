@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\Wilayah\Http\Requests;
+namespace Modules\Wilayah\Http\Requests\AsetMJenis;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AsetMStatusRequest extends FormRequest
+class UpdateAsetMJenisRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -14,7 +14,7 @@ class AsetMStatusRequest extends FormRequest
     public function rules()
     {
         return [
-            'nama' => 'required|string|max:100',
+            'nama' => 'sometimes|required|string|max:100',
         ];
     }
 

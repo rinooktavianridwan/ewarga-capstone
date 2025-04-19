@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\Wilayah\Http\Requests;
+namespace Modules\Wilayah\Http\Requests\Aset;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AsetPenghuniRequest extends FormRequest
+class CreateAsetRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -14,9 +14,12 @@ class AsetPenghuniRequest extends FormRequest
     public function rules()
     {
         return [
+            'nama' => 'required|string|max:100',
             'warga_id' => 'required|exists:warga,id',
-            'aset_m_status_id' => 'required|exists:aset_m_status,id',
-            'aset_id' => 'required|exists:aset,id',
+            'instansi_id' => 'required|exists:instansi,id',
+            'aset_m_jenis_id' => 'required|exists:aset_m_jenis,id',
+            'alamat' => 'required|string',
+            'lokasi' => 'nullable', // jika pakai spatial (POINT), validasi bisa disesuaikan nanti
         ];
     }
 
