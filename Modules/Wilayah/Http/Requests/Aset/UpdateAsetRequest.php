@@ -20,6 +20,10 @@ class UpdateAsetRequest extends FormRequest
             'aset_m_jenis_id' => 'sometimes|required|exists:aset_m_jenis,id',
             'alamat' => 'sometimes|required|string',
             'lokasi' => 'sometimes|required',
+            'fotos' => 'sometimes|array',
+            'fotos.*' => 'file|image|max:2048',
+            'hapus_foto' => 'sometimes|array',
+            'hapus_foto.*' => 'integer|exists:aset_foto,id',
         ];
     }
 

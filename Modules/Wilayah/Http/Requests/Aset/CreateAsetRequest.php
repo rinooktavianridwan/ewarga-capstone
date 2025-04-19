@@ -19,7 +19,9 @@ class CreateAsetRequest extends FormRequest
             'instansi_id' => 'required|exists:instansi,id',
             'aset_m_jenis_id' => 'required|exists:aset_m_jenis,id',
             'alamat' => 'required|string',
-            'lokasi' => 'nullable', // jika pakai spatial (POINT), validasi bisa disesuaikan nanti
+            'lokasi' => 'nullable',
+            'fotos' => 'sometimes|array',
+            'fotos.*' => 'file|image|max:2048',
         ];
     }
 
