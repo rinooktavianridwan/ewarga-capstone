@@ -30,7 +30,7 @@ class AsetService
     {
         return DB::transaction(function () use ($data) {
             $fotoFiles = $data['fotos'] ?? [];
-            unset($data['fotos']);
+            unset($data['fotos'], $data['lokasi']);
 
             $aset = Aset::create($data);
 
@@ -59,7 +59,7 @@ class AsetService
             $fotoBaru = $data['fotos'] ?? [];
             $hapusFotoIds = $data['hapus_foto'] ?? [];
 
-            unset($data['fotos'], $data['hapus_foto']);
+            unset($data['fotos'], $data['hapus_foto'], $data['lokasi']);
 
             $aset->update($data);
 
@@ -114,5 +114,16 @@ class AsetService
 
             return $aset->delete();
         });
+    }
+
+    public function updateLokasi(Aset $aset, float $latitude, float $longitude): Aset
+    {
+        $point = DB::raw("ST_GeomFromText('POINT({$longitude} {$latitude})')");
+
+        $aset->update([
+            'lokasi' => $point,
+        ]);
+
+        return $aset;
     }
 }
