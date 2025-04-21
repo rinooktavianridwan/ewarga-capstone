@@ -14,9 +14,10 @@ class UpdateAsetPenghuniRequest extends FormRequest
     public function rules()
     {
         return [
-            'warga_id' => 'sometimes|required|exists:warga,id',
-            'aset_m_status_id' => 'sometimes|required|exists:aset_m_status,id',
             'aset_id' => 'sometimes|required|exists:aset,id',
+            'penghunis' => 'sometimes|required|array|min:1',
+            'penghunis.*.warga_id' => 'sometimes|required|exists:warga,id',
+            'penghunis.*.aset_m_status_id' => 'sometimes|required|exists:aset_m_status,id',
         ];
     }
 
