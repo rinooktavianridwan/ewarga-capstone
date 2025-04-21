@@ -3,16 +3,29 @@
 namespace Modules\Wilayah\Services;
 
 use Modules\Wilayah\Entities\Aset;
+use Modules\Wilayah\Services\AsetFotoService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\UploadedFile;
 
 class AsetService
 {
+    protected $asetFotoService;
+
+    public function __construct(AsetFotoService $asetFotoService)
+    {
+        $this->asetFotoService = $asetFotoService;
+    }
+
     public function getAll()
     {
         return Aset::with(['instansi', 'warga', 'jenisAset', 'fotos', 'asetPenghunis'])->get();
+    }
+
+    public function getAllByName(string $name)
+    {
+        return Aset::with(['instansi', 'warga', 'jenisAset', 'fotos', 'asetPenghunis'])
+            ->where('nama', 'like', '%' . $name . '%')
+            ->get();
     }
 
     public function getById(int $id): Aset
@@ -30,23 +43,12 @@ class AsetService
     {
         return DB::transaction(function () use ($data) {
             $fotoFiles = $data['fotos'] ?? [];
-            unset($data['fotos'], $data['lokasi']);
+            unset($data['fotos']);
 
             $aset = Aset::create($data);
 
             if (!empty($fotoFiles)) {
-                foreach ($fotoFiles as $file) {
-                    if ($file instanceof UploadedFile) {
-                        $instansiId = $data['instansi_id'];
-                        $filename = $data['warga_id'] . '_' . time() . '_' . $file->getClientOriginalName();
-                        $path = $file->storeAs("aset_foto/{$instansiId}", $filename, 'public');
-
-                        $aset->fotos()->create([
-                            'nama' => $file->getClientOriginalName(),
-                            'file_path' => "aset_foto/{$instansiId}/{$filename}",
-                        ]);
-                    }
-                }
+                $this->asetFotoService->store($aset, $fotoFiles, $data['instansi_id'], $data['warga_id']);
             }
 
             return $aset->load(['fotos']);
@@ -59,58 +61,26 @@ class AsetService
             $fotoBaru = $data['fotos'] ?? [];
             $hapusFotoIds = $data['hapus_foto'] ?? [];
 
-            unset($data['fotos'], $data['hapus_foto'], $data['lokasi']);
+            unset($data['fotos'], $data['hapus_foto']);
 
             $aset->update($data);
 
             if (!empty($hapusFotoIds)) {
-                $fotos = $aset->fotos()->whereIn('id', $hapusFotoIds)->get();
-
-                foreach ($fotos as $foto) {
-                    if (Storage::disk('public')->exists($foto->file_path)) {
-                        Storage::disk('public')->delete($foto->file_path);
-                    }
-
-                    $foto->delete();
-                }
+                $this->asetFotoService->delete($aset, $hapusFotoIds);
             }
 
             if (!empty($fotoBaru)) {
-                foreach ($fotoBaru as $file) {
-                    if ($file instanceof UploadedFile) {
-                        $instansiId = $aset->instansi_id;
-                        $filename = $aset->warga_id . '_' . time() . '_' . $file->getClientOriginalName();
-                        $path = $file->storeAs("aset_foto/{$instansiId}", $filename, 'public');
-
-                        $aset->fotos()->create([
-                            'nama' => $file->getClientOriginalName(),
-                            'file_path' => "aset_foto/{$instansiId}/{$filename}",
-                        ]);
-                    }
-                }
+                $this->asetFotoService->store($aset, $fotoBaru, $aset->instansi_id, $aset->warga_id);
             }
 
             return $aset->load(['fotos']);
         });
     }
 
-    public function delete(Aset $aset): bool|null
-    {
-        return $aset->delete();
-    }
-
-    public function destroy(Aset $aset): bool
+    public function delete(Aset $aset): bool
     {
         return DB::transaction(function () use ($aset) {
-            $fotos = $aset->fotos;
-
-            foreach ($fotos as $foto) {
-                if (Storage::disk('public')->exists($foto->file_path)) {
-                    Storage::disk('public')->delete($foto->file_path);
-                }
-
-                $foto->delete();
-            }
+            $this->asetFotoService->delete($aset, $aset->fotos->pluck('id')->toArray());
 
             return $aset->delete();
         });

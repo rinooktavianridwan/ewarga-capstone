@@ -3,7 +3,9 @@
 namespace Modules\Wilayah\Services;
 
 use Modules\Wilayah\Entities\AsetFoto;
-use Illuminate\Support\Facades\DB;
+use Modules\Wilayah\Entities\Aset;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class AsetFotoService
@@ -11,6 +13,11 @@ class AsetFotoService
     public function getAll()
     {
         return AsetFoto::with('aset')->get();
+    }
+
+    public function getAllByAset(Aset $aset)
+    {
+        return $aset->fotos()->get();
     }
 
     public function getById(int $id): AsetFoto
@@ -24,24 +31,31 @@ class AsetFotoService
         return $foto;
     }
 
-    public function create(array $data): AsetFoto
+    public function store(Aset $aset, array $fotoFiles, int $instansiId, int $wargaId)
     {
-        return DB::transaction(function () use ($data) {
-            return AsetFoto::create($data);
-        });
+        foreach ($fotoFiles as $file) {
+            if ($file instanceof UploadedFile) {
+                $filename = $wargaId . '_' . time() . '_' . $file->getClientOriginalName();
+                $path = $file->storeAs("aset_foto/{$instansiId}", $filename, 'public');
+
+                $aset->fotos()->create([
+                    'nama' => $file->getClientOriginalName(),
+                    'file_path' => "aset_foto/{$instansiId}/{$filename}",
+                ]);
+            }
+        }
     }
 
-    public function update(AsetFoto $foto, array $data): AsetFoto
+    public function delete(Aset $aset, array $hapusFotoIds)
     {
-        DB::transaction(function () use ($foto, $data) {
-            $foto->update($data);
-        });
+        $fotos = $aset->fotos()->whereIn('id', $hapusFotoIds)->get();
 
-        return $foto;
-    }
+        foreach ($fotos as $foto) {
+            if (Storage::disk('public')->exists($foto->file_path)) {
+                Storage::disk('public')->delete($foto->file_path);
+            }
 
-    public function delete(AsetFoto $foto): bool|null
-    {
-        return $foto->delete();
+            $foto->delete();
+        }
     }
 }
