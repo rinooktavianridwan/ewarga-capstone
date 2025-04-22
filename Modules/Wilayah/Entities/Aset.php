@@ -5,6 +5,7 @@ namespace Modules\Wilayah\Entities;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\DB;
 use App\Models\Instansi;
 use App\Models\Warga;
 
@@ -49,4 +50,13 @@ class Aset extends Model
         return $this->hasMany(AsetPenghuni::class, 'aset_id');
     }
 
+    public function getLatitude()
+    {
+        return $this->lokasi ? (float) DB::selectOne("SELECT ST_Y('{$this->lokasi}') as latitude")->latitude : null;
+    }
+
+    public function getLongitude()
+    {
+        return $this->lokasi ? (float) DB::selectOne("SELECT ST_X('{$this->lokasi}') as longitude")->longitude : null;
+    }
 }
