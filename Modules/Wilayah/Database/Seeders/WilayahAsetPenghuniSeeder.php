@@ -1,11 +1,11 @@
 <?php
 
-namespace Modules\Umkm\Database\Seeders;
+namespace Modules\Wilayah\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class WilayahFotoSeeder extends Seeder
+class WilayahAsetPenghuniSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,7 +15,7 @@ class WilayahFotoSeeder extends Seeder
     public function run()
     {
         //Data dummy aset penghuni
-        $wilayahFotoData = [
+        $wilayahPenghuniData = [
             [
                 'id' => 3,
                 'warga_id' => 3,
@@ -42,6 +42,6 @@ class WilayahFotoSeeder extends Seeder
             ],
         ];
 
-        DB::table('wilayah_foto')->insert($wilayahFotoData);
+        DB::table('aset_penghuni')->insert($wilayahPenghuniData);
     }
 }

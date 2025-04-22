@@ -2,7 +2,6 @@
 
 namespace Modules\Wilayah\Http\Controllers;
 
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Wilayah\Services\AsetMStatusService;
@@ -39,7 +38,6 @@ class AsetMStatusController extends Controller
 
     public function destroy(AsetMStatus $asetMStatus)
     {
-        $this->service->delete($asetMStatus);
-        return response()->json(['message' => 'Data berhasil dihapus.']);
+        return response()->json($this->service->delete($asetMStatus));
     }
 }

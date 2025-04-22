@@ -41,11 +41,4 @@ class AsetPenghuniController extends Controller
     {
         return response()->json($this->service->update($aset, $request->penghuni));
     }
-
-    public function destroy(Request $request, Aset $aset)
-    {
-        return response()->json([
-            'deleted' => $this->service->delete($aset, $request->penghuni_ids),
-        ]);
-    }
 }

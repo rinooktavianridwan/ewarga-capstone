@@ -2,7 +2,6 @@
 
 namespace Modules\Wilayah\Http\Controllers;
 
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Wilayah\Entities\AsetMJenis;
@@ -39,7 +38,6 @@ class AsetMJenisController extends Controller
 
     public function destroy(AsetMJenis $asetMJenis)
     {
-        $this->service->delete($asetMJenis);
-        return response()->json(['message' => 'Data berhasil dihapus.']);
+        return response()->json($this->service->delete($asetMJenis));
     }
 }
