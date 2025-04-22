@@ -14,31 +14,30 @@ class WilayahAsetPenghuniSeeder extends Seeder
      */
     public function run()
     {
-        //Data dummy aset penghuni
         $wilayahPenghuniData = [
             [
                 'id' => 3,
                 'warga_id' => 3,
-                'aset_m_status_id' => 3,
+                'aset_m_status_id' => 1,
                 'aset_id' => 3
             ],
             [
                 'id' => 4,
                 'warga_id' => 4,
-                'aset_m_status_id' => 4,
-                'aset_id' => 4
+                'aset_m_status_id' => 1,
+                'aset_id' => 1
             ],
             [
                 'id' => 6,
                 'warga_id' => 6,
-                'aset_m_status_id' => 6,
-                'aset_id' => 6
+                'aset_m_status_id' => 1,
+                'aset_id' => 4
             ],
             [
                 'id' => 8,
                 'warga_id' => 8,
-                'aset_m_status_id' => 8,
-                'aset_id' => 8
+                'aset_m_status_id' => 1,
+                'aset_id' => 5
             ],
         ];
 

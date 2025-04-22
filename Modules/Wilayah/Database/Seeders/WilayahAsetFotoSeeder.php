@@ -5,7 +5,7 @@ namespace Modules\Wilayah\Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class WilayahFotoSeeder extends Seeder
+class WilayahAsetFotoSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,7 +14,6 @@ class WilayahFotoSeeder extends Seeder
      */
     public function run()
     {
-        //Data dummy foto aset
         $wilayahFotoData = [
             [
                 'id' => 1,
@@ -48,36 +47,36 @@ class WilayahFotoSeeder extends Seeder
             ],
             [
                 'id' => 6,
-                'aset_id' => 6,
+                'aset_id' => 4,
                 'nama' => 'Rumah Bu Desi',
                 'file_path' => 'aset_foto/6/6/2025-01-21_10-21-00/rumah_desi.jpg'
             ],
             [
                 'id' => 7,
-                'aset_id' => 7,
+                'aset_id' => 3,
                 'nama' => 'Gado-Gado Bu Celik',
                 'file_path' => 'aset_foto/7/7/2025-04-01_16-00-00/gado_celik.jpg'
             ],
             [
                 'id' => 8,
-                'aset_id' => 8,
+                'aset_id' => 2,
                 'nama' => 'Rumah Pak Agung',
                 'file_path' => 'aset_foto/8/8/2024-11-30_17-00-00/rumah_agung.jpg'
             ],
             [
                 'id' => 9,
-                'aset_id' => 9,
+                'aset_id' => 1,
                 'nama' => 'Sawah Pak Rusdi',
                 'file_path' => 'aset_foto/9/9/2023-05-11_08-41-00/sawah_rusdi.jpg'
             ],
             [
                 'id' => 10,
-                'aset_id' => 10,
+                'aset_id' => 1,
                 'nama' => 'Warnet Topp',
                 'file_path' => 'aset_foto/10/10/2024-04-30_21-44-00/warnet_topp.jpg'
             ],
         ];
 
         DB::table('aset_foto')->insert($wilayahFotoData);
-    }  
+    }
 }

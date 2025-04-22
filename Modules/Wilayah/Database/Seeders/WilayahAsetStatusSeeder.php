@@ -5,7 +5,7 @@ namespace Modules\Wilayah\Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class WilayahStatusAsetSeeder extends Seeder
+class WilayahAsetStatusSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,7 +14,6 @@ class WilayahStatusAsetSeeder extends Seeder
      */
     public function run()
     {
-        //Data dummy status aset
         $wilayahStatusAsetData = [
             [
                 'id' => 1,
