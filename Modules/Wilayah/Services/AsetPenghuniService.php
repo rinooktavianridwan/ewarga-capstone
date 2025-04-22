@@ -74,6 +74,19 @@ class AsetPenghuniService
                 ]);
             }
 
+            $updatePenghuni = collect($penghuniData)->filter(function ($item) use ($penghuniLamaIds) {
+                return in_array($item['warga_id'], $penghuniLamaIds);
+            });
+
+            foreach ($updatePenghuni as $data) {
+                $penghuni = $penghuniLama->firstWhere('warga_id', $data['warga_id']);
+                if ($penghuni && $penghuni->aset_m_status_id != $data['aset_m_status_id']) {
+                    $penghuni->update([
+                        'aset_m_status_id' => $data['aset_m_status_id'],
+                    ]);
+                }
+            }
+
             return $created;
         });
     }

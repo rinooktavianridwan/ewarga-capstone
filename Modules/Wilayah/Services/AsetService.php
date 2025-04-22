@@ -18,19 +18,19 @@ class AsetService
 
     public function getAll()
     {
-        return Aset::with(['instansi', 'warga', 'jenisAset', 'fotos', 'asetPenghunis'])->get();
+        return Aset::with(['instansi', 'warga', 'jenis', 'fotos', 'asetPenghunis'])->get();
     }
 
     public function getAllByName(string $name)
     {
-        return Aset::with(['instansi', 'warga', 'jenisAset', 'fotos', 'asetPenghunis'])
+        return Aset::with(['instansi', 'warga', 'jenis', 'fotos', 'asetPenghunis'])
             ->where('nama', 'like', '%' . $name . '%')
             ->get();
     }
 
     public function getById(int $id): Aset
     {
-        $aset = Aset::with(['instansi', 'warga', 'jenisAset', 'fotos', 'asetPenghunis'])->find($id);
+        $aset = Aset::with(['instansi', 'warga', 'jenis', 'fotos', 'asetPenghunis'])->find($id);
 
         if (!$aset) {
             throw new ModelNotFoundException("Aset dengan ID {$id} tidak ditemukan.");
@@ -84,6 +84,18 @@ class AsetService
 
             return $aset->delete();
         });
+    }
+
+    public function getLokasi(Aset $aset): ?array
+    {
+        if (!$aset->lokasi) {
+            throw new ModelNotFoundException("Lokasi untuk Aset dengan ID {$aset->id} tidak ditemukan.");
+        }
+
+        return [
+            'latitude' => $aset->lokasi->getLat(),
+            'longitude' => $aset->lokasi->getLng(),
+        ];
     }
 
     public function updateLokasi(Aset $aset, float $latitude, float $longitude): Aset
