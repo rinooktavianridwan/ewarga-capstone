@@ -5,6 +5,7 @@ namespace Modules\Wilayah\Entities;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder;
 use App\Models\Instansi;
 use App\Models\Warga;
 
@@ -23,6 +24,21 @@ class Aset extends Model
         'alamat',
         'lokasi',
     ];
+
+    protected $hidden = [
+        'lokasi',
+    ];
+
+    protected static function booted()
+    {
+        static::addGlobalScope('lokasi', function (Builder $builder) {
+            $builder->selectRaw('
+            *,
+            IF(lokasi IS NOT NULL, ST_Y(lokasi), NULL) as latitude,
+            IF(lokasi IS NOT NULL, ST_X(lokasi), NULL) as longitude
+        ');
+        });
+    }
 
     public function instansi()
     {
@@ -48,5 +64,4 @@ class Aset extends Model
     {
         return $this->hasMany(AsetPenghuni::class, 'aset_id');
     }
-
 }
