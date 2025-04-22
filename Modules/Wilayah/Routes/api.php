@@ -25,10 +25,11 @@ Route::middleware('auth:api')->get('/wilayah', function (Request $request) {
     return $request->user();
 });
 
-Route::prefix('asets')->group(function () {
+Route::prefix('aset')->group(function () {
     Route::get('/', [AsetController::class, 'index']);
     Route::get('/search/by-name', [AsetController::class, 'searchByName']);
     Route::get('/{id}', [AsetController::class, 'show']);
+    Route::get('/{aset}/lokasi', [AsetController::class, 'showLokasi']);
     Route::post('/', [AsetController::class, 'store']);
     Route::put('/{aset}', [AsetController::class, 'update']);
     Route::put('/{aset}/lokasi', [AsetController::class, 'updateLokasi']);
@@ -49,10 +50,9 @@ Route::prefix('aset-penghuni')->group(function () {
     Route::get('/{id}', [AsetPenghuniController::class, 'show']);
     Route::post('/{aset}', [AsetPenghuniController::class, 'store']);
     Route::put('/{aset}', [AsetPenghuniController::class, 'update']);
-    Route::delete('/{aset}', [AsetPenghuniController::class, 'destroy']);
 });
 
-Route::prefix('asetMJenis')->group(function () {
+Route::prefix('aset-m-jenis')->group(function () {
     Route::get('/', [AsetMJenisController::class, 'index']);
     Route::get('/{id}', [AsetMJenisController::class, 'show']);
     Route::post('/', [AsetMJenisController::class, 'store']);
@@ -60,7 +60,7 @@ Route::prefix('asetMJenis')->group(function () {
     Route::delete('/{asetMJenis}', [AsetMJenisController::class, 'destroy']);
 });
 
-Route::prefix('asetMStatus')->group(function () {
+Route::prefix('aset-m-status')->group(function () {
     Route::get('/', [AsetMStatusController::class, 'index']);
     Route::get('/{id}', [AsetMStatusController::class, 'show']);
     Route::post('/', [AsetMStatusController::class, 'store']);

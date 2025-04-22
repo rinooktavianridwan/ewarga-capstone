@@ -88,7 +88,7 @@ class AsetService
 
     public function getLokasi(Aset $aset): ?array
     {
-        if (!$aset->latitude || !$aset->longitude) {
+        if (is_null($aset->latitude) || is_null($aset->longitude)) {
             throw new ModelNotFoundException("Lokasi untuk Aset dengan ID {$aset->id} tidak ditemukan.");
         }
 

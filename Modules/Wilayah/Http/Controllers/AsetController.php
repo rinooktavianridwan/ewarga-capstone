@@ -18,43 +18,41 @@ class AsetController extends Controller
 
     public function index()
     {
-        $asets = $this->asetService->getAll();
-        return response()->json($asets);
+        return response()->json($this->asetService->getAll());
     }
 
     public function show($id)
     {
-        $aset = $this->asetService->getById($id);
-        return response()->json($aset);
+        return response()->json($this->asetService->getById($id));
     }
 
     public function store(Request $request)
     {
-        $aset = $this->asetService->create($request->all());
-        return response()->json($aset, 201);
+        return response()->json($this->asetService->create($request->all()), 201);
     }
 
     public function update(Request $request, Aset $aset)
     {
-        $updated = $this->asetService->update($aset, $request->all());
-        return response()->json($updated);
+        return response()->json($this->asetService->update($aset, $request->all()));
     }
 
     public function destroy(Aset $aset)
     {
-        $this->asetService->delete($aset);
-        return response()->json(['message' => 'Aset berhasil dihapus.']);
+        return response()->json($this->asetService->delete($aset));
+    }
+
+    public function showLokasi(Aset $aset)
+    {
+        return response()->json($this->asetService->getLokasi($aset));
     }
 
     public function updateLokasi(Request $request, Aset $aset)
     {
-        $updated = $this->asetService->updateLokasi($aset, $request->latitude, $request->longitude);
-        return response()->json($updated);
+        return response()->json($this->asetService->updateLokasi($aset, $request->latitude, $request->longitude));
     }
 
     public function searchByName(Request $request)
     {
-        $asets = $this->asetService->getAllByName($request->name);
-        return response()->json($asets);
+        return response()->json($this->asetService->getAllByName($request->name));
     }
 }
