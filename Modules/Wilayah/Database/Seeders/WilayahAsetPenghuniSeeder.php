@@ -42,6 +42,6 @@ class WilayahAsetPenghuniSeeder extends Seeder
             ],
         ];
 
-        DB::table('penghuni_data')->insert($wilayahPenghuniData);
+        DB::table('aset_penghuni')->insert($wilayahPenghuniData);
     }
 }
