@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Umkm\Database\Seeders;
+namespace Modules\Wilayah\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
