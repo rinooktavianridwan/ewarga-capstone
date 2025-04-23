@@ -35,12 +35,12 @@ class AsetPenghuniController extends Controller
     public function store(CreateAsetPenghuniRequest $request, Aset $aset)
     {
         $validated = $request->validated();
-        return response()->json($this->service->store($aset, $validated->penghuni));
+        return response()->json($this->service->store($aset, $validated['penghuni']), 201);
     }
 
     public function update(UpdateAsetPenghuniRequest $request, Aset $aset)
     {
         $validated = $request->validated();
-        return response()->json($this->service->update($aset, $validated->penghuni));
+        return response()->json($this->service->update($aset, $validated['penghuni']));
     }
 }

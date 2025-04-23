@@ -30,13 +30,13 @@ class AsetMJenisController extends Controller
     public function store(CreateAsetMJenisRequest $request)
     {
         $validated = $request->validated();
-        return response()->json($this->service->create($validated->all()));
+        return response()->json($this->service->create($validated));
     }
 
     public function update(UpdateAsetMJenisRequest $request, AsetMJenis $asetMJenis)
     {
         $validated = $request->validated();
-        return response()->json($this->service->update($asetMJenis, $validated->all()));
+        return response()->json($this->service->update($asetMJenis, $validated));
     }
 
     public function destroy(AsetMJenis $asetMJenis)

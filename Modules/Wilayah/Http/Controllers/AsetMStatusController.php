@@ -30,13 +30,13 @@ class AsetMStatusController extends Controller
     public function store(CreateAsetMStatusRequest $request)
     {
         $validated = $request->validated();
-        return response()->json($this->service->create($validated->all()));
+        return response()->json($this->service->create($validated));
     }
 
     public function update(UpdateAsetMStatusRequest $request, AsetMStatus $asetMStatus)
     {
         $validated = $request->validated();
-        return response()->json($this->service->update($asetMStatus, $validated->all()));
+        return response()->json($this->service->update($asetMStatus, $validated));
     }
 
     public function destroy(AsetMStatus $asetMStatus)

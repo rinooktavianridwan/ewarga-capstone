@@ -32,13 +32,13 @@ class AsetController extends Controller
     public function store(CreateAsetRequest $request)
     {
         $validated = $request->validated();
-        return response()->json($this->asetService->create($validated->all()), 201);
+        return response()->json($this->asetService->create($validated), 201);
     }
 
     public function update(UpdateAsetRequest $request, Aset $aset)
     {
         $validated = $request->validated();
-        return response()->json($this->asetService->update($aset, $validated->all()));
+        return response()->json($this->asetService->update($aset, $validated));
     }
 
     public function destroy(Aset $aset)
@@ -54,7 +54,7 @@ class AsetController extends Controller
     public function updateLokasi(UpdateLokasiRequest $request, Aset $aset)
     {
         $validated = $request->validated();
-        return response()->json($this->asetService->updateLokasi($aset, $validated->latitude, $validated->longitude));
+        return response()->json($this->asetService->updateLokasi($aset, $validated['latitude'], $validated['longitude']));
     }
 
     public function searchByName(GetAllByNameRequest $request)

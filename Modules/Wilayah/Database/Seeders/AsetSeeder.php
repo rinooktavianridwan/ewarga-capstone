@@ -12,7 +12,7 @@ class AsetSeeder extends Seeder
         $asetData = [
             [
                 'id' => 1,
-                'warga_id' => 1,
+                'warga_id' => 2,
                 'instansi_id' => 1,
                 'aset_m_jenis_id' => 1,
                 'nama' => 'Rumah Pak Johny',
@@ -21,7 +21,7 @@ class AsetSeeder extends Seeder
             ],
             [
                 'id' => 2,
-                'warga_id' => 3,
+                'warga_id' => 4,
                 'instansi_id' => 1,
                 'aset_m_jenis_id' => 1,
                 'nama' => 'Rumah Bu Siti',
@@ -30,7 +30,7 @@ class AsetSeeder extends Seeder
             ],
             [
                 'id' => 3,
-                'warga_id' => 7,
+                'warga_id' => 8,
                 'instansi_id' => 1,
                 'aset_m_jenis_id' => 2,
                 'nama' => 'Taman Merjosari',
@@ -39,7 +39,7 @@ class AsetSeeder extends Seeder
             ],
             [
                 'id' => 4,
-                'warga_id' => 11,
+                'warga_id' => 12,
                 'instansi_id' => 1,
                 'aset_m_jenis_id' => 1,
                 'nama' => 'Kos Pak Supeno',
@@ -48,7 +48,7 @@ class AsetSeeder extends Seeder
             ],
             [
                 'id' => 5,
-                'warga_id' => 7,
+                'warga_id' => 8,
                 'instansi_id' => 1,
                 'aset_m_jenis_id' => 2,
                 'nama' => 'Musholla Al-Muhajirin',

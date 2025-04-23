@@ -15,8 +15,8 @@ class UpdateAsetRequest extends FormRequest
     {
         return [
             'nama' => 'sometimes|required|string|max:100',
-            'warga_id' => 'sometimes|required|exists:warga,id,deleted_at,NULL',
-            'instansi_id' => 'sometimes|required|exists:instansi,id,deleted_at,NULL',
+            'warga_id' => 'sometimes|required|exists:warga,id,is_deleted,0',
+            'instansi_id' => 'sometimes|required|exists:instansi,id,is_deleted,0',
             'aset_m_jenis_id' => 'sometimes|required|exists:aset_m_jenis,id,deleted_at,NULL',
             'alamat' => 'sometimes|required|string',
             'lokasi' => 'sometimes|required',
