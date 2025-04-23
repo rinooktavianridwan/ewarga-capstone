@@ -3,11 +3,11 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Modules\Wilayah\Http\Controllers\AsetController;
-use Modules\Wilayah\Http\Controllers\InstansiController;
 use Modules\Wilayah\Http\Controllers\AsetFotoController;
 use Modules\Wilayah\Http\Controllers\AsetMJenisController;
 use Modules\Wilayah\Http\Controllers\AsetMStatusController;
 use Modules\Wilayah\Http\Controllers\AsetPenghuniController;
+use Modules\Wilayah\Http\Controllers\WilayahController;
 
 
 /*
@@ -25,6 +25,10 @@ Route::middleware('auth:api')->get('/wilayah', function (Request $request) {
     return $request->user();
 });
 
+Route::prefix('dashboard')->group(function () {
+    Route::get('/aset-statistics', [WilayahController::class, 'getAsetStatistics']);
+});
+
 Route::prefix('aset')->group(function () {
     Route::get('/', [AsetController::class, 'index']);
     Route::get('/search/by-name', [AsetController::class, 'searchByName']);
@@ -40,8 +44,6 @@ Route::prefix('aset-foto')->group(function () {
     Route::get('/', [AsetFotoController::class, 'index']);
     Route::get('/aset/{aset}', [AsetFotoController::class, 'byAset']);
     Route::get('/{id}', [AsetFotoController::class, 'show']);
-    Route::post('/{aset}', [AsetFotoController::class, 'store']);
-    Route::delete('/{aset}', [AsetFotoController::class, 'destroy']);
 });
 
 Route::prefix('aset-penghuni')->group(function () {

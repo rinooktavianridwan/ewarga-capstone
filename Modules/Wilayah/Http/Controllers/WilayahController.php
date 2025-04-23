@@ -5,9 +5,27 @@ namespace Modules\Wilayah\Http\Controllers;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Modules\Wilayah\Services\WilayahService;
 
 class WilayahController extends Controller
 {
+    protected $wilayahService;
+
+    public function __construct(WilayahService $wilayahService)
+    {
+        $this->wilayahService = $wilayahService;
+    }
+
+    /**
+     * Get asset statistics.
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getAsetStatistics()
+    {
+        $statistics = $this->wilayahService->getAsetStatistics();
+        return response()->json($statistics);
+    }
+
     /**
      * Display a listing of the resource.
      * @return Renderable
