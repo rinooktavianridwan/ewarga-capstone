@@ -15,9 +15,9 @@ class CreateAsetRequest extends FormRequest
     {
         return [
             'nama' => 'required|string|max:100',
-            'warga_id' => 'required|exists:warga,id',
-            'instansi_id' => 'required|exists:instansi,id',
-            'aset_m_jenis_id' => 'required|exists:aset_m_jenis,id',
+            'warga_id' => 'required|exists:warga,id,deleted_at,NULL',
+            'instansi_id' => 'required|exists:instansi,id,deleted_at,NULL',
+            'aset_m_jenis_id' => 'required|exists:aset_m_jenis,id,deleted_at,NULL',
             'alamat' => 'required|string',
             'lokasi' => 'nullable',
             'fotos' => 'sometimes|array',
