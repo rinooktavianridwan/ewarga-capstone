@@ -5,16 +5,11 @@ namespace Modules\Wilayah\Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class WilayahAsetJenisSeeder extends Seeder
+class AsetMJenisSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
     public function run()
     {
-        $wilayahAsetJenisData = [
+        $asetMJenisData = [
             [
                 'id' => 1,
                 'nama' => 'Aset Pribadi'
@@ -25,6 +20,6 @@ class WilayahAsetJenisSeeder extends Seeder
             ]
         ];
 
-        DB::table('aset_m_jenis')->insert($wilayahAsetJenisData);
+        DB::table('aset_m_jenis')->insert($asetMJenisData);
     }
 }
