@@ -2,8 +2,9 @@
 
 namespace Modules\Wilayah\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Modules\Wilayah\Http\Requests\AsetMStatus\CreateAsetMStatusRequest;
+use Modules\Wilayah\Http\Requests\AsetMStatus\UpdateAsetMStatusRequest;
 use Modules\Wilayah\Services\AsetMStatusService;
 use Modules\Wilayah\Entities\AsetMStatus;
 
@@ -26,14 +27,16 @@ class AsetMStatusController extends Controller
         return response()->json($this->service->getById($id));
     }
 
-    public function store(Request $request)
+    public function store(CreateAsetMStatusRequest $request)
     {
-        return response()->json($this->service->create($request->all()));
+        $validated = $request->validated();
+        return response()->json($this->service->create($validated->all()));
     }
 
-    public function update(Request $request, AsetMStatus $asetMStatus)
+    public function update(UpdateAsetMStatusRequest $request, AsetMStatus $asetMStatus)
     {
-        return response()->json($this->service->update($asetMStatus, $request->all()));
+        $validated = $request->validated();
+        return response()->json($this->service->update($asetMStatus, $validated->all()));
     }
 
     public function destroy(AsetMStatus $asetMStatus)

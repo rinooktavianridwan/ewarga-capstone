@@ -2,9 +2,12 @@
 
 namespace Modules\Wilayah\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Wilayah\Entities\Aset;
+use Modules\Wilayah\Http\Requests\Aset\CreateAsetRequest;
+use Modules\Wilayah\Http\Requests\Aset\GetAllByNameRequest;
+use Modules\Wilayah\Http\Requests\Aset\UpdateAsetRequest;
+use Modules\Wilayah\Http\Requests\Aset\UpdateLokasiRequest;
 use Modules\Wilayah\Services\AsetService;
 
 class AsetController extends Controller
@@ -26,14 +29,16 @@ class AsetController extends Controller
         return response()->json($this->asetService->getById($id));
     }
 
-    public function store(Request $request)
+    public function store(CreateAsetRequest $request)
     {
-        return response()->json($this->asetService->create($request->all()), 201);
+        $validated = $request->validated();
+        return response()->json($this->asetService->create($validated->all()), 201);
     }
 
-    public function update(Request $request, Aset $aset)
+    public function update(UpdateAsetRequest $request, Aset $aset)
     {
-        return response()->json($this->asetService->update($aset, $request->all()));
+        $validated = $request->validated();
+        return response()->json($this->asetService->update($aset, $validated->all()));
     }
 
     public function destroy(Aset $aset)
@@ -46,13 +51,15 @@ class AsetController extends Controller
         return response()->json($this->asetService->getLokasi($aset));
     }
 
-    public function updateLokasi(Request $request, Aset $aset)
+    public function updateLokasi(UpdateLokasiRequest $request, Aset $aset)
     {
-        return response()->json($this->asetService->updateLokasi($aset, $request->latitude, $request->longitude));
+        $validated = $request->validated();
+        return response()->json($this->asetService->updateLokasi($aset, $validated->latitude, $validated->longitude));
     }
 
-    public function searchByName(Request $request)
+    public function searchByName(GetAllByNameRequest $request)
     {
-        return response()->json($this->asetService->getAllByName($request->name));
+        $validated = $request->validated();
+        return response()->json($this->asetService->getAllByName($validated->name));
     }
 }

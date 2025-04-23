@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\Wilayah\Http\Requests\AsetFoto;
+namespace Modules\Wilayah\Http\Requests\Aset;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateAsetFotoRequest extends FormRequest
+class GetAllByNameRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -14,9 +14,7 @@ class CreateAsetFotoRequest extends FormRequest
     public function rules()
     {
         return [
-            'aset_id' => 'required|exists:aset,id',
-            'nama' => 'required|string|max:100',
-            'file_path' => 'required|string|max:255',
+            'name' => 'required|string|max:100',
         ];
     }
 

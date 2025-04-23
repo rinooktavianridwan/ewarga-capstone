@@ -2,10 +2,10 @@
 
 namespace Modules\Wilayah\Http\Controllers;
 
-use Illuminate\Contracts\Support\Renderable;
-use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Wilayah\Entities\Aset;
+use Modules\Wilayah\Http\Requests\AsetPenghuni\CreateAsetPenghuniRequest;
+use Modules\Wilayah\Http\Requests\AsetPenghuni\UpdateAsetPenghuniRequest;
 use Modules\Wilayah\Services\AsetPenghuniService;
 
 class AsetPenghuniController extends Controller
@@ -32,13 +32,15 @@ class AsetPenghuniController extends Controller
         return response()->json($this->service->getById($id));
     }
 
-    public function store(Request $request, Aset $aset)
+    public function store(CreateAsetPenghuniRequest $request, Aset $aset)
     {
-        return response()->json($this->service->store($aset, $request->penghuni));
+        $validated = $request->validated();
+        return response()->json($this->service->store($aset, $validated->penghuni));
     }
 
-    public function update(Request $request, Aset $aset)
+    public function update(UpdateAsetPenghuniRequest $request, Aset $aset)
     {
-        return response()->json($this->service->update($aset, $request->penghuni));
+        $validated = $request->validated();
+        return response()->json($this->service->update($aset, $validated->penghuni));
     }
 }

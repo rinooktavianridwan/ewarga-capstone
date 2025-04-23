@@ -2,9 +2,10 @@
 
 namespace Modules\Wilayah\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Wilayah\Entities\AsetMJenis;
+use Modules\Wilayah\Http\Requests\AsetMJenis\CreateAsetMJenisRequest;
+use Modules\Wilayah\Http\Requests\AsetMJenis\UpdateAsetMJenisRequest;
 use Modules\Wilayah\Services\AsetMJenisService;
 
 class AsetMJenisController extends Controller
@@ -26,14 +27,16 @@ class AsetMJenisController extends Controller
         return response()->json($this->service->getById($id));
     }
 
-    public function store(Request $request)
+    public function store(CreateAsetMJenisRequest $request)
     {
-        return response()->json($this->service->create($request->all()));
+        $validated = $request->validated();
+        return response()->json($this->service->create($validated->all()));
     }
 
-    public function update(Request $request, AsetMJenis $asetMJenis)
+    public function update(UpdateAsetMJenisRequest $request, AsetMJenis $asetMJenis)
     {
-        return response()->json($this->service->update($asetMJenis, $request->all()));
+        $validated = $request->validated();
+        return response()->json($this->service->update($asetMJenis, $validated->all()));
     }
 
     public function destroy(AsetMJenis $asetMJenis)
