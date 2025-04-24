@@ -4,6 +4,7 @@ namespace Modules\Wilayah\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
 
 class AsetMStatusSeeder extends Seeder
 {
@@ -12,11 +13,13 @@ class AsetMStatusSeeder extends Seeder
         $asetMStatusData = [
             [
                 'id' => 1,
-                'nama' => 'Sesuai KK'
+                'nama' => 'Sesuai KK',
+                'created_at' => Carbon::now()->subMonth(),
             ],
             [
                 'id' => 2,
-                'nama' => 'Tidak Sesuai KK'
+                'nama' => 'Tidak Sesuai KK',
+                'created_at' => Carbon::now()->subMonth(),
             ],
         ];
 
