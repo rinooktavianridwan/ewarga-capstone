@@ -1,6 +1,14 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use Modules\Wilayah\Http\Controllers\AsetController;
+use Modules\Wilayah\Http\Controllers\AsetFotoController;
+use Modules\Wilayah\Http\Controllers\AsetMJenisController;
+use Modules\Wilayah\Http\Controllers\AsetMStatusController;
+use Modules\Wilayah\Http\Controllers\AsetPenghuniController;
+use Modules\Wilayah\Http\Controllers\WilayahController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -15,4 +23,51 @@ use Illuminate\Http\Request;
 
 Route::middleware('auth:api')->get('/wilayah', function (Request $request) {
     return $request->user();
+});
+
+Route::middleware('auth:sanctum')->prefix('/wilayah')->group(function () {
+    Route::prefix('dashboard')->group(function () {
+        Route::get('/aset-statistics', [WilayahController::class, 'getAsetStatistics']);
+    });
+
+    Route::prefix('aset')->group(function () {
+        Route::get('/', [AsetController::class, 'index']);
+        Route::get('/search/by-name', [AsetController::class, 'searchByName']);
+        Route::get('/{id}', [AsetController::class, 'show']);
+        Route::get('/{aset}/lokasi', [AsetController::class, 'showLokasi']);
+        Route::post('/', [AsetController::class, 'store']);
+        Route::put('/{aset}', [AsetController::class, 'update']);
+        Route::put('/{aset}/lokasi', [AsetController::class, 'updateLokasi']);
+        Route::delete('/{aset}', [AsetController::class, 'destroy']);
+    });
+
+    Route::prefix('aset-foto')->group(function () {
+        Route::get('/', [AsetFotoController::class, 'index']);
+        Route::get('/aset/{aset}', [AsetFotoController::class, 'byAset']);
+        Route::get('/{id}', [AsetFotoController::class, 'show']);
+    });
+
+    Route::prefix('aset-penghuni')->group(function () {
+        Route::get('/', [AsetPenghuniController::class, 'index']);
+        Route::get('/aset/{aset}', [AsetPenghuniController::class, 'byAset']);
+        Route::get('/{id}', [AsetPenghuniController::class, 'show']);
+        Route::post('/{aset}', [AsetPenghuniController::class, 'store']);
+        Route::put('/{aset}', [AsetPenghuniController::class, 'update']);
+    });
+
+    Route::prefix('aset-m-jenis')->group(function () {
+        Route::get('/', [AsetMJenisController::class, 'index']);
+        Route::get('/{id}', [AsetMJenisController::class, 'show']);
+        Route::post('/', [AsetMJenisController::class, 'store']);
+        Route::put('/{asetMJenis}', [AsetMJenisController::class, 'update']);
+        Route::delete('/{asetMJenis}', [AsetMJenisController::class, 'destroy']);
+    });
+
+    Route::prefix('aset-m-status')->group(function () {
+        Route::get('/', [AsetMStatusController::class, 'index']);
+        Route::get('/{id}', [AsetMStatusController::class, 'show']);
+        Route::post('/', [AsetMStatusController::class, 'store']);
+        Route::put('/{asetMStatus}', [AsetMStatusController::class, 'update']);
+        Route::delete('/{asetMStatus}', [AsetMStatusController::class, 'destroy']);
+    });
 });

@@ -3,19 +3,14 @@
 namespace Modules\Wilayah\Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Eloquent\Model;
 
 class WilayahDatabaseSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
     public function run()
     {
-        Model::unguard();
-
-        // $this->call("OthersTableSeeder");
+        $this->call(AsetMJenisSeeder::class);
+        $this->call(AsetMStatusSeeder::class);
+        $this->call(AsetSeeder::class);
+        $this->call(AsetPenghuniSeeder::class);
     }
 }
