@@ -33,4 +33,15 @@ class AuthController extends Controller
             return response()->json(['message' => $e->getMessage()], 401);
         }
     }
+
+    public function logout(Request $request)
+    {
+        $user = $request->user();
+
+        if ($user) {
+            $user->tokens()->delete(); // Menghapus semua token autentikasi pengguna
+        }
+
+        return response()->json(['message' => 'Logout berhasil'], 200);
+    }
 }
