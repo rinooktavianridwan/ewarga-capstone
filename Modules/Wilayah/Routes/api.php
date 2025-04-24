@@ -25,7 +25,7 @@ Route::middleware('auth:api')->get('/wilayah', function (Request $request) {
     return $request->user();
 });
 
-// Route::middleware('auth:api')->group(function () {
+Route::middleware('auth:sanctum')->prefix('/wilayah')->group(function () {
     Route::prefix('dashboard')->group(function () {
         Route::get('/aset-statistics', [WilayahController::class, 'getAsetStatistics']);
     });
@@ -70,4 +70,4 @@ Route::middleware('auth:api')->get('/wilayah', function (Request $request) {
         Route::put('/{asetMStatus}', [AsetMStatusController::class, 'update']);
         Route::delete('/{asetMStatus}', [AsetMStatusController::class, 'destroy']);
     });
-// });
+});
