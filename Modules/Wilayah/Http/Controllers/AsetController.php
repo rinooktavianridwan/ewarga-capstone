@@ -60,6 +60,11 @@ class AsetController extends Controller
     public function searchByName(GetAllByNameRequest $request)
     {
         $validated = $request->validated();
-        return response()->json($this->asetService->getAllByName($validated->name));
+        return response()->json($this->asetService->getAllByName($validated['name']));
+    }
+
+    public function getAllbyInstansi($instansiId)
+    {
+        return response()->json($this->asetService->getAllByInstansi($instansiId));
     }
 }
