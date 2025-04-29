@@ -33,7 +33,7 @@ Route::middleware('auth:sanctum')->prefix('/wilayah')->group(function () {
     Route::prefix('aset')->group(function () {
         Route::get('/', [AsetController::class, 'index']);
         Route::get('/search/by-name', [AsetController::class, 'searchByName']);
-        Route::get('/search/instansi/{id}', [AsetController::class, 'getAllByInstansi']);
+        Route::get('/instansi/{id}', [AsetController::class, 'getAllByInstansi']);
         Route::get('/{id}', [AsetController::class, 'show']);
         Route::get('/{aset}/lokasi', [AsetController::class, 'showLokasi']);
         Route::post('/', [AsetController::class, 'store']);
