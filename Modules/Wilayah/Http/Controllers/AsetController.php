@@ -62,4 +62,9 @@ class AsetController extends Controller
         $validated = $request->validated();
         return response()->json($this->asetService->getAllByName($validated['name']));
     }
+
+    public function getAllbyInstansi($instansiId)
+    {
+        return response()->json($this->asetService->getAllByInstansi($instansiId));
+    }
 }

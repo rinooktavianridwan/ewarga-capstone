@@ -28,6 +28,13 @@ class AsetService
             ->get();
     }
 
+    public function getAllByInstansi(int $instansiId)
+    {
+        return Aset::with(['instansi', 'warga', 'jenis', 'fotos', 'asetPenghunis'])
+            ->where('instansi_id', $instansiId)
+            ->get();
+    }
+
     public function getById(int $id): Aset
     {
         $aset = Aset::with(['instansi', 'warga', 'jenis', 'fotos', 'asetPenghunis'])->find($id);
