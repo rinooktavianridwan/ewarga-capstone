@@ -18,7 +18,7 @@ class UpdateAsetRequest extends FormRequest
             'lokasi' => 'sometimes|required',
             'fotos' => 'sometimes|array',
             'fotos.*' => 'file|image|max:2048',
-            'hapus_foto' => 'sometimes|array',
+            'hapus_foto' => 'sometimes|array|max:5',
             'hapus_foto.*' => 'integer|exists:aset_foto,id,deleted_at,NULL',
         ];
     }

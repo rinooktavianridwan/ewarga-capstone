@@ -16,7 +16,7 @@ class CreateAsetRequest extends FormRequest
             'aset_m_jenis_id' => 'required|exists:aset_m_jenis,id,deleted_at,NULL',
             'alamat' => 'required|string',
             'lokasi' => 'nullable',
-            'fotos' => 'sometimes|array',
+            'fotos' => 'sometimes|array|max:5',
             'fotos.*' => 'file|image|max:2048',
         ];
     }

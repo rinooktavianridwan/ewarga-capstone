@@ -70,6 +70,13 @@ class AsetService
 
             unset($data['fotos'], $data['hapus_foto']);
 
+            $fotoTersisa = $aset->fotos->count() - count($hapusFotoIds);
+
+            // Pastikan jumlah total foto tidak melebihi 5
+            if (($fotoTersisa + count($fotoBaru)) > 5) {
+                throw new \Exception('Jumlah total foto tidak boleh lebih dari 5.');
+            }
+
             $aset->update($data);
 
             if (!empty($hapusFotoIds)) {

@@ -35,7 +35,7 @@ class AsetFotoService
     {
         foreach ($fotoFiles as $file) {
             if ($file instanceof UploadedFile) {
-                $filename = $wargaId . '_' . time() . '_' . $file->getClientOriginalName();
+                $filename = $wargaId . '_' . uniqid() . '_' . $file->getClientOriginalName();
                 $file->storeAs("aset_foto/{$instansiId}", $filename, 'public');
 
                 $aset->fotos()->create([
