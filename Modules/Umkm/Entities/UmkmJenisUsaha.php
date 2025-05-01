@@ -15,7 +15,7 @@ class UmkmJenisUsaha extends Model
 
     protected $fillable = ['nama'];
 
-    public function umkms(): HasMany
+    public function Umkm(): HasMany
     {
         return $this->hasMany(Umkm::class, 'umkm_M_jenis_id');
     }

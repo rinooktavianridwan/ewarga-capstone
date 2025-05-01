@@ -6,10 +6,13 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Http\JsonResponse;
 use Modules\Umkm\Services\ProdukService;
+use Modules\Umkm\Entities\UmkmProduk;
+use Modules\Umkm\Http\Requests\StorePendataanProdukRequest;
+use Modules\Umkm\Http\Requests\UpdatePendataanProdukRequest;
 
 class PendataanProdukController extends Controller
 {
-    protected $service;
+    protected ProdukService $service;
 
     public function __construct(ProdukService $service)
     {
@@ -23,80 +26,38 @@ class PendataanProdukController extends Controller
         ]);
     }
 
-    public function show($id): JsonResponse
+    public function show(UmkmProduk $produk): JsonResponse
     {
         return response()->json([
-            'data' => $this->service->getById($id)
+            'data' => $this->service->getById($produk->id)
         ]);
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(StorePendataanProdukRequest $request): JsonResponse
     {
+        $validated = $request->validated();
+        $produk = $this->service->store($validated, $request->file('foto', []));
 
-        if ($request->hasFile('foto') && count($request->file('foto')) > 5) {
-            return response()->json([
-                'message' => 'Foto yang dikirim tidak boleh lebih dari 5.'
-            ], 422);
-        }
-
-        $validated = $request->validate([
-            'umkm_id' => 'required|exists:umkm,id',
-            'instansi_id' => 'required|exists:instansi,id',
-            'nama' => 'required|string|max:255',
-            'keterangan' => 'nullable|string',
-            'harga' => 'required|integer',
-            'foto' => 'nullable|array|max:5',
-            'foto.*' => 'image|mimes:jpg,jpeg,png|max:2048',
-        ]);
-
-        try {
-            $produk = $this->service->store($validated, $request->file('foto', []));
-            return response()->json([
-                'message' => 'Produk berhasil ditambahkan.',
-                'data' => $produk,
-            ], 201);
-        } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 422);
-        }
+        return response()->json([
+            'message' => 'Produk berhasil ditambahkan.',
+            'data' => $produk,
+        ], 201);
     }
 
-    public function update(Request $request, $id): JsonResponse
+    public function update(UpdatePendataanProdukRequest $request, UmkmProduk $produk): JsonResponse
     {
-        if ($request->hasFile('foto') && count($request->file('foto')) > 5) {
-            return response()->json([
-                'message' => 'Foto yang dikirim tidak boleh lebih dari 5.'
-            ], 422);
-        }
+        $validated = $request->validated();
+        $updatedProduk = $this->service->update($produk->id, $validated, $request->file('foto', []));
 
-        $validated = $request->validate([
-            'nama' => 'sometimes|required|string|max:255',
-            'keterangan' => 'nullable|string',
-            'harga' => 'sometimes|required|integer',
-            'foto' => 'nullable|array|max:5',
-            'foto.*' => 'image|mimes:jpg,jpeg,png|max:2048',
+        return response()->json([
+            'message' => 'Produk berhasil diperbarui.',
+            'data' => $updatedProduk,
         ]);
-
-
-        try {
-            $produk = $this->service->update($id, $validated, $request->file('foto', []));
-            return response()->json([
-                'message' => 'Produk berhasil diperbarui.',
-                'data' => $produk,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 422);
-        }
     }
 
-    public function destroy($id): JsonResponse
+    public function destroy(UmkmProduk $produk): JsonResponse
     {
-        try {
-            $this->service->delete($id);
-            return response()->json([
-                'message' => 'Produk berhasil dihapus.'
-            ]);
-        } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 422);
-        }
+        $this->service->delete($produk->id);
+        return response()->json(['message' => 'Produk berhasil dihapus.']);
     }
 }

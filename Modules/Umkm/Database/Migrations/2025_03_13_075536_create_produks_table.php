@@ -8,7 +8,6 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // Tabel UMKM Produk
         Schema::create('umkm_produk', function (Blueprint $table) {
             $table->id();
 
@@ -23,12 +22,11 @@ return new class extends Migration
             $table->softDeletes();
         });
 
-        // Tabel Foto Produk
         Schema::create('umkm_produk_foto', function (Blueprint $table) {
             $table->id();
 
             $table->foreignId('umkm_produk_id')->constrained('umkm_produk')->cascadeOnDelete();
-            $table->string('nama'); // nama file foto
+            $table->string('nama'); 
 
             $table->timestamps();
             $table->softDeletes();

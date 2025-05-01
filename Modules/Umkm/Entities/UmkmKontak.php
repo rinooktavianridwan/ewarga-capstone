@@ -15,7 +15,7 @@ class UmkmKontak extends Model
 
     protected $fillable = ['umkm_id', 'kontak'];
 
-    public function umkm(): BelongsTo
+    public function Umkm(): BelongsTo
     {
         return $this->belongsTo(Umkm::class, 'umkm_id');
     }

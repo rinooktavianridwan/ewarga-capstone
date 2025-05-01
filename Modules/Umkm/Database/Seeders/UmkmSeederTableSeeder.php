@@ -13,8 +13,7 @@ class UmkmSeederTableSeeder extends Seeder
      * @return void
      */
     public function run()
-    {
-        // Data dummy UMKM
+    {        
         $umkmData = [
             [
                 'nama' => 'Toko Sukses',
@@ -48,7 +47,6 @@ class UmkmSeederTableSeeder extends Seeder
             ],
         ];
 
-        // Insert data ke tabel `umkm`
         DB::table('umkm')->insert($umkmData);
     }
 }
