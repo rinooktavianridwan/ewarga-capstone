@@ -2,9 +2,9 @@
 
 namespace Modules\Umkm\Services;
 
+use App\Models\Warga;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Modules\Umkm\Entities\{Umkm, UmkmAlamat, UmkmKontak, UmkmFoto};
 
 class UmkmService
@@ -13,16 +13,15 @@ class UmkmService
     {
         $umkm = Umkm::with([
             'instansi',
-            'kontak',
-            'alamat',
-            'fotos',
-            'wargas',
-            'bentukUsaha',
-            'jenisUsaha',
+            'umkmKontak',
+            'umkmAlamat',
+            'umkmFoto',
+            'warga',
+            'umkmBentukUsaha',
+            'umkmJenisUsaha',
         ])->findOrFail($id);
 
-
-        $formattedAlamat = collect($umkm->alamat)->map(function ($alamat) {
+        $formattedAlamat = collect($umkm->umkmAlamat)->map(function ($alamat) {
             $point = DB::selectOne("SELECT ST_X(alamat) AS longitude, ST_Y(alamat) AS latitude FROM umkm_alamat WHERE id = ?", [$alamat->id]);
             return [
                 'id' => $alamat->id,
@@ -35,20 +34,18 @@ class UmkmService
             ];
         });
 
-        $response = [
+        return [
             'id' => $umkm->id,
             'nama' => $umkm->nama,
             'keterangan' => $umkm->keterangan,
             'instansi' => $umkm->instansi,
-            'kontak' => $umkm->kontak,
-            'fotos' => $umkm->fotos,
-            'wargas' => $umkm->wargas,
-            'bentuk_usaha' => $umkm->bentukUsaha,
-            'jenis_usaha' => $umkm->jenisUsaha,
+            'kontak' => $umkm->umkmKontak,
+            'fotos' => $umkm->umkmFoto,
+            'wargas' => $umkm->warga,
+            'bentuk_usaha' => $umkm->umkmBentukUsaha,
+            'jenis_usaha' => $umkm->umkmJenisUsaha,
             'alamat' => $formattedAlamat,
         ];
-
-        return $response;
     }
 
     public function getFilteredUmkm(Request $request)
@@ -58,8 +55,17 @@ class UmkmService
         }
 
         $instansiId = $request->instansi_id;
+        $user = auth()->user();
 
-        $query = Umkm::with(['bentukUsaha', 'jenisUsaha', 'fotos'])
+        $hasAccess = Warga::where('user_id', $user->id)
+            ->where('instansi_id', $instansiId)
+            ->exists();
+
+        if (!$hasAccess) {
+            abort(403, 'Anda tidak memiliki akses ke instansi ini.');
+        }
+
+        $query = Umkm::with(['umkmBentukUsaha', 'umkmJenisUsaha', 'umkmFoto'])
             ->where('instansi_id', $instansiId);
 
         if ($request->filled('jenis_usaha_id')) {
@@ -78,7 +84,6 @@ class UmkmService
     }
 
 
-
     public function createUmkm(array $data, array $fotoFiles)
     {
         return DB::transaction(function () use ($data, $fotoFiles) {
@@ -91,7 +96,7 @@ class UmkmService
             ]);
 
             if (!empty($data['warga_ids']) && is_array($data['warga_ids'])) {
-                $umkm->wargas()->attach($data['warga_ids']);
+                $umkm->warga()->attach($data['warga_ids']);
             }
 
             if (!empty($data['kontak']) && is_array($data['kontak'])) {
@@ -116,7 +121,7 @@ class UmkmService
 
             $this->handleFotoUpload($umkm, $fotoFiles);
 
-            return $umkm->load(['bentukUsaha', 'jenisUsaha', 'wargas', 'fotos']);
+            return $umkm->load(['umkmBentukUsaha', 'umkmJenisUsaha', 'warga', 'umkmFoto']);
         });
     }
 
@@ -124,101 +129,65 @@ class UmkmService
     {
         return DB::transaction(function () use ($id, $data, $fotoFiles) {
             $umkm = Umkm::findOrFail($id);
+            $user = auth()->user();
+
+            $instansiIdToCheck = $data['instansi_id'] ?? $umkm->instansi_id;
+
+            $hasAccess = Warga::where('user_id', $user->id)
+                ->where('instansi_id', $instansiIdToCheck)
+                ->exists();
+
+            if (!$hasAccess) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Pengguna tidak terikat dengan instansi tersebut.'
+                ], 403);
+            }
 
             $umkm->update([
                 'nama' => $data['nama'],
                 'keterangan' => $data['keterangan'] ?? null,
-                'instansi_id' => $data['instansi_id'] ?? $umkm->instansi_id,
+                'instansi_id' => $instansiIdToCheck,
                 'umkm_M_bentuk_id' => $data['bentuk_usaha_id'] ?? $umkm->umkm_M_bentuk_id,
                 'umkm_M_jenis_id' => $data['jenis_usaha_id'] ?? $umkm->umkm_M_jenis_id,
             ]);
 
             if (!empty($data['warga_ids']) && is_array($data['warga_ids'])) {
-                $umkm->wargas()->sync($data['warga_ids']);
+                $umkm->warga()->sync($data['warga_ids']);
             }
 
             if ($fotoFiles && is_array($fotoFiles)) {
-                $fotoBaruHashes = [];
-                $fileMap = [];
-
-                foreach ($fotoFiles as $file) {
-                    $hash = md5_file($file->getRealPath());
-                    $fotoBaruHashes[] = $hash;
-                    $fileMap[$hash] = $file;
-                }
-
-                $fotoAktif = $umkm->fotos()->get();
-                $fotoSemua = $umkm->fotos()->withTrashed()->get();
-
-                $hashFotoLama = [];
-                foreach ($fotoSemua as $foto) {
-                    $path = storage_path("app/public/{$foto->nama}");
-                    if (file_exists($path)) {
-                        $hashFotoLama[md5_file($path)] = $foto;
-                    }
-                }
-
-                $fotoBaruUntukUpload = [];
-
-                foreach ($fotoBaruHashes as $hash) {
-                    if (isset($hashFotoLama[$hash])) {
-                        $foto = $hashFotoLama[$hash];
-                        if ($foto->trashed()) {
-                            $foto->restore();
-                        }
-                    } else {
-                        $fotoBaruUntukUpload[] = $fileMap[$hash];
-                    }
-                }
-
-                foreach ($fotoAktif as $foto) {
-                    $path = storage_path("app/public/{$foto->nama}");
-                    if (file_exists($path)) {
-                        $hash = md5_file($path);
-                        if (!in_array($hash, $fotoBaruHashes)) {
-                            $foto->delete();
-                        }
-                    }
-                }
-
-                if (count($fotoBaruUntukUpload) > 0) {
-                    if ((count($fotoBaruUntukUpload)) > 5) {
-                        throw new \Exception("Maksimal 5 foto diperbolehkan untuk satu UMKM.");
-                    }
-
-                    $this->handleFotoUpload($umkm, $fotoBaruUntukUpload);
-                }
+                $this->syncFotos($umkm, $fotoFiles);
             }
 
-            return $umkm->fresh(['bentukUsaha', 'jenisUsaha', 'wargas', 'fotos']);
+            return $umkm->fresh(['umkmBentukUsaha', 'umkmJenisUsaha', 'warga', 'umkmFoto']);
         });
     }
+
 
     public function deleteUmkm($id)
     {
         $umkm = Umkm::with([
-            'produks.fotos',
-            'kontak',
-            'alamat',
-            'fotos',
-            'wargas',
+            'umkmProduk.umkmProdukFoto',
+            'umkmKontak',
+            'umkmAlamat',
+            'umkmFoto',
+            'warga',
         ])->findOrFail($id);
 
         DB::transaction(function () use ($umkm) {
-            foreach ($umkm->produks as $produk) {
-                $produk->fotos()->delete(); // delete semua foto dari produk tersebut
+            foreach ($umkm->umkmProduk as $produk) {
+                $produk->umkmProdukFoto()->delete();
             }
 
-            $umkm->produks()->delete();
-
-            $umkm->kontak()->delete();
-            $umkm->alamat()->delete();
-            $umkm->fotos()->delete();
-            $umkm->wargas()->detach();
+            $umkm->umkmProduk()->delete();
+            $umkm->umkmKontak()->delete();
+            $umkm->umkmAlamat()->delete();
+            $umkm->umkmFoto()->delete();
+            $umkm->warga()->detach();
             $umkm->delete();
         });
     }
-
 
     protected function handleFotoUpload(Umkm $umkm, array $fotoFiles): void
     {
@@ -231,6 +200,105 @@ class UmkmService
                 'umkm_id' => $umkm->id,
                 'nama' => $path,
             ]);
+        }
+    }
+
+    protected function syncFotos(Umkm $umkm, array $fotoFiles): void
+    {
+        $fotoBaruHashes = [];
+        $fileMap = [];
+
+        foreach ($fotoFiles as $file) {
+            $hash = md5_file($file->getRealPath());
+            $fotoBaruHashes[] = $hash;
+            $fileMap[$hash] = $file;
+        }
+
+        $fotoAktif = $umkm->umkmFoto()->get();
+        $fotoSemua = $umkm->umkmFoto()->withTrashed()->get();
+
+        $hashFotoLama = [];
+        foreach ($fotoSemua as $foto) {
+            $path = storage_path("app/public/{$foto->nama}");
+            if (file_exists($path)) {
+                $hashFotoLama[md5_file($path)] = $foto;
+            }
+        }
+
+        $fotoBaruUntukUpload = [];
+
+        foreach ($fotoBaruHashes as $hash) {
+            if (isset($hashFotoLama[$hash])) {
+                $foto = $hashFotoLama[$hash];
+                if ($foto->trashed()) {
+                    $foto->restore();
+                }
+            } else {
+                $fotoBaruUntukUpload[] = $fileMap[$hash];
+            }
+        }
+
+        foreach ($fotoAktif as $foto) {
+            $path = storage_path("app/public/{$foto->nama}");
+            if (file_exists($path)) {
+                $hash = md5_file($path);
+                if (!in_array($hash, $fotoBaruHashes)) {
+                    $foto->delete();
+                }
+            }
+        }
+
+        if (count($fotoBaruUntukUpload) > 0) {
+            if (count($fotoBaruUntukUpload) > 5) {
+                throw new \Exception("Maksimal 5 foto diperbolehkan untuk satu UMKM.");
+            }
+
+            $this->handleFotoUpload($umkm, $fotoBaruUntukUpload);
+        }
+    }
+
+    public function createUmkmWithValidation(array $data, $fotoFiles)
+    {
+        if (!empty($fotoFiles) && count($fotoFiles) > 5) {
+            abort(422, 'Foto yang dikirim tidak boleh lebih dari 5.');
+        }
+
+        $this->validateWargaInstansi($data);
+
+        return $this->createUmkm($data, $fotoFiles);
+    }
+
+    public function updateUmkmWithValidation($id, array $data, $fotoFiles = null)
+    {
+        if (!empty($fotoFiles) && count($fotoFiles) > 5) {
+            abort(422, 'Foto yang dikirim tidak boleh lebih dari 5.');
+        }
+
+        if (isset($data['instansi_id']) && isset($data['warga_ids'])) {
+            $this->validateWargaInstansi($data);
+        }
+
+        return $this->updateUmkm($id, $data, $fotoFiles);
+    }
+
+    protected function validateWargaInstansi(array $data): void
+    {
+        if (!isset($data['instansi_id']) || !isset($data['warga_ids'])) {
+            return;
+        }
+
+        $instansiId = $data['instansi_id'];
+        $wargaIds = $data['warga_ids'];
+
+        $invalidWarga = \App\Models\Warga::whereIn('id', $wargaIds)
+            ->where(function ($query) use ($instansiId) {
+                $query->whereNull('instansi_id')
+                    ->orWhere('instansi_id', '!=', $instansiId);
+            })
+            ->exists();
+
+        if ($invalidWarga) {
+            abort(400, 'Semua warga harus memiliki instansi_id yang sama dengan instansi_id yang dipilih.');
         }
     }
 }

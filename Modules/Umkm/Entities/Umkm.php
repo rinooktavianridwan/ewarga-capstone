@@ -29,39 +29,39 @@ class Umkm extends Model
         return $this->belongsTo(Instansi::class, 'instansi_id');
     }
 
-    public function fotos(): HasMany
+    public function UmkmFoto(): HasMany
     {
         return $this->hasMany(UmkmFoto::class);
     }
 
-    public function kontak(): HasMany
+    public function UmkmKontak(): HasMany
     {
         return $this->hasMany(UmkmKontak::class);
     }
 
-    public function alamat(): HasMany
+    public function UmkmAlamat(): HasMany
     {
         return $this->hasMany(UmkmAlamat::class);
     }
 
-    public function wargas()
+    public function Warga()
     {
         return $this->belongsToMany(Warga::class, 'umkm_warga')
             ->withPivot(['created_at', 'updated_at', 'deleted_at'])
             ->withTimestamps();
     }
 
-    public function bentukUsaha(): BelongsTo
+    public function UmkmBentukUsaha(): BelongsTo
     {
         return $this->belongsTo(UmkmBentukUsaha::class, 'umkm_M_bentuk_id');
     }
 
-    public function jenisUsaha(): BelongsTo
+    public function UmkmJenisUsaha(): BelongsTo
     {
         return $this->belongsTo(UmkmJenisUsaha::class, 'umkm_M_jenis_id');
     }
 
-    public function produks(): HasMany
+    public function UmkmProduk(): HasMany
     {
         return $this->hasMany(UmkmProduk::class, 'umkm_id');
     }

@@ -8,15 +8,13 @@ return new class extends Migration
 {
     public function up()
     {
-        // Master bentuk usaha (ubah nama tabel)
         Schema::create('umkm_M_bentuk', function (Blueprint $table) {
             $table->id();
             $table->string('nama', 100);
             $table->timestamps();
             $table->softDeletes();
         });
-
-        // Master jenis usaha (ubah nama tabel)
+        
         Schema::create('umkm_M_jenis', function (Blueprint $table) {
             $table->id();
             $table->string('nama', 100);
@@ -24,7 +22,6 @@ return new class extends Migration
             $table->softDeletes();
         });
 
-        // Tabel utama UMKM (tambahkan foreign key ke master bentuk & jenis)
         Schema::create('umkm', function (Blueprint $table) {
             $table->id();
             $table->foreignId('instansi_id')->nullable()->constrained('instansi')->nullOnDelete();
@@ -36,7 +33,6 @@ return new class extends Migration
             $table->softDeletes();
         });
 
-        // Tabel lainnya tidak berubah
         Schema::create('umkm_kontak', function (Blueprint $table) {
             $table->id();
             $table->foreignId('umkm_id')->constrained('umkm')->cascadeOnDelete();

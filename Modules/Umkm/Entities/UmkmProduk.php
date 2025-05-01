@@ -27,18 +27,18 @@ class UmkmProduk extends Model
         'harga',
     ];
 
-    public function umkm(): BelongsTo
+    public function Umkm(): BelongsTo
     {
         return $this->belongsTo(Umkm::class, 'umkm_id');
     }
 
-    public function fotos(): HasMany
+    public function UmkmProdukFoto(): HasMany
     {
         return $this->hasMany(UmkmProdukFoto::class, 'umkm_produk_id');
     }
 
-    public function instansi(): BelongsTo
-{
-    return $this->belongsTo(Instansi::class, 'instansi_id');
-}
+    public function Instansi(): BelongsTo
+    {
+        return $this->belongsTo(Instansi::class, 'instansi_id');
+    }
 }

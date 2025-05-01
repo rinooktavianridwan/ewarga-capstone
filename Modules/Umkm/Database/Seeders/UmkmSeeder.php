@@ -27,18 +27,14 @@ class UmkmSeeder extends Seeder
             $wargaId = $warga->id;
         }
 
-        // Ambil data bentuk usaha pertama
         $bentukId = DB::table('umkm_M_bentuk')->first()->id;
-        // Ambil data jenis usaha pertama
         $jenisId = DB::table('umkm_M_jenis')->first()->id;
 
-        // Validasi agar tidak error kalau kosong
         if (!$bentukId || !$jenisId) {
             $this->command->warn('⚠️ Tidak ada data bentuk/jenis usaha di tabel master. Seeder dibatalkan.');
             return;
         }
 
-        // Tambah 1 UMKM
         $umkmId = DB::table('umkm')->insertGetId([
             'instansi_id' => $instansiId,
             'umkm_M_bentuk_id' => $bentukId,
@@ -48,8 +44,7 @@ class UmkmSeeder extends Seeder
             'created_at' => $now,
             'updated_at' => $now,
         ]);
-
-        // Produk
+        
         DB::table('umkm_produk')->insert([
             [
                 'instansi_id' => $instansiId,
@@ -62,12 +57,10 @@ class UmkmSeeder extends Seeder
             ]
         ]);
 
-        // Kontak
         DB::table('umkm_kontak')->insert([
             ['umkm_id' => $umkmId, 'kontak' => '081234567890', 'created_at' => $now, 'updated_at' => $now],
         ]);
-
-        // Alamat
+ 
         $latitude = -7.966;
         $longitude = 112.615;
         DB::table('umkm_alamat')->insert([
@@ -79,12 +72,10 @@ class UmkmSeeder extends Seeder
             ]
         ]);
 
-        // Foto
         DB::table('umkm_foto')->insert([
             ['umkm_id' => $umkmId, 'nama' => 'foto1.jpg', 'created_at' => $now, 'updated_at' => $now],
         ]);
 
-        // Relasi warga ke UMKM
         DB::table('umkm_warga')->insert([
             ['umkm_id' => $umkmId, 'warga_id' => $wargaId, 'created_at' => $now, 'updated_at' => $now],
         ]);

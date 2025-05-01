@@ -23,9 +23,9 @@ class DashboardUmkmService
             return [
                 'total_umkm' => $totalUmkm,
                 'total_produk' => $totalProduk,
-                'umkm_online' => $online?->umkms()->count() ?? 0,
-                'umkm_offline' => $offline?->umkms()->count() ?? 0,
-                'umkm_hybrid' => $hybrid?->umkms()->count() ?? 0,
+                'umkm_online' => $online?->umkm()->count() ?? 0,
+                'umkm_offline' => $offline?->umkm()->count() ?? 0,
+                'umkm_hybrid' => $hybrid?->umkm()->count() ?? 0,
             ];
         });
     }
@@ -33,15 +33,15 @@ class DashboardUmkmService
     public function getLatestUmkm(int $limit = 5): array
     {
         return DB::transaction(function () use ($limit) {
-            return Umkm::with(['jenisUsaha', 'produks'])
+            return Umkm::with(['umkmJenisUsaha', 'umkmProduk'])
                 ->latest()
                 ->take($limit)
                 ->get()
                 ->map(function ($umkm) {
                     return [
                         'nama_umkm' => $umkm->nama,
-                        'jenis_usaha' => $umkm->jenisUsaha->nama ?? '-',
-                        'jumlah_produk' => $umkm->produks->count(),
+                        'jenis_usaha' => $umkm->umkmJenisUsaha->nama ?? '-',
+                        'jumlah_produk' => $umkm->umkmProduk->count(),
                     ];
                 })
                 ->toArray();
@@ -52,10 +52,9 @@ class DashboardUmkmService
     {
         return DB::transaction(function () use ($tahun, $bentukUsahaId, $jenisUsahaId) {
             $query = Umkm::select(
-                    DB::raw('MONTH(created_at) as month'),
-                    DB::raw('COUNT(*) as total')
-                )
-                ->whereYear('created_at', $tahun);
+                DB::raw('MONTH(created_at) as month'),
+                DB::raw('COUNT(*) as total')
+            )->whereYear('created_at', $tahun);
 
             if ($bentukUsahaId) {
                 $query->where('umkm_M_bentuk_id', $bentukUsahaId);
