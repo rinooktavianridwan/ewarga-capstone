@@ -26,6 +26,8 @@ class StorePendataanUmkmRequest extends FormRequest
             'alamat' => 'nullable|array',
             'alamat.*.latitude' => 'required_with:alamat|numeric',
             'alamat.*.longitude' => 'required_with:alamat|numeric',
+            'foto' => 'nullable|array', // Foto menjadi opsional
+            'foto.*' => 'nullable|file|mimes:jpg,jpeg,png|max:2048', // Validasi untuk file foto
         ];
     }
 }
