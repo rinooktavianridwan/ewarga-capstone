@@ -18,7 +18,7 @@ class AsetSeeder extends Seeder
                 'aset_m_jenis_id' => 1,
                 'nama' => 'Rumah Pak Johny',
                 'alamat' => 'Jl. Mertojoyo No. 23, RT 15, RW 05, RW 03, Kelurahan Merjosari, Kecamatan Lowokwaru, Kota Malang',
-                'lokasi' => DB::raw("ST_GeomFromText('POINT(-7.944689503734679 112.60361382712051)')"),
+                'lokasi' => DB::raw("ST_GeomFromText('POINT(112.60361382712051 -7.944689503734679)')"),
                 'created_at' => Carbon::now()->subMonth(),
             ],
             [
@@ -28,7 +28,7 @@ class AsetSeeder extends Seeder
                 'aset_m_jenis_id' => 1,
                 'nama' => 'Rumah Bu Siti',
                 'alamat' => 'Jl. Mertojoyo No. 11, RT 15, RT 05, RW 03, Kelurahan Merjosari, Kecamatan Lowokwaru, Kota Malang',
-                'lokasi' => DB::raw("ST_GeomFromText('POINT(-7.944033233173902 112.6023300015707)')"),
+                'lokasi' => DB::raw("ST_GeomFromText('POINT(112.6023300015707 -7.944033233173902)')"),
                 'created_at' => Carbon::now()->subMonth(),
             ],
             [
@@ -38,7 +38,7 @@ class AsetSeeder extends Seeder
                 'aset_m_jenis_id' => 2,
                 'nama' => 'Taman Merjosari',
                 'alamat' => 'Jl. Mertojoyo Selatan No. 15, RT 05, RW 03, Kelurahan Merjosari, Kecamatan Lowokwaru, Kota Malang',
-                'lokasi' => DB::raw("ST_GeomFromText('POINT(-7.944767029702089 112.6039211320968)')"),
+                'lokasi' => DB::raw("ST_GeomFromText('POINT(112.6039211320968 -7.944767029702089)')"),
                 'created_at' => Carbon::now()->subMonth(),
             ],
             [
@@ -48,7 +48,7 @@ class AsetSeeder extends Seeder
                 'aset_m_jenis_id' => 1,
                 'nama' => 'Kos Pak Supeno',
                 'alamat' => 'Jl. Mertojoyo No. 07, RT 05, RW 03, Kelurahan Merjosari, Kecamatan Lowokwaru, Kota Malang',
-                'lokasi' => DB::raw("ST_GeomFromText('POINT(-7.943403190792656 112.60346421014522)')"),
+                'lokasi' => DB::raw("ST_GeomFromText('POINT(112.60346421014522 -7.943403190792656)')"),
                 'created_at' => Carbon::now()->subMonth(),
             ],
             [
@@ -58,7 +58,7 @@ class AsetSeeder extends Seeder
                 'aset_m_jenis_id' => 2,
                 'nama' => 'Musholla Al-Muhajirin',
                 'alamat' => 'Jl. Mertojoyo Selatan No. 10, RT 05, RW 03, Kelurahan Merjosari, Kecamatan Lowokwaru, Kota Malang',
-                'lokasi' => DB::raw("ST_GeomFromText('POINT(-7.944015476049777 112.60395652495028)')"),
+                'lokasi' => DB::raw("ST_GeomFromText('POINT(112.60395652495028 -7.944015476049777)')"),
                 'created_at' => Carbon::now()->subMonth(),
             ],
         ];

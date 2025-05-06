@@ -8,6 +8,7 @@ use Modules\Wilayah\Http\Controllers\AsetMJenisController;
 use Modules\Wilayah\Http\Controllers\AsetMStatusController;
 use Modules\Wilayah\Http\Controllers\AsetPenghuniController;
 use Modules\Wilayah\Http\Controllers\WilayahController;
+use Modules\Wilayah\Http\Controllers\AsetMasterController;
 
 
 /*
@@ -56,19 +57,11 @@ Route::middleware('auth:sanctum')->prefix('/wilayah')->group(function () {
         Route::put('/{aset}', [AsetPenghuniController::class, 'update']);
     });
 
-    Route::prefix('aset-m-jenis')->group(function () {
-        Route::get('/', [AsetMJenisController::class, 'index']);
-        Route::get('/{id}', [AsetMJenisController::class, 'show']);
-        Route::post('/', [AsetMJenisController::class, 'store']);
-        Route::put('/{asetMJenis}', [AsetMJenisController::class, 'update']);
-        Route::delete('/{asetMJenis}', [AsetMJenisController::class, 'destroy']);
-    });
-
-    Route::prefix('aset-m-status')->group(function () {
-        Route::get('/', [AsetMStatusController::class, 'index']);
-        Route::get('/{id}', [AsetMStatusController::class, 'show']);
-        Route::post('/', [AsetMStatusController::class, 'store']);
-        Route::put('/{asetMStatus}', [AsetMStatusController::class, 'update']);
-        Route::delete('/{asetMStatus}', [AsetMStatusController::class, 'destroy']);
+    Route::prefix('aset-master')->group(function () {
+        Route::get('/{type}', [AsetMasterController::class, 'index']);
+        Route::get('/{type}/{id}', [AsetMasterController::class, 'show']);
+        Route::post('/{type}', [AsetMasterController::class, 'store']);
+        Route::put('/{type}/{id}', [AsetMasterController::class, 'update']);
+        Route::delete('/{type}/{id}', [AsetMasterController::class, 'destroy']);
     });
 });

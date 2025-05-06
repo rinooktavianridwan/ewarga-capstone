@@ -6,6 +6,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Modules\Wilayah\Database\Seeders\WilayahDatabaseSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -112,6 +113,6 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-
+        $this->call(WilayahDatabaseSeeder::class);
     }
 }
