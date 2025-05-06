@@ -290,7 +290,7 @@ class UmkmService
         $instansiId = $data['instansi_id'];
         $wargaIds = $data['warga_ids'];
 
-        $invalidWarga = \App\Models\Warga::whereIn('id', $wargaIds)
+        $invalidWarga = Warga::whereIn('id', $wargaIds)
             ->where(function ($query) use ($instansiId) {
                 $query->whereNull('instansi_id')
                     ->orWhere('instansi_id', '!=', $instansiId);

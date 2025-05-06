@@ -4,10 +4,16 @@ namespace Modules\Umkm\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Modules\Umkm\Http\Requests\MasterDataRequest;
 use Modules\Umkm\Services\ReferensiUmkmService;
+use App\Services\Traits\ResponseFormatter;
+
 
 class ReferensiUmkmController extends Controller
 {
+    use ResponseFormatter;
+
     protected $service;
 
     public function __construct(ReferensiUmkmService $service)
@@ -15,17 +21,59 @@ class ReferensiUmkmController extends Controller
         $this->service = $service;
     }
 
-    public function getBentukUsaha(): JsonResponse
+    public function index(string $type): JsonResponse
     {
-        return response()->json([
-            'data' => $this->service->getAllBentukUsaha()
-        ]);
+        try {
+            $data = $this->service->getAll($type);
+            return response()->json($this->formatResponse(true, 200, 'Berhasil mengambil data', $data), 200);
+        } catch (\Exception $e) {
+            return response()->json($this->formatResponse(false, 500, $e->getMessage()), 500);
+        }
     }
 
-    public function getJenisUsaha(): JsonResponse
+    public function store(MasterDataRequest $request, string $type): JsonResponse
     {
-        return response()->json([
-            'data' => $this->service->getAllJenisUsaha()
-        ]);
+        try {
+            $data = $this->service->create($type, $request->validated());
+            return response()->json($this->formatResponse(true, 201, "$type berhasil dibuat", $data), 201);
+        } catch (\Exception $e) {
+            return response()->json($this->formatResponse(false, 500, $e->getMessage()), 500);
+        }
+    }
+
+    public function show(string $type, int $id): JsonResponse
+    {
+        try {
+            $data = $this->service->getById($type, $id);
+            return response()->json($this->formatResponse(true, 200, 'Berhasil mengambil data', $data), 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json($this->formatResponse(false, 404, "$type tidak ditemukan"), 404);
+        } catch (\Exception $e) {
+            return response()->json($this->formatResponse(false, 500, $e->getMessage()), 500);
+        }
+    }
+
+    public function update(MasterDataRequest $request, string $type, int $id): JsonResponse
+    {
+        try {
+            $data = $this->service->update($type, $id, $request->validated());
+            return response()->json($this->formatResponse(true, 200, "$type berhasil diperbarui", $data), 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json($this->formatResponse(false, 404, "$type tidak ditemukan"), 404);
+        } catch (\Exception $e) {
+            return response()->json($this->formatResponse(false, 500, $e->getMessage()), 500);
+        }
+    }
+
+    public function destroy(string $type, int $id): JsonResponse
+    {
+        try {
+            $this->service->delete($type, $id);
+            return response()->json($this->formatResponse(true, 200, 'Data berhasil dihapus'), 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json($this->formatResponse(false, 404, 'Data tidak ditemukan'), 404);
+        } catch (\Exception $e) {
+            return response()->json($this->formatResponse(false, 500, $e->getMessage()), 500);
+        }
     }
 }
