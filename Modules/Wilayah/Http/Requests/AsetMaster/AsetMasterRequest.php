@@ -1,12 +1,11 @@
 <?php
 
-namespace Modules\Wilayah\Http\Requests\AsetMStatus;
+namespace Modules\Wilayah\Http\Requests\AsetMaster;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateAsetMStatusRequest extends FormRequest
+class AsetMasterRequest extends FormRequest
 {
-
     public function rules()
     {
         return [
@@ -17,5 +16,12 @@ class CreateAsetMStatusRequest extends FormRequest
     public function authorize()
     {
         return true;
+    }
+
+    public function messages(): array
+    {
+        return [
+            'nama.required' => 'Nama wajib diisi',
+        ];
     }
 }

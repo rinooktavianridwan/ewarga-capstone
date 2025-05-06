@@ -10,6 +10,7 @@ use Modules\Umkm\Database\Seeders\ProdukSeederTableSeeder;
 use Modules\Umkm\Database\Seeders\UmkmMasterSeeder;
 use Modules\Umkm\Database\Seeders\UmkmSeeder;
 use Modules\Umkm\Database\Seeders\UmkmSeederTableSeeder;
+use Modules\Wilayah\Database\Seeders\WilayahDatabaseSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -120,6 +121,8 @@ class DatabaseSeeder extends Seeder
             UmkmSeeder::class,
         ]);
 
+
+        $this->call(WilayahDatabaseSeeder::class);
     }
 }
 
