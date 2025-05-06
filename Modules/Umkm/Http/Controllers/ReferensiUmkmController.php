@@ -25,7 +25,7 @@ class ReferensiUmkmController extends Controller
     {
         try {
             $data = $this->service->getAll($type);
-            return response()->json($this->formatResponse(true, 200, 'Berhasil mengambil data', $data), 200);
+            return response()->json($this->formatResponse(true, 200, "Data $type berhasil diambil", $data), 200);
         } catch (\Exception $e) {
             return response()->json($this->formatResponse(false, 500, $e->getMessage()), 500);
         }
@@ -35,7 +35,7 @@ class ReferensiUmkmController extends Controller
     {
         try {
             $data = $this->service->create($type, $request->validated());
-            return response()->json($this->formatResponse(true, 201, "$type berhasil dibuat", $data), 201);
+            return response()->json($this->formatResponse(true, 201, "Data $type berhasil dibuat", $data), 201);
         } catch (\Exception $e) {
             return response()->json($this->formatResponse(false, 500, $e->getMessage()), 500);
         }
@@ -45,9 +45,9 @@ class ReferensiUmkmController extends Controller
     {
         try {
             $data = $this->service->getById($type, $id);
-            return response()->json($this->formatResponse(true, 200, 'Berhasil mengambil data', $data), 200);
+            return response()->json($this->formatResponse(true, 200, "Data $type berhasil diambil", $data), 200);
         } catch (ModelNotFoundException $e) {
-            return response()->json($this->formatResponse(false, 404, "$type tidak ditemukan"), 404);
+            return response()->json($this->formatResponse(false, 404, "Data $type tidak ditemukan"), 404);
         } catch (\Exception $e) {
             return response()->json($this->formatResponse(false, 500, $e->getMessage()), 500);
         }
@@ -57,9 +57,9 @@ class ReferensiUmkmController extends Controller
     {
         try {
             $data = $this->service->update($type, $id, $request->validated());
-            return response()->json($this->formatResponse(true, 200, "$type berhasil diperbarui", $data), 200);
+            return response()->json($this->formatResponse(true, 200, "Data $type berhasil diperbarui", $data), 200);
         } catch (ModelNotFoundException $e) {
-            return response()->json($this->formatResponse(false, 404, "$type tidak ditemukan"), 404);
+            return response()->json($this->formatResponse(false, 404, "Data $type tidak ditemukan"), 404);
         } catch (\Exception $e) {
             return response()->json($this->formatResponse(false, 500, $e->getMessage()), 500);
         }
@@ -68,10 +68,10 @@ class ReferensiUmkmController extends Controller
     public function destroy(string $type, int $id): JsonResponse
     {
         try {
-            $this->service->delete($type, $id);
-            return response()->json($this->formatResponse(true, 200, 'Data berhasil dihapus'), 200);
+            $data = $this->service->delete($type, $id);
+            return response()->json($this->formatResponse(true, 200, "Data $type berhasil dihapus", $data), 200);
         } catch (ModelNotFoundException $e) {
-            return response()->json($this->formatResponse(false, 404, 'Data tidak ditemukan'), 404);
+            return response()->json($this->formatResponse(false, 404, "Data $type tidak ditemukan"), 404);
         } catch (\Exception $e) {
             return response()->json($this->formatResponse(false, 500, $e->getMessage()), 500);
         }
