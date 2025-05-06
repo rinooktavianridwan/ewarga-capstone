@@ -30,9 +30,15 @@ class AsetService
 
     public function getAllByInstansi(int $instansiId)
     {
-        return Aset::with(['instansi', 'warga', 'jenis', 'fotos', 'asetPenghunis'])
+        $aset = Aset::with(['instansi', 'warga', 'jenis', 'fotos', 'asetPenghunis'])
             ->where('instansi_id', $instansiId)
             ->get();
+
+        if ($aset->isEmpty()) {
+            throw new ModelNotFoundException("Aset dengan instansi_id {$instansiId} tidak ditemukan.");
+        }
+
+        return $aset;
     }
 
     public function getById(int $id): Aset
@@ -72,7 +78,6 @@ class AsetService
 
             $fotoTersisa = $aset->fotos->count() - count($hapusFotoIds);
 
-            // Pastikan jumlah total foto tidak melebihi 5
             if (($fotoTersisa + count($fotoBaru)) > 5) {
                 throw new \Exception('Jumlah total foto tidak boleh lebih dari 5.');
             }
@@ -91,12 +96,15 @@ class AsetService
         });
     }
 
-    public function delete(Aset $aset): bool
+    public function delete(Aset $aset): Aset
     {
         return DB::transaction(function () use ($aset) {
             $this->asetFotoService->delete($aset, $aset->fotos->pluck('id')->toArray());
 
-            return $aset->delete();
+            $deletedAset = $aset->replicate();
+            $aset->delete();
+
+            return $deletedAset;
         });
     }
 
