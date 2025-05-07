@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Services\Traits\ResponseFormatter;
+use Illuminate\Auth\AuthenticationException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -51,6 +52,10 @@ class Handler extends ExceptionHandler
 
         if ($exception instanceof NotFoundHttpException) {
             return response()->json($this->formatResponse(false, 404, 'Endpoint tidak ditemukan'), 404);
+        }
+
+        if ($exception instanceof AuthenticationException) {
+            return response()->json($this->formatResponse(false, 401, 'Belum login, tidak dapat diakses'), 401);
         }
 
         return response()->json($this->formatResponse(false, 500, 'Terjadi kesalahan pada server', $exception->getMessage()), 500);

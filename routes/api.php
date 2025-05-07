@@ -30,7 +30,7 @@ Route::post('/users/{userId}/is-owner', [UserController::class, 'isOwner']);
 Route::post('/users/{userId}/is-pengurus', [UserController::class, 'isPengurus']);
 
 
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->name('login');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/logout', [AuthController::class, 'logout']);
