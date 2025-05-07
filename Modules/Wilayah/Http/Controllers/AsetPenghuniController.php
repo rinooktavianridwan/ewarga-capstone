@@ -7,9 +7,12 @@ use Modules\Wilayah\Entities\Aset;
 use Modules\Wilayah\Http\Requests\AsetPenghuni\CreateAsetPenghuniRequest;
 use Modules\Wilayah\Http\Requests\AsetPenghuni\UpdateAsetPenghuniRequest;
 use Modules\Wilayah\Services\AsetPenghuniService;
+use App\Services\Traits\ResponseFormatter;
 
 class AsetPenghuniController extends Controller
 {
+    use ResponseFormatter;
+
     protected $service;
 
     public function __construct(AsetPenghuniService $service)
@@ -19,28 +22,33 @@ class AsetPenghuniController extends Controller
 
     public function index()
     {
-        return response()->json($this->service->getAll());
+        $data = $this->service->getAll();
+        return response()->json($this->formatResponse(true, 200, 'Data penghuni berhasil diambil', $data), 200);
     }
 
     public function byAset(Aset $aset)
     {
-        return response()->json($this->service->getAllByAset($aset));
+        $data = $this->service->getAllByAset($aset);
+        return response()->json($this->formatResponse(true, 200, 'Data penghuni berhasil diambil', $data), 200);
     }
 
     public function show($id)
     {
-        return response()->json($this->service->getById($id));
+        $data = $this->service->getById($id);
+        return response()->json($this->formatResponse(true, 200, 'Data penghuni berhasil ditemukan', $data), 200);
     }
 
     public function store(CreateAsetPenghuniRequest $request, Aset $aset)
     {
         $validated = $request->validated();
-        return response()->json($this->service->store($aset, $validated['penghuni']), 201);
+        $data = $this->service->store($aset, $validated['penghuni']);
+        return response()->json($this->formatResponse(true, 200, "Data penghuni berhasil ditambah", $data), 201);
     }
 
     public function update(UpdateAsetPenghuniRequest $request, Aset $aset)
     {
         $validated = $request->validated();
-        return response()->json($this->service->update($aset, $validated['penghuni']));
+        $data = $this->service->update($aset, $validated['penghuni']);
+        return response()->json($this->formatResponse(true, 200, "Data penghuni berhasil diperbarui", $data), 200);
     }
 }
