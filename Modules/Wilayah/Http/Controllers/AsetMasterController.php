@@ -26,7 +26,7 @@ class AsetMasterController extends Controller
     public function show(string $type, int $id)
     {
         $data = $this->service->getById($type, $id);
-        return response()->json($this->formatResponse(true, 200, "Data $type berhasil diambil", $data), 200);
+        return response()->json($this->formatResponse(true, 200, "Data $type berhasil ditemukan", $data), 200);
     }
 
     public function store(AsetMasterRequest $request, string $type)
