@@ -12,12 +12,24 @@ class AsetFotoService
 {
     public function getAll()
     {
-        return AsetFoto::with('aset')->get();
+        $data = AsetFoto::with('aset')->get();
+
+        if ($data->isEmpty()) {
+            throw new ModelNotFoundException("Data foto tidak ditemukan");
+        }
+
+        return $data;
     }
 
     public function getAllByAset(Aset $aset)
     {
-        return $aset->fotos()->get();
+        $data = $aset->fotos()->get();
+
+        if ($data->isEmpty()) {
+            throw new ModelNotFoundException("Data foto tidak ditemukan");
+        }
+
+        return $data;
     }
 
     public function getById(int $id): AsetFoto
@@ -25,7 +37,7 @@ class AsetFotoService
         $foto = AsetFoto::with('aset')->find($id);
 
         if (!$foto) {
-            throw new ModelNotFoundException("Aset Foto dengan ID {$id} tidak ditemukan.");
+            throw new ModelNotFoundException("Data foto tidak ditemukan");
         }
 
         return $foto;
