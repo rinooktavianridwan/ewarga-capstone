@@ -8,8 +8,13 @@ use Modules\Umkm\Http\Controllers\ReferensiUmkmController;
 
 Route::middleware('auth:sanctum')->prefix('umkm')->group(function () {
 
-    Route::get('/bentuk-usaha', [ReferensiUmkmController::class, 'getBentukUsaha']);
-    Route::get('/jenis-usaha', [ReferensiUmkmController::class, 'getJenisUsaha']);
+    Route::prefix('umkm-master')->group(function () {
+        Route::get('/{type}', [ReferensiUmkmController::class, 'index']);
+        Route::post('/{type}', [ReferensiUmkmController::class, 'store']);
+        Route::get('/{type}/{id}', [ReferensiUmkmController::class, 'show']);
+        Route::put('/{type}/{id}', [ReferensiUmkmController::class, 'update']);
+        Route::delete('/{type}/{id}', [ReferensiUmkmController::class, 'destroy']);
+    });
 
     Route::get('/', [PendataanUmkmController::class, 'index']);
     Route::get('/{umkm}', [PendataanUmkmController::class, 'show']);

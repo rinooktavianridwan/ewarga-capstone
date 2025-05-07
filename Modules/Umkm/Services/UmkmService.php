@@ -84,7 +84,7 @@ class UmkmService
     }
 
 
-    public function createUmkm(array $data, array $fotoFiles)
+    public function createUmkm(array $data,  ?array $fotoFiles = null)
     {
         return DB::transaction(function () use ($data, $fotoFiles) {
             $umkm = Umkm::create([
@@ -119,7 +119,9 @@ class UmkmService
                 }
             }
 
-            $this->handleFotoUpload($umkm, $fotoFiles);
+            if ($fotoFiles) {
+                $this->handleFotoUpload($umkm, $fotoFiles);
+            }
 
             return $umkm->load(['umkmBentukUsaha', 'umkmJenisUsaha', 'warga', 'umkmFoto']);
         });
@@ -290,7 +292,7 @@ class UmkmService
         $instansiId = $data['instansi_id'];
         $wargaIds = $data['warga_ids'];
 
-        $invalidWarga = \App\Models\Warga::whereIn('id', $wargaIds)
+        $invalidWarga = Warga::whereIn('id', $wargaIds)
             ->where(function ($query) use ($instansiId) {
                 $query->whereNull('instansi_id')
                     ->orWhere('instansi_id', '!=', $instansiId);
