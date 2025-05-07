@@ -11,22 +11,28 @@ class AsetPenghuniService
 {
     public function getAll()
     {
-        return AsetPenghuni::with(['aset', 'warga', 'status'])->get();
+        $data = AsetPenghuni::with(['aset', 'warga', 'status'])->get();
+        if ($data->isEmpty()) {
+            throw new ModelNotFoundException("Data penghuni tidak ditemukan");
+        }
+        return $data;
     }
 
     public function getAllByAset(Aset $aset)
     {
-        return $aset->asetPenghunis()->with(['warga', 'status'])->get();
+        $data = $aset->asetPenghunis()->with(['warga', 'status'])->get();
+        if ($data->isEmpty()) {
+            throw new ModelNotFoundException("Data penghuni tidak ditemukan");
+        }
+        return $data;
     }
 
     public function getById(int $id): AsetPenghuni
     {
         $penghuni = AsetPenghuni::with(['aset', 'warga', 'status'])->find($id);
-
         if (!$penghuni) {
-            throw new ModelNotFoundException("Penghuni dengan ID {$id} tidak ditemukan.");
+            throw new ModelNotFoundException("Data penghuni tidak ditemukan");
         }
-
         return $penghuni;
     }
 
@@ -87,7 +93,7 @@ class AsetPenghuniService
                 }
             }
 
-            return $created;
+            return ["penghuni" => $aset->asetPenghunis()->get(['warga_id', 'aset_m_status_id'])->toArray()];
         });
     }
 

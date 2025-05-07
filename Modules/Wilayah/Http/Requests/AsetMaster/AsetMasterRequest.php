@@ -22,6 +22,8 @@ class AsetMasterRequest extends FormRequest
     {
         return [
             'nama.required' => 'Nama wajib diisi',
+            'nama.string' => 'Nama harus berupa teks',
+            'nama.max' => 'Nama tidak boleh lebih dari 100 karakter',
         ];
     }
 }

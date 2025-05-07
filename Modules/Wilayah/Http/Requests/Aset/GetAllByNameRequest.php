@@ -6,7 +6,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class GetAllByNameRequest extends FormRequest
 {
-
     public function rules()
     {
         return [
@@ -17,5 +16,14 @@ class GetAllByNameRequest extends FormRequest
     public function authorize()
     {
         return true;
+    }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'Nama wajib diisi.',
+            'name.string' => 'Nama harus berupa teks.',
+            'name.max' => 'Nama tidak boleh lebih dari 100 karakter.',
+        ];
     }
 }

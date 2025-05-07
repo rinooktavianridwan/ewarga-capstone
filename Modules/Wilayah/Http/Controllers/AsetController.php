@@ -9,9 +9,12 @@ use Modules\Wilayah\Http\Requests\Aset\GetAllByNameRequest;
 use Modules\Wilayah\Http\Requests\Aset\UpdateAsetRequest;
 use Modules\Wilayah\Http\Requests\Aset\UpdateLokasiRequest;
 use Modules\Wilayah\Services\AsetService;
+use App\Services\Traits\ResponseFormatter;
 
 class AsetController extends Controller
 {
+    use ResponseFormatter;
+
     protected AsetService $asetService;
 
     public function __construct(AsetService $asetService)
@@ -21,50 +24,59 @@ class AsetController extends Controller
 
     public function index()
     {
-        return response()->json($this->asetService->getAll());
+        $data = $this->asetService->getAll();
+        return response()->json($this->formatResponse(true, 200, 'Data aset berhasil diambil', $data), 200);
     }
 
     public function show($id)
     {
-        return response()->json($this->asetService->getById($id));
+        $data = $this->asetService->getById($id);
+        return response()->json($this->formatResponse(true, 200, "Data aset berhasil ditemukan", $data), 200);
     }
 
     public function store(CreateAsetRequest $request)
     {
         $validated = $request->validated();
-        return response()->json($this->asetService->create($validated), 201);
+        $data = $this->asetService->create($validated);
+        return response()->json($this->formatResponse(true, 201, 'Data aset berhasil dibuat', $data), 201);
     }
 
     public function update(UpdateAsetRequest $request, Aset $aset)
     {
         $validated = $request->validated();
-        return response()->json($this->asetService->update($aset, $validated));
+        $data = $this->asetService->update($aset, $validated);
+        return response()->json($this->formatResponse(true, 200, "Data aset berhasil diperbarui", $data), 200);
     }
 
     public function destroy(Aset $aset)
     {
-        return response()->json($this->asetService->delete($aset));
+        $deletedAset = $this->asetService->delete($aset);
+        return response()->json($this->formatResponse(true, 200, 'Data aset berhasil dihapus', $deletedAset), 200);
     }
 
     public function showLokasi(Aset $aset)
     {
-        return response()->json($this->asetService->getLokasi($aset));
+        $data = $this->asetService->getLokasi($aset);
+        return response()->json($this->formatResponse(true, 200, 'Lokasi aset berhasil ditemukan', $data), 200);
     }
 
     public function updateLokasi(UpdateLokasiRequest $request, Aset $aset)
     {
         $validated = $request->validated();
-        return response()->json($this->asetService->updateLokasi($aset, $validated['latitude'], $validated['longitude']));
+        $data = $this->asetService->updateLokasi($aset, $validated['latitude'], $validated['longitude']);
+        return response()->json($this->formatResponse(true, 200, 'Lokasi aset berhasil diperbarui', $data), 200);
     }
 
     public function searchByName(GetAllByNameRequest $request)
     {
         $validated = $request->validated();
-        return response()->json($this->asetService->getAllByName($validated['name']));
+        $data = $this->asetService->getAllByName($validated['name']);
+        return response()->json($this->formatResponse(true, 200, 'Data aset berhasil ditemukan', $data), 200);
     }
 
     public function getAllbyInstansi($instansiId)
     {
-        return response()->json($this->asetService->getAllByInstansi($instansiId));
+        $data = $this->asetService->getAllByInstansi($instansiId);
+        return response()->json($this->formatResponse(true, 200, "Data aset berhasil ditemukan", $data), 200);
     }
 }

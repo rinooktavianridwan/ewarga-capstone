@@ -18,21 +18,39 @@ class AsetService
 
     public function getAll()
     {
-        return Aset::with(['instansi', 'warga', 'jenis', 'fotos', 'asetPenghunis'])->get();
+        $aset = Aset::with(['instansi', 'warga', 'jenis', 'fotos', 'asetPenghunis'])->get();
+
+        if ($aset->isEmpty()) {
+            throw new ModelNotFoundException("Data aset tidak ditemukan");
+        }
+
+        return $aset;
     }
 
     public function getAllByName(string $name)
     {
-        return Aset::with(['instansi', 'warga', 'jenis', 'fotos', 'asetPenghunis'])
+        $aset = Aset::with(['instansi', 'warga', 'jenis', 'fotos', 'asetPenghunis'])
             ->where('nama', 'like', '%' . $name . '%')
             ->get();
+
+        if ($aset->isEmpty()) {
+            throw new ModelNotFoundException("Aset dengan nama {$name} tidak ditemukan");
+        }
+
+        return $aset;
     }
 
     public function getAllByInstansi(int $instansiId)
     {
-        return Aset::with(['instansi', 'warga', 'jenis', 'fotos', 'asetPenghunis'])
+        $aset = Aset::with(['instansi', 'warga', 'jenis', 'fotos', 'asetPenghunis'])
             ->where('instansi_id', $instansiId)
             ->get();
+
+        if ($aset->isEmpty()) {
+            throw new ModelNotFoundException("Data aset tidak ditemukan");
+        }
+
+        return $aset;
     }
 
     public function getById(int $id): Aset
@@ -40,7 +58,7 @@ class AsetService
         $aset = Aset::with(['instansi', 'warga', 'jenis', 'fotos', 'asetPenghunis'])->find($id);
 
         if (!$aset) {
-            throw new ModelNotFoundException("Aset dengan ID {$id} tidak ditemukan.");
+            throw new ModelNotFoundException("Data aset tidak ditemukan");
         }
 
         return $aset;
@@ -72,9 +90,8 @@ class AsetService
 
             $fotoTersisa = $aset->fotos->count() - count($hapusFotoIds);
 
-            // Pastikan jumlah total foto tidak melebihi 5
             if (($fotoTersisa + count($fotoBaru)) > 5) {
-                throw new \Exception('Jumlah total foto tidak boleh lebih dari 5.');
+                throw new \Exception('Jumlah total foto tidak boleh lebih dari 5');
             }
 
             $aset->update($data);
@@ -91,12 +108,15 @@ class AsetService
         });
     }
 
-    public function delete(Aset $aset): bool
+    public function delete(Aset $aset): Aset
     {
         return DB::transaction(function () use ($aset) {
             $this->asetFotoService->delete($aset, $aset->fotos->pluck('id')->toArray());
 
-            return $aset->delete();
+            $deletedAset = $aset->replicate();
+            $aset->delete();
+
+            return $deletedAset;
         });
     }
 
@@ -119,6 +139,8 @@ class AsetService
         $aset->update([
             'lokasi' => $point,
         ]);
+
+        $aset = Aset::find($aset->id);
 
         return $aset;
     }

@@ -4,8 +4,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Modules\Wilayah\Http\Controllers\AsetController;
 use Modules\Wilayah\Http\Controllers\AsetFotoController;
-use Modules\Wilayah\Http\Controllers\AsetMJenisController;
-use Modules\Wilayah\Http\Controllers\AsetMStatusController;
 use Modules\Wilayah\Http\Controllers\AsetPenghuniController;
 use Modules\Wilayah\Http\Controllers\WilayahController;
 use Modules\Wilayah\Http\Controllers\AsetMasterController;
@@ -26,7 +24,7 @@ Route::middleware('auth:api')->get('/wilayah', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('auth:sanctum')->prefix('/wilayah')->group(function () {
+// Route::middleware('auth:sanctum')->prefix('/wilayah')->group(function () {
     Route::prefix('dashboard')->group(function () {
         Route::get('/aset-statistics', [WilayahController::class, 'getAsetStatistics']);
     });
@@ -64,4 +62,4 @@ Route::middleware('auth:sanctum')->prefix('/wilayah')->group(function () {
         Route::put('/{type}/{id}', [AsetMasterController::class, 'update']);
         Route::delete('/{type}/{id}', [AsetMasterController::class, 'destroy']);
     });
-});
+// });
