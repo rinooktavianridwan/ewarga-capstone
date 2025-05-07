@@ -14,9 +14,13 @@ class WilayahService
 
         $currentMonthAsetCount = Aset::where('created_at', '>=', $currentMonth)->count();
 
-        $percentageIncrease = $totalAset > 0
-            ? ($currentMonthAsetCount / ($totalAset-$currentMonthAsetCount)) * 100
-            : 0;
+        if ($totalAset - $currentMonthAsetCount > 0) {
+            $percentageIncrease = $totalAset > 0
+                ? ($currentMonthAsetCount / ($totalAset - $currentMonthAsetCount)) * 100
+                : 0;
+        } else {
+            $percentageIncrease = 0;
+        }
 
         return [
             'total_aset' => $totalAset,
