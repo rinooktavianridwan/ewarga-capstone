@@ -2,60 +2,80 @@
 
 namespace Modules\Wilayah\Services;
 
-use Modules\Wilayah\Entities\AsetMJenis;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Modules\Wilayah\Entities\AsetMJenis;
 use Modules\Wilayah\Entities\AsetMStatus;
 
 class AsetMasterService
 {
+    protected array $models = [
+        'jenis' => AsetMJenis::class,
+        'status' => AsetMStatus::class,
+    ];
+
+    protected array $relations = [
+        'jenis' => 'asetJenis',
+        'status' => 'asetStatus',
+    ];
+
+    protected function getModel(string $type): string
+    {
+        if (!isset($this->models[$type])) {
+            throw new ModelNotFoundException("Tipe $type tidak valid");
+        }
+        return $this->models[$type];
+    }
+
+    protected function getRelation(string $type): ?string
+    {
+        return $this->relations[$type] ?? null;
+    }
+
     public function getAll(string $type)
     {
-        return match ($type) {
-            'jenis' => AsetMJenis::with('asetJenis')->get(),
-            'status' => AsetMStatus::with('asetStatus')->get(),
-            default => throw new \Exception("Unknown master type: $type")
-        };
+        $model = $this->getModel($type);
+        $relation = $this->getRelation($type);
+
+        $data =  $relation
+            ? $model::with($relation)->get()
+            : $model::all();
+        if ($data->isEmpty()) {
+            throw new ModelNotFoundException("Data $type aset tidak ditemukan");
+        }
+        return $data;
     }
 
     public function getById(string $type, int $id)
     {
-        $model = match ($type) {
-            'jenis' => AsetMJenis::with('asetJenis')->find($id),
-            'status' => AsetMStatus::with('asetStatus')->find($id),
-            default => null
-        };
+        $model = $this->getModel($type);
+        $relation = $this->getRelation($type);
 
-        if (!$model) {
-            throw new ModelNotFoundException("Data not found for $type with ID $id");
-        }
-
-        return $model;
+        $query = $relation ? $model::with($relation) : $model::query();
+        return $query->findOrFail($id);
     }
 
     public function create(string $type, array $data)
     {
-        return DB::transaction(function () use ($type, $data) {
-            return match ($type) {
-                'jenis' => AsetMJenis::create($data),
-                'status' => AsetMStatus::create($data),
-                default => throw new \Exception("Unknown master type: $type")
-            };
-        });
+        $model = $this->getModel($type);
+        return DB::transaction(fn() => $model::create($data));
     }
 
-    public function update(string $type, $id, array $data)
+    public function update(string $type, int $id, array $data)
     {
-        return DB::transaction(function () use ($type, $id, $data) {
-            $model = $this->getById($type, $id);
-            $model->update($data);
-            return $model;
-        });
+        $model = $this->getModel($type);
+        $record = $model::findOrFail($id);
+
+        DB::transaction(fn() => $record->update($data));
+        return $record;
     }
 
-    public function delete(string $type, $id)
+    public function delete(string $type, int $id)
     {
-        $model = $this->getById($type, $id);
-        return $model->delete();
+        $model = $this->getModel($type);
+        $record = $model::findOrFail($id);
+
+        DB::transaction(fn() => $record->delete());
+        return $record;
     }
 }

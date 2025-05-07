@@ -37,7 +37,20 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
         if ($exception instanceof ModelNotFoundException) {
-            return response()->json($this->formatResponse(false, 404, 'Data tidak ditemukan'), 404);
+            $modelClass = $exception->getModel();
+            $modelName = class_basename($modelClass); // contoh: 'Aset'
+
+            $messages = [
+                'Aset' => 'Data aset tidak ditemukan',
+                'AsetFoto' => 'Data foto aset tidak ditemukan',
+                'AsetMJenis' => 'Data jenis aset tidak ditemukan',
+                'AsetMStatus' => 'Data status aset tidak ditemukan',
+                'AsetPenghuni' => 'Data penghuni aset tidak ditemukan',
+            ];
+
+            $message = $messages[$modelName] ?? $exception->getMessage();
+
+            return response()->json($this->formatResponse(false, 404, $message), 404);
         }
 
         if ($exception instanceof ValidationException) {
