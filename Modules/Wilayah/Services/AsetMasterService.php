@@ -46,6 +46,23 @@ class AsetMasterService
         return $data;
     }
 
+    public function getMultiple(array $types)
+    {
+        $result = [];
+        foreach ($types as $type) {
+            $model = $this->getModel($type);
+            $relation = $this->getRelation($type);
+
+            $data = $relation
+                ? $model::with($relation)->get()
+                : $model::all();
+
+            $result[$type] = $data;
+        }
+
+        return $result;
+    }
+
     public function getById(string $type, int $id)
     {
         $model = $this->getModel($type);
