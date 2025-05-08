@@ -9,7 +9,7 @@ class AsetMasterRequest extends FormRequest
     public function rules()
     {
         return [
-            'nama' => 'required|string|max:100',
+            'nama' => ['required', 'string', 'max:100'],
         ];
     }
 
@@ -21,9 +21,11 @@ class AsetMasterRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'nama.required' => 'Nama wajib diisi',
-            'nama.string' => 'Nama harus berupa teks',
-            'nama.max' => 'Nama tidak boleh lebih dari 100 karakter',
+            'nama' => [
+                'required' => 'Nama wajib diisi.',
+                'string' => 'Nama harus berupa teks.',
+                'max' => 'Nama tidak boleh lebih dari 100 karakter.',
+            ],
         ];
     }
 }
