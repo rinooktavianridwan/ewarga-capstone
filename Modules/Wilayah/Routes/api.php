@@ -56,7 +56,7 @@ Route::middleware('auth:api')->get('/wilayah', function (Request $request) {
     });
 
     Route::prefix('aset-master')->group(function () {
-        Route::get('/{type}', [AsetMasterController::class, 'index']);
+        Route::get('/', [AsetMasterController::class, 'index']);
         Route::get('/{type}/{id}', [AsetMasterController::class, 'show']);
         Route::post('/{type}', [AsetMasterController::class, 'store']);
         Route::put('/{type}/{id}', [AsetMasterController::class, 'update']);
