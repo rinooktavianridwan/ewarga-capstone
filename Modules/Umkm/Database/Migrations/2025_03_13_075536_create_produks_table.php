@@ -10,24 +10,20 @@ return new class extends Migration
     {
         Schema::create('umkm_produk', function (Blueprint $table) {
             $table->id();
-
             $table->foreignId('umkm_id')->constrained('umkm')->cascadeOnDelete();
             $table->foreignId('instansi_id')->constrained('instansi')->cascadeOnDelete();
-
             $table->string('nama');
             $table->string('keterangan')->nullable();
             $table->integer('harga');
-
             $table->timestamps();
             $table->softDeletes();
         });
 
         Schema::create('umkm_produk_foto', function (Blueprint $table) {
             $table->id();
-
             $table->foreignId('umkm_produk_id')->constrained('umkm_produk')->cascadeOnDelete();
-            $table->string('nama'); 
-
+            $table->string('nama');
+            $table->string('file_path', 255);
             $table->timestamps();
             $table->softDeletes();
         });

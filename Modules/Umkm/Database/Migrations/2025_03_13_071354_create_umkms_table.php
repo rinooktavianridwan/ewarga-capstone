@@ -8,14 +8,21 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('umkm_M_bentuk', function (Blueprint $table) {
+        Schema::create('umkm_m_bentuk', function (Blueprint $table) {
             $table->id();
             $table->string('nama', 100);
             $table->timestamps();
             $table->softDeletes();
         });
-        
-        Schema::create('umkm_M_jenis', function (Blueprint $table) {
+
+        Schema::create('umkm_m_jenis', function (Blueprint $table) {
+            $table->id();
+            $table->string('nama', 100);
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        Schema::create('umkm_m_kontak', function (Blueprint $table) {
             $table->id();
             $table->string('nama', 100);
             $table->timestamps();
@@ -28,6 +35,8 @@ return new class extends Migration
             $table->foreignId('umkm_M_bentuk_id')->nullable()->constrained('umkm_M_bentuk')->nullOnDelete();
             $table->foreignId('umkm_M_jenis_id')->nullable()->constrained('umkm_M_jenis')->nullOnDelete();
             $table->string('nama');
+            $table->text('alamat');
+            $table->point('lokasi')->nullable();
             $table->text('keterangan')->nullable();
             $table->timestamps();
             $table->softDeletes();
@@ -36,15 +45,7 @@ return new class extends Migration
         Schema::create('umkm_kontak', function (Blueprint $table) {
             $table->id();
             $table->foreignId('umkm_id')->constrained('umkm')->cascadeOnDelete();
-            $table->string('kontak', 100);
-            $table->timestamps();
-            $table->softDeletes();
-        });
-
-        Schema::create('umkm_alamat', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('umkm_id')->constrained('umkm')->cascadeOnDelete();
-            $table->point('alamat');
+            $table->foreignId('umkm_m_kontak_id')->constrained('umkm_m_kontak')->cascadeOnDelete();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -53,6 +54,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('umkm_id')->constrained('umkm')->cascadeOnDelete();
             $table->string('nama', 100);
+            $table->string('file_path', 255);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -63,7 +65,6 @@ return new class extends Migration
             $table->foreignId('umkm_id')->constrained('umkm')->cascadeOnDelete();
             $table->timestamps();
             $table->softDeletes();
-
             $table->unique(['warga_id', 'umkm_id']);
         });
     }
@@ -73,11 +74,11 @@ return new class extends Migration
     {
         Schema::dropIfExists('umkm_warga');
         Schema::dropIfExists('umkm_foto');
-        Schema::dropIfExists('umkm_alamat');
         Schema::dropIfExists('umkm_kontak');
         Schema::dropIfExists('umkm');
-        Schema::dropIfExists('umkm_M_jenis');
-        Schema::dropIfExists('umkm_M_bentuk');
+        Schema::dropIfExists('umkm_m_jenis');
+        Schema::dropIfExists('umkm_m_bentuk');
+        Schema::dropIfExists('umkm_m_kontak');
     }
 
 };

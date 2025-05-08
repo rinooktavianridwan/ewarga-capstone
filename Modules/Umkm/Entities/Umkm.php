@@ -13,8 +13,6 @@ use Modules\Umkm\Entities\UmkmProduk;
 use Modules\Umkm\Entities\UmkmFoto;
 use Modules\Umkm\Entities\UmkmKontak;
 use Modules\Umkm\Entities\UmkmAlamat;
-use Modules\Umkm\Entities\UmkmMBentuk;
-use Modules\Umkm\Entities\UmkmMJenis;
 
 class Umkm extends Model
 {
