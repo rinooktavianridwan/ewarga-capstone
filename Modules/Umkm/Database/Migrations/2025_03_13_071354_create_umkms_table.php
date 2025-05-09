@@ -69,7 +69,6 @@ return new class extends Migration
         });
     }
 
-
     public function down()
     {
         Schema::dropIfExists('umkm_warga');
@@ -80,6 +79,5 @@ return new class extends Migration
         Schema::dropIfExists('umkm_m_bentuk');
         Schema::dropIfExists('umkm_m_kontak');
     }
-
 };
 

@@ -27,10 +27,11 @@ class UmkmSeeder extends Seeder
             $wargaId = $warga->id;
         }
 
-        $bentukId = DB::table('umkm_M_bentuk')->first()->id;
-        $jenisId = DB::table('umkm_M_jenis')->first()->id;
+        $bentukId = DB::table('umkm_m_bentuk')->first()->id;
+        $jenisId = DB::table('umkm_m_jenis')->first()->id;
+        $kontakTypeId = DB::table('umkm_m_kontak')->where('nama', 'WhatsApp')->first()->id;
 
-        if (!$bentukId || !$jenisId) {
+        if (!$bentukId || !$jenisId || !$kontakTypeId) {
             $this->command->warn('⚠️ Tidak ada data bentuk/jenis usaha di tabel master. Seeder dibatalkan.');
             return;
         }
@@ -40,11 +41,21 @@ class UmkmSeeder extends Seeder
             'umkm_M_bentuk_id' => $bentukId,
             'umkm_M_jenis_id' => $jenisId,
             'nama' => 'UMKM Roti Bakar 88',
+            'alamat' => 'Jl. Mawar No. 123',
             'keterangan' => 'UMKM legendaris sejak 1945. Spesialis roti bakar isi tebal.',
+            'lokasi' => DB::raw("ST_GeomFromText('POINT(112.615 -7.966)')"),
             'created_at' => $now,
             'updated_at' => $now,
         ]);
-        
+
+        DB::table('umkm_kontak')->insert([
+            'umkm_id' => $umkmId,
+            'umkm_m_kontak_id' => $kontakTypeId,
+            'created_at' => $now,
+            'updated_at' => $now,
+
+        ]);
+
         DB::table('umkm_produk')->insert([
             [
                 'instansi_id' => $instansiId,
@@ -57,23 +68,8 @@ class UmkmSeeder extends Seeder
             ]
         ]);
 
-        DB::table('umkm_kontak')->insert([
-            ['umkm_id' => $umkmId, 'kontak' => '081234567890', 'created_at' => $now, 'updated_at' => $now],
-        ]);
- 
-        $latitude = -7.966;
-        $longitude = 112.615;
-        DB::table('umkm_alamat')->insert([
-            [
-                'umkm_id' => $umkmId,
-                'alamat' => DB::raw("ST_GeomFromText('POINT($longitude $latitude)')"),
-                'created_at' => $now,
-                'updated_at' => $now,
-            ]
-        ]);
-
         DB::table('umkm_foto')->insert([
-            ['umkm_id' => $umkmId, 'nama' => 'foto1.jpg', 'created_at' => $now, 'updated_at' => $now],
+            ['umkm_id' => $umkmId, 'nama' => 'foto1.jpg', 'file_path' => 'umkm_foto/foto1.jpg', 'created_at' => $now, 'updated_at' => $now],
         ]);
 
         DB::table('umkm_warga')->insert([

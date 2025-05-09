@@ -12,16 +12,22 @@ class UmkmMasterSeeder extends Seeder
     {
         $now = Carbon::now();
 
-        DB::table('umkm_M_bentuk')->insert([
+        DB::table('umkm_m_bentuk')->insert([
             ['nama' => 'PT', 'created_at' => $now, 'updated_at' => $now],
             ['nama' => 'CV', 'created_at' => $now, 'updated_at' => $now],
             ['nama' => 'UMKM Mandiri', 'created_at' => $now, 'updated_at' => $now],
         ]);
 
-        DB::table('umkm_M_jenis')->insert([
+        DB::table('umkm_m_jenis')->insert([
             ['nama' => 'Online', 'created_at' => $now, 'updated_at' => $now],
             ['nama' => 'Offline', 'created_at' => $now, 'updated_at' => $now],
             ['nama' => 'Hybrid', 'created_at' => $now, 'updated_at' => $now],
+        ]);
+
+        DB::table('umkm_m_kontak')->insert([
+            ['nama' => 'WhatsApp', 'created_at' => $now, 'updated_at' => $now],
+            ['nama' => 'Telepon', 'created_at' => $now, 'updated_at' => $now],
+            ['nama' => 'Email', 'created_at' => $now, 'updated_at' => $now],
         ]);
     }
 }

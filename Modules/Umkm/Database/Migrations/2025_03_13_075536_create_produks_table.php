@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('umkm_id')->constrained('umkm')->cascadeOnDelete();
             $table->foreignId('instansi_id')->constrained('instansi')->cascadeOnDelete();
-            $table->string('nama_produk');
+            $table->string('nama');
             $table->string('keterangan')->nullable();
             $table->integer('harga');
             $table->timestamps();

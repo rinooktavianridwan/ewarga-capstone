@@ -5,6 +5,7 @@ namespace Modules\Umkm\Services;
 use Illuminate\Support\Facades\DB;
 use Modules\Umkm\Entities\UmkmMBentuk;
 use Modules\Umkm\Entities\UmkmMJenis;
+use Modules\Umkm\Entities\UmkmMKontak;
 use App\Services\Traits\ResponseFormatter;
 
 class ReferensiUmkmService
@@ -14,7 +15,19 @@ class ReferensiUmkmService
     protected $models = [
         'bentuk' => UmkmMBentuk::class,
         'jenis' => UmkmMJenis::class,
+        'kontak' => UmkmMKontak::class,
     ];
+
+    protected function getRelation(string $type): ?array
+    {
+        $relations = [
+            'bentuk' => ['umkmBentuk'],
+            'jenis' => ['umkmJenis'],
+            'kontak' => ['umkmMKontak'],
+        ];
+
+        return $relations[$type] ?? null;
+    }
 
     protected function getModel(string $type)
     {
@@ -30,21 +43,21 @@ class ReferensiUmkmService
         return $model::all(['id', 'nama']);
     }
 
-    public function index()
+    public function getMultiple(array $types)
     {
-        $dataParam = request()->query('data');
+        $result = [];
+        foreach ($types as $type) {
+            $model = $this->getModel($type);
+            $relation = $this->getRelation($type);
 
-        if (empty($dataParam)) {
-            return response()->json($this->formatResponse(false, 400, "Parameter 'data' tidak boleh kosong"), 400);
+            $data = $relation
+                ? $model::with($relation)->get()
+                : $model::all();
+
+            $result[$type] = $data;
         }
 
-        $types = explode(',', $dataParam);
-        $data = $this->service->getMultiple($types);
-
-        $typesList = implode(', ', $types);
-        $message = "Data {$typesList} berhasil diambil";
-
-        return response()->json($this->formatResponse(true, 200, $message, $data), 200);
+        return $result;
     }
 
     public function getById(string $type, int $id)

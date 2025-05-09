@@ -10,9 +10,11 @@ class UmkmMKontak extends Model
 {
     use HasFactory;
 
+    protected $table = 'umkm_m_kontak';
+
     protected $fillable = ['nama'];
 
-    protected function umkmMKontak(): HasMany
+    public function umkmMKontak(): HasMany
     {
         return $this->hasMany(UmkmKontak::class, 'umkm_m_kontak_id');
     }

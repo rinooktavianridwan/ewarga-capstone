@@ -9,7 +9,7 @@ use Modules\Umkm\Http\Controllers\ReferensiUmkmController;
 Route::middleware('auth:sanctum')->prefix('umkm')->group(function () {
 
     Route::prefix('umkm-master')->group(function () {
-        Route::get('/{type}', [ReferensiUmkmController::class, 'index']);
+        Route::get('/', [ReferensiUmkmController::class, 'index']);
         Route::post('/{type}', [ReferensiUmkmController::class, 'store']);
         Route::get('/{type}/{id}', [ReferensiUmkmController::class, 'show']);
         Route::put('/{type}/{id}', [ReferensiUmkmController::class, 'update']);

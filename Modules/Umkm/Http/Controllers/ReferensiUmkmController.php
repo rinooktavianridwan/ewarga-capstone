@@ -21,14 +21,21 @@ class ReferensiUmkmController extends Controller
         $this->service = $service;
     }
 
-    public function index(string $type): JsonResponse
+    public function index(): JsonResponse
     {
-        try {
-            $data = $this->service->getAll($type);
-            return response()->json($this->formatResponse(true, 200, "Data $type berhasil diambil", $data), 200);
-        } catch (\Exception $e) {
-            return response()->json($this->formatResponse(false, 500, $e->getMessage()), 500);
+        $dataParam = request()->query('data');
+
+        if (empty($dataParam)) {
+            return response()->json($this->formatResponse(false, 400, "Parameter 'data' tidak boleh kosong"), 400);
         }
+
+        $types = explode(',', $dataParam);
+        $data = $this->service->getMultiple($types);
+
+        $typesList = implode(', ', $types);
+        $message = "Data {$typesList} berhasil diambil";
+
+        return response()->json($this->formatResponse(true, 200, $message, $data), 200);
     }
 
     public function store(MasterDataRequest $request, string $type): JsonResponse

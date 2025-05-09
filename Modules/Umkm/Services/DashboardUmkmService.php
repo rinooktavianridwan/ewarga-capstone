@@ -5,7 +5,7 @@ namespace Modules\Umkm\Services;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Modules\Umkm\Entities\Umkm;
-use Modules\Umkm\Entities\UmkmJenisUsaha;
+use Modules\Umkm\Entities\UmkmMJenis;
 use Modules\Umkm\Entities\UmkmProduk;
 
 class DashboardUmkmService
@@ -16,9 +16,9 @@ class DashboardUmkmService
             $totalUmkm = Umkm::count();
             $totalProduk = UmkmProduk::count();
 
-            $online = UmkmJenisUsaha::where('nama', 'like', '%Online%')->first();
-            $offline = UmkmJenisUsaha::where('nama', 'like', '%Offline%')->first();
-            $hybrid = UmkmJenisUsaha::where('nama', 'like', '%Hybrid%')->first();
+            $online = UmkmMJenis::where('nama', 'like', '%Online%')->first();
+            $offline = UmkmMJenis::where('nama', 'like', '%Offline%')->first();
+            $hybrid = UmkmMJenis::where('nama', 'like', '%Hybrid%')->first();
 
             return [
                 'total_umkm' => $totalUmkm,

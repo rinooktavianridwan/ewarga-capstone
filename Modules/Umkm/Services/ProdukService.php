@@ -6,7 +6,6 @@ use App\Models\Warga;
 use Illuminate\Http\Request;
 use Modules\Umkm\Entities\UmkmProduk;
 use Modules\Umkm\Entities\UmkmProdukFoto;
-use Illuminate\Support\Facades\Storage;
 
 class ProdukService
 {
