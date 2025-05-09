@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Umkm\Entities\UmkmProduk;
 use Modules\Umkm\Entities\UmkmFoto;
 use Modules\Umkm\Entities\UmkmKontak;
-use Modules\Umkm\Entities\UmkmAlamat;
 
 class Umkm extends Model
 {
@@ -20,47 +19,41 @@ class Umkm extends Model
 
     protected $table = 'umkm';
 
-    protected $fillable = ['nama', 'instansi_id', 'umkm_M_bentuk_id', 'umkm_M_jenis_id', 'keterangan'];
+    protected $fillable = ['nama', 'instansi_id', 'umkm_m_bentuk_id', 'umkm_m_jenis_id', 'keterangan', 'alamat', 'lokasi'];
 
     public function instansi(): BelongsTo
     {
         return $this->belongsTo(Instansi::class, 'instansi_id');
     }
 
-    public function UmkmFoto(): HasMany
+    public function umkmWargas(): HasMany
+    {
+        return $this->hasMany(UmkmWarga::class, 'umkm_id');
+    }
+
+    public function UmkmProduks(): HasMany
+    {
+        return $this->hasMany(UmkmProduk::class, 'umkm_id');
+    }
+
+    public function umkmFotos(): HasMany
     {
         return $this->hasMany(UmkmFoto::class);
     }
 
-    public function UmkmKontak(): HasMany
+    public function umkmKontaks(): HasMany
     {
         return $this->hasMany(UmkmKontak::class);
     }
 
-    public function UmkmAlamat(): HasMany
-    {
-        return $this->hasMany(UmkmAlamat::class);
-    }
-
-    public function Warga()
-    {
-        return $this->belongsToMany(Warga::class, 'umkm_warga')
-            ->withPivot(['created_at', 'updated_at', 'deleted_at'])
-            ->withTimestamps();
-    }
-
     public function UmkmBentukUsaha(): BelongsTo
     {
-        return $this->belongsTo(UmkmBentukUsaha::class, 'umkm_M_bentuk_id');
+        return $this->belongsTo(UmkmMBentuk::class, 'umkm_M_bentuk_id');
     }
 
     public function UmkmJenisUsaha(): BelongsTo
     {
-        return $this->belongsTo(UmkmJenisUsaha::class, 'umkm_M_jenis_id');
+        return $this->belongsTo(UmkmMJenis::class, 'umkm_M_jenis_id');
     }
 
-    public function UmkmProduk(): HasMany
-    {
-        return $this->hasMany(UmkmProduk::class, 'umkm_id');
-    }
 }

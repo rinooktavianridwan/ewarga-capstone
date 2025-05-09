@@ -7,16 +7,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class UmkmBentukUsaha extends Model
+class UmkmMJenis extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'umkm_M_bentuk';
+    protected $table = 'umkm_M_jenis';
 
     protected $fillable = ['nama'];
 
-    public function Umkm(): HasMany
+    public function umkmJenis(): HasMany
     {
-        return $this->hasMany(Umkm::class, 'umkm_M_bentuk_id');
+        return $this->hasMany(Umkm::class, 'umkm_m_jenis_id');
     }
 }
+

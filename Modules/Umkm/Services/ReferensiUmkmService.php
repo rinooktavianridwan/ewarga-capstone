@@ -3,14 +3,17 @@
 namespace Modules\Umkm\Services;
 
 use Illuminate\Support\Facades\DB;
-use Modules\Umkm\Entities\UmkmBentukUsaha;
-use Modules\Umkm\Entities\UmkmJenisUsaha;
+use Modules\Umkm\Entities\UmkmMBentuk;
+use Modules\Umkm\Entities\UmkmMJenis;
+use App\Services\Traits\ResponseFormatter;
 
 class ReferensiUmkmService
 {
+    use ResponseFormatter;
+
     protected $models = [
-        'bentuk' => UmkmBentukUsaha::class,
-        'jenis' => UmkmJenisUsaha::class,
+        'bentuk' => UmkmMBentuk::class,
+        'jenis' => UmkmMJenis::class,
     ];
 
     protected function getModel(string $type)
@@ -25,6 +28,23 @@ class ReferensiUmkmService
     {
         $model = $this->getModel($type);
         return $model::all(['id', 'nama']);
+    }
+
+    public function index()
+    {
+        $dataParam = request()->query('data');
+
+        if (empty($dataParam)) {
+            return response()->json($this->formatResponse(false, 400, "Parameter 'data' tidak boleh kosong"), 400);
+        }
+
+        $types = explode(',', $dataParam);
+        $data = $this->service->getMultiple($types);
+
+        $typesList = implode(', ', $types);
+        $message = "Data {$typesList} berhasil diambil";
+
+        return response()->json($this->formatResponse(true, 200, $message, $data), 200);
     }
 
     public function getById(string $type, int $id)

@@ -13,7 +13,7 @@ class UmkmFoto extends Model
 
     protected $table = 'umkm_foto';
 
-    protected $fillable = ['umkm_id', 'nama'];
+    protected $fillable = ['umkm_id', 'nama', 'file_path'];
 
     public function Umkm(): BelongsTo
     {
