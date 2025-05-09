@@ -15,7 +15,7 @@ class UmkmMBentuk extends Model
 
     protected $fillable = ['nama'];
 
-    public function umkmBentuk(): HasMany
+    public function umkmBentuks(): HasMany
     {
         return $this->hasMany(Umkm::class, 'umkm_m_bentuk_id');
     }

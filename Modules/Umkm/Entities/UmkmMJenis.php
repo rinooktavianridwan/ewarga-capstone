@@ -11,7 +11,7 @@ class UmkmMJenis extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'umkm_M_jenis';
+    protected $table = 'umkm_m_jenis';
 
     protected $fillable = ['nama'];
 

@@ -15,12 +15,12 @@ class UmkmWarga extends Model
 
     protected $fillable = ['umkm_id', 'warga_id'];
 
-    protected function umkmWarga(): BelongsTo
+    public function umkm(): BelongsTo
     {
         return $this->belongsTo(Umkm::class, 'umkm_id');
     }
 
-    protected function warga(): BelongsTo
+    public function warga(): BelongsTo
     {
         return $this->belongsTo(Warga::class, 'warga_id');
     }

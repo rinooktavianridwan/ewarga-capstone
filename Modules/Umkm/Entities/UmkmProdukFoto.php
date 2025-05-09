@@ -15,7 +15,7 @@ class UmkmProdukFoto extends Model
 
     protected $fillable = ['umkm_produk_id', 'nama'];
 
-    public function umkmProduk(): BelongsTo
+    public function produk(): BelongsTo
     {
         return $this->belongsTo(UmkmProduk::class, 'umkm_produk_id');
     }

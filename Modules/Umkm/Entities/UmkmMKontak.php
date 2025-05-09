@@ -14,7 +14,7 @@ class UmkmMKontak extends Model
 
     protected $fillable = ['nama'];
 
-    public function umkmMKontak(): HasMany
+    public function kontaks(): HasMany
     {
         return $this->hasMany(UmkmKontak::class, 'umkm_m_kontak_id');
     }

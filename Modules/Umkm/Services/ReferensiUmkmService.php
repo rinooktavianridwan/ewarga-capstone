@@ -21,9 +21,9 @@ class ReferensiUmkmService
     protected function getRelation(string $type): ?array
     {
         $relations = [
-            'bentuk' => ['umkmBentuk'],
+            'bentuk' => ['umkmBentuks'],
             'jenis' => ['umkmJenis'],
-            'kontak' => ['umkmMKontak'],
+            'kontak' => ['kontaks'],
         ];
 
         return $relations[$type] ?? null;

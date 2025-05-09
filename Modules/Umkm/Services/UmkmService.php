@@ -17,8 +17,8 @@ class UmkmService
             'umkmAlamat',
             'umkmFoto',
             'warga',
-            'umkmBentukUsaha',
-            'umkmJenisUsaha',
+            'umkmMBentuk',
+            'umkmMJenis',
         ])->findOrFail($id);
 
         $formattedAlamat = collect($umkm->umkmAlamat)->map(function ($alamat) {
@@ -42,8 +42,8 @@ class UmkmService
             'kontak' => $umkm->umkmKontak,
             'fotos' => $umkm->umkmFoto,
             'wargas' => $umkm->warga,
-            'bentuk_usaha' => $umkm->umkmBentukUsaha,
-            'jenis_usaha' => $umkm->umkmJenisUsaha,
+            'bentuk_usaha' => $umkm->umkmMBentuk,
+            'jenis_usaha' => $umkm->umkmMJenis,
             'alamat' => $formattedAlamat,
         ];
     }

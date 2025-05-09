@@ -19,23 +19,23 @@ class UmkmProduk extends Model
     protected $fillable = [
         'umkm_id',
         'instansi_id',
-        'nama_produk',
+        'nama',
         'keterangan',
         'harga',
     ];
 
-    protected function Umkm(): BelongsTo
+    public function umkm(): BelongsTo
     {
         return $this->belongsTo(Umkm::class, 'umkm_id');
     }
 
-    protected function UmkmProdukFotos(): HasMany
-    {
-        return $this->hasMany(UmkmProdukFoto::class, 'umkm_produk_id');
-    }
-
-    protected function Instansi(): BelongsTo
+    public function instansi(): BelongsTo
     {
         return $this->belongsTo(Instansi::class, 'instansi_id');
+    }
+
+    public function fotos(): HasMany
+    {
+        return $this->hasMany(UmkmProdukFoto::class, 'umkm_produk_id');
     }
 }

@@ -16,8 +16,8 @@ class StorePendataanUmkmRequest extends FormRequest
         return [
             'nama' => 'required|string|max:255',
             'instansi_id' => 'required|exists:instansi,id',
-            'bentuk_usaha_id' => 'nullable|exists:umkm_M_bentuk,id',
-            'jenis_usaha_id' => 'nullable|exists:umkm_M_jenis,id',
+            'bentuk_usaha_id' => 'nullable|exists:umkm_m_bentuk,id',
+            'jenis_usaha_id' => 'nullable|exists:umkm_m_jenis,id',
             'keterangan' => 'nullable|string',
             'warga_ids' => 'nullable|array',
             'warga_ids.*' => 'exists:warga,id',
