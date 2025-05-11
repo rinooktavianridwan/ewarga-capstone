@@ -8,7 +8,7 @@ use Modules\Umkm\Entities\Umkm;
 use Modules\Umkm\Entities\UmkmMJenis;
 use Modules\Umkm\Entities\UmkmProduk;
 
-class DashboardUmkmService
+class DashboardService
 {
     public function getDashboardData(): array
     {

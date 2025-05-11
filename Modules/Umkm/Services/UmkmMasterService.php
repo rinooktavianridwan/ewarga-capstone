@@ -3,12 +3,13 @@
 namespace Modules\Umkm\Services;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Modules\Umkm\Entities\UmkmMBentuk;
 use Modules\Umkm\Entities\UmkmMJenis;
 use Modules\Umkm\Entities\UmkmMKontak;
 use App\Services\Traits\ResponseFormatter;
 
-class ReferensiUmkmService
+class UmkmMasterService
 {
     use ResponseFormatter;
 
@@ -32,7 +33,7 @@ class ReferensiUmkmService
     protected function getModel(string $type)
     {
         if (!isset($this->models[$type])) {
-            throw new \Exception("Tipe master tidak dikenal: $type");
+            throw new ModelNotFoundException("Tipe $type tidak valid");
         }
         return $this->models[$type];
     }

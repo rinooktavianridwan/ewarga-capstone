@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Modules\Umkm\Entities\UmkmProduk;
 use Modules\Umkm\Entities\UmkmProdukFoto;
 
-class ProdukService
+class UmkmProdukService
 {
     public function getFilteredProduk(Request $request)
     {

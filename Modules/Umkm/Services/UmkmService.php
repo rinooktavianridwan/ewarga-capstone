@@ -45,15 +45,15 @@ class UmkmService
             ->where('instansi_id', $instansiId);
 
         if ($request->filled('jenis')) {
-            $query->where('umkm_m_jenis_id', $request->jenis_usaha_id);
+            $query->where('umkm_m_jenis_id', $request->jenis);
         }
 
         if ($request->filled('bentuk')) {
-            $query->where('umkm_m_bentuk_id', $request->bentuk_usaha_id);
+            $query->where('umkm_m_bentuk_id', $request->bentuk);
         }
 
         if ($request->filled('nama')) {
-            $query->where('nama', 'like', '%' . $request->search . '%');
+            $query->where('nama', 'like', '%' . $request->nama . '%');
         }
 
         return $query->get();
