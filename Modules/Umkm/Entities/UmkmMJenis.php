@@ -15,6 +15,8 @@ class UmkmMJenis extends Model
 
     protected $fillable = ['nama'];
 
+    protected $hidden = ['created_at', 'updated_at', 'deleted_at'];
+
     public function umkmJenis(): HasMany
     {
         return $this->hasMany(Umkm::class, 'umkm_m_jenis_id');

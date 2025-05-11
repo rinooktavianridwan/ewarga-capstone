@@ -15,6 +15,8 @@ class UmkmFoto extends Model
 
     protected $fillable = ['umkm_id', 'nama', 'file_path'];
 
+    protected $hidden = ['created_at', 'updated_at', 'deleted_at'];
+
     public function umkm(): BelongsTo
     {
         return $this->belongsTo(Umkm::class, 'umkm_id');

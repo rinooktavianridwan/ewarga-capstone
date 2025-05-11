@@ -21,7 +21,7 @@ class Umkm extends Model
     protected $table = 'umkm';
 
     protected $fillable = ['nama', 'instansi_id', 'umkm_m_bentuk_id', 'umkm_m_jenis_id', 'keterangan', 'alamat', 'lokasi'];
-    protected $hidden = ['lokasi'];
+    protected $hidden = ['lokasi', 'created_at', 'updated_at', 'deleted_at'];
     protected $appends = ['lokasi_point'];
 
     public function getLokasiPointAttribute()

@@ -14,6 +14,8 @@ class UmkmMKontak extends Model
 
     protected $fillable = ['nama'];
 
+    protected $hidden = ['created_at', 'updated_at', 'deleted_at'];
+
     public function kontaks(): HasMany
     {
         return $this->hasMany(UmkmKontak::class, 'umkm_m_kontak_id');

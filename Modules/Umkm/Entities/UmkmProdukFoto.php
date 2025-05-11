@@ -15,6 +15,8 @@ class UmkmProdukFoto extends Model
 
     protected $fillable = ['umkm_produk_id', 'nama'];
 
+    protected $hidden = ['created_at', 'updated_at', 'deleted_at'];
+
     public function produk(): BelongsTo
     {
         return $this->belongsTo(UmkmProduk::class, 'umkm_produk_id');

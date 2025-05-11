@@ -16,6 +16,8 @@ class UmkmProduk extends Model
 
     protected $table = 'umkm_produk';
 
+    protected $hidden = ['created_at', 'updated_at', 'deleted_at'];
+
     protected $fillable = [
         'umkm_id',
         'instansi_id',

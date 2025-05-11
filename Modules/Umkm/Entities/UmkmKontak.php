@@ -17,7 +17,7 @@ class UmkmKontak extends Model
 
     protected $appends = ['jenis_kontak'];
 
-    protected $hidden = ['masterKontak'];
+    protected $hidden = ['masterKontak', 'created_at', 'updated_at', 'deleted_at'];
 
     public function getJenisKontakAttribute()
     {
