@@ -3,13 +3,65 @@
 namespace Modules\Umkm\Services;
 
 use App\Models\Warga;
-use Illuminate\Http\Request;
+use App\Services\WargaService;
+use App\Exceptions\FlowException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
-use Modules\Umkm\Entities\{Umkm, UmkmAlamat, UmkmKontak, UmkmFoto};
+use Modules\Umkm\Entities\{Umkm, UmkmKontak};
+use Modules\Umkm\Services\UmkmFotoService;
+
+use function PHPUnit\Framework\isEmpty;
 
 class UmkmService
 {
-    public function getUmkmDetailById($id)
+    protected $wargaService;
+    protected $umkmFotoService;
+
+    public function __construct(WargaService $wargaService, UmkmFotoService $umkmFotoService)
+    {
+        $this->umkmFotoService = $umkmFotoService;
+        $this->wargaService = $wargaService;
+    }
+
+    public function getFiltered(array $data)
+    {
+        $instansiId = $data['instansi_id'];
+        $userId = auth()->user()->id;
+
+        $hasAccess = $this->wargaService->hasAccess($userId, $instansiId);
+
+        if (!$hasAccess) {
+            throw new FlowException("Anda tidak memiliki akses ke instansi ini");
+        }
+
+        $umkm = Umkm::with(['instansi', 'bentuk', 'jenis', 'fotos', 'umkmWargas', 'produks', 'kontaks'])
+            ->where('instansi_id', $instansiId);
+
+
+        if (!empty($data['jenis'])) {
+            $jenisIds = is_array($data['jenis']) ? $data['jenis'] : explode(',', $data['jenis']);
+            $umkm->whereIn('umkm_m_jenis_id', $jenisIds);
+        }
+
+        if (!empty($data['bentuk'])) {
+            $jenisIds = is_array($data['bentuk']) ? $data['bentuk'] : explode(',', $data['bentuk']);
+            $umkm->whereIn('umkm_m_bentuk_id', $jenisIds);
+        }
+
+        if (!empty($data['nama'])) {
+            $umkm->where('nama', 'like', '%' . $data['nama'] . '%');
+        }
+
+        $umkm = $umkm->get();
+
+        if ($umkm->isEmpty()) {
+            throw new ModelNotFoundException("Data umkm tidak ditemukan");
+        }
+
+        return $umkm;
+    }
+
+    public function getById($id): Umkm
     {
         $umkm = Umkm::with([
             'instansi',
@@ -19,49 +71,21 @@ class UmkmService
             'produks',
             'kontaks',
             'fotos',
-        ])->findOrFail($id);
+        ])->find($id);
+
+        if (!$umkm) {
+            throw new ModelNotFoundException("Data umkm tidak ditemukan");
+        }
 
         return $umkm;
     }
 
-    public function getFilteredUmkm(Request $request)
+    public function create(array $data): Umkm
     {
-        if (!$request->filled('instansi_id')) {
-            abort(400, 'instansi_id wajib dikirim');
-        }
+        $this->validateWargaInstansi($data);
+        $fotoFiles = $data['fotos'] ?? [];
+        unset($data['fotos']);
 
-        $instansiId = $request->instansi_id;
-        $user = auth()->user();
-
-        $hasAccess = Warga::where('user_id', $user->id)
-            ->where('instansi_id', $instansiId)
-            ->exists();
-
-        if (!$hasAccess) {
-            abort(403, 'Anda tidak memiliki akses ke instansi ini.');
-        }
-
-        $query = Umkm::with(['instansi', 'bentuk', 'jenis', 'fotos', 'umkmWargas', 'produks', 'kontaks'])
-            ->where('instansi_id', $instansiId);
-
-        if ($request->filled('jenis')) {
-            $query->where('umkm_m_jenis_id', $request->jenis);
-        }
-
-        if ($request->filled('bentuk')) {
-            $query->where('umkm_m_bentuk_id', $request->bentuk);
-        }
-
-        if ($request->filled('nama')) {
-            $query->where('nama', 'like', '%' . $request->nama . '%');
-        }
-
-        return $query->get();
-    }
-
-
-    public function createUmkm(array $data,  ?array $fotoFiles = null)
-    {
         return DB::transaction(function () use ($data, $fotoFiles) {
             $umkm = Umkm::create([
                 'nama' => $data['nama'],
@@ -91,15 +115,11 @@ class UmkmService
                 }
             }
 
-            if ($fotoFiles) {
-                $this->handleFotoUpload($umkm, $fotoFiles);
+            if (!empty($fotoFiles)) {
+                $this->umkmFotoService->store($umkm, $fotoFiles, $data['instansi_id']);
             }
 
             return $umkm->load([
-                'instansi',
-                'jenis',
-                'bentuk',
-                'umkmWargas',
                 'kontaks',
                 'fotos',
             ]);
@@ -213,19 +233,7 @@ class UmkmService
         });
     }
 
-    protected function handleFotoUpload(Umkm $umkm, array $fotoFiles): void
-    {
-        foreach ($fotoFiles as $file) {
-            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
-            $path = 'umkm_foto/' . $filename;
-            $file->storeAs('public', $path);
 
-            UmkmFoto::create([
-                'umkm_id' => $umkm->id,
-                'nama' => $path,
-            ]);
-        }
-    }
 
     protected function syncFotos(Umkm $umkm, array $fotoFiles): void
     {
@@ -315,14 +323,14 @@ class UmkmService
         $wargaIds = $data['warga_ids'];
 
         $invalidWarga = Warga::whereIn('id', $wargaIds)
-            ->where(function ($query) use ($instansiId) {
-                $query->whereNull('instansi_id')
+            ->where(function ($umkm) use ($instansiId) {
+                $umkm->whereNull('instansi_id')
                     ->orWhere('instansi_id', '!=', $instansiId);
             })
             ->exists();
 
         if ($invalidWarga) {
-            abort(400, 'Semua warga harus memiliki instansi_id yang sama dengan instansi_id yang dipilih.');
+            throw new FlowException("Warga yang dipilih tidak terikat dengan instansi ini");
         }
     }
 }

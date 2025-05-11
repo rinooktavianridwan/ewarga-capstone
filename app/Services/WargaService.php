@@ -3,12 +3,7 @@
 namespace App\Services;
 
 use App\Exceptions\FlowException;
-use App\Models\User;
 use App\Models\Warga;
-use App\Models\WargaAjuan;
-use App\Models\WargaInstansi;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
 
 class WargaService
 {
@@ -82,5 +77,12 @@ class WargaService
         return $warga;
     }
 
-}
+    public function hasAccess($userId, $instansiId)
+    {
+        $hasAccess = Warga::where('user_id', $userId)
+            ->where('instansi_id', $instansiId)
+            ->exists();
 
+        return $hasAccess;
+    }
+}

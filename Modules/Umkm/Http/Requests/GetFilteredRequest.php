@@ -4,7 +4,7 @@ namespace Modules\Umkm\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UmkmFilterRequest extends FormRequest
+class GetFilteredRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -15,9 +15,9 @@ class UmkmFilterRequest extends FormRequest
     {
         return [
             'instansi_id' => 'required|exists:instansi,id',
-            'jenis_usaha_id' => 'nullable|exists:umkm_m_jenis,id',
-            'bentuk_usaha_id' => 'nullable|exists:umkm_m_bentuk,id',
-            'search' => 'nullable|string|max:100',
+            'jenis' => 'nullable|exists:umkm_m_jenis,id',
+            'bentuk' => 'nullable|exists:umkm_m_bentuk,id',
+            'nama' => 'nullable|string|max:100',
         ];
     }
 

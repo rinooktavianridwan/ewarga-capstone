@@ -4,44 +4,43 @@ namespace Modules\Umkm\Http\Controllers;
 
 use Illuminate\Routing\Controller;
 use Illuminate\Http\JsonResponse;
+use App\Services\Traits\ResponseFormatter;
+use Modules\Umkm\Http\Requests\CreateUmkmRequest;
 use Modules\Umkm\Services\UmkmService;
 use Modules\Umkm\Entities\Umkm;
-use Modules\Umkm\Http\Requests\StorePendataanUmkmRequest;
 use Modules\Umkm\Http\Requests\UpdatePendataanUmkmRequest;
-use Modules\Umkm\Http\Requests\UmkmFilterRequest;
+use Modules\Umkm\Http\Requests\GetFilteredRequest;
 
-class PendataanUmkmController extends Controller
+class UmkmController extends Controller
 {
-    protected UmkmService $umkmService;
+    use ResponseFormatter;
+
+    protected $umkmService;
 
     public function __construct(UmkmService $umkmService)
     {
         $this->umkmService = $umkmService;
     }
 
-    public function index(UmkmFilterRequest $request): JsonResponse
+    public function index(GetFilteredRequest $request): JsonResponse
     {
-        $umkmList = $this->umkmService->getFilteredUmkm($request);
-        return response()->json(['data' => $umkmList]);
+        $validated = $request->validated();
+        $data = $this->umkmService->getFiltered($validated);
+        return response()->json($this->formatResponse(true, 201, 'Data umkm berhasil diambil', $data), 201);
     }
 
-    public function show(Umkm $umkm): JsonResponse
+    public function show($id): JsonResponse
     {
-        $detail = $this->umkmService->getUmkmDetailById($umkm->id);
-        return response()->json(['data' => $detail]);
+        $data = $this->umkmService->getById($id);
+        return response()->json($this->formatResponse(true, 200, "Data umkm berhasil ditemukan", $data), 200);
     }
 
-    public function store(StorePendataanUmkmRequest $request): JsonResponse
+    public function store(CreateUmkmRequest $request): JsonResponse
     {
-        $data = $request->validated();
-        $fotoFiles = $request->file('foto');
+        $validated = $request->validated();
+        $data = $this->umkmService->create($validated);
 
-        $umkm = $this->umkmService->createUmkmWithValidation($data, $fotoFiles);
-
-        return response()->json([
-            'message' => 'UMKM berhasil ditambahkan',
-            'data' => $umkm
-        ], 201);
+        return response()->json($this->formatResponse(true, 201, 'Data umkm berhasil dibuat', $data), 201);
     }
 
     public function update(UpdatePendataanUmkmRequest $request, Umkm $umkm): JsonResponse

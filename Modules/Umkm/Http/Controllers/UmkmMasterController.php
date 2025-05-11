@@ -6,17 +6,16 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Modules\Umkm\Http\Requests\MasterDataRequest;
-use Modules\Umkm\Services\ReferensiUmkmService;
 use App\Services\Traits\ResponseFormatter;
+use Modules\Umkm\Services\UmkmMasterService;
 
-
-class ReferensiUmkmController extends Controller
+class UmkmMasterController extends Controller
 {
     use ResponseFormatter;
 
     protected $service;
 
-    public function __construct(ReferensiUmkmService $service)
+    public function __construct(UmkmMasterService $service)
     {
         $this->service = $service;
     }
