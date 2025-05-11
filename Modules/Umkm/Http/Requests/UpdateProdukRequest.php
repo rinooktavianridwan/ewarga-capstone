@@ -4,7 +4,7 @@ namespace Modules\Umkm\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StorePendataanProdukRequest extends FormRequest
+class UpdateProdukRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -14,11 +14,9 @@ class StorePendataanProdukRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'umkm_id'     => ['required', 'exists:umkm,id'],
-            'instansi_id' => ['required', 'exists:instansi,id'],
-            'nama'        => ['required', 'string', 'max:255'],
+            'nama'        => ['sometimes', 'required', 'string', 'max:255'],
             'keterangan'  => ['nullable', 'string'],
-            'harga'       => ['required', 'integer'],
+            'harga'       => ['sometimes', 'required', 'integer'],
             'foto'        => ['nullable', 'array', 'max:5'],
             'foto.*'      => ['image', 'max:2048'],
         ];
@@ -27,14 +25,6 @@ class StorePendataanProdukRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'umkm_id' => [
-                'required' => 'UMKM ID wajib diisi.',
-                'exists'   => 'UMKM ID tidak valid atau tidak ditemukan.',
-            ],
-            'instansi_id' => [
-                'required' => 'Instansi ID wajib diisi.',
-                'exists'   => 'Instansi ID tidak valid atau tidak ditemukan.',
-            ],
             'nama' => [
                 'required' => 'Nama produk wajib diisi.',
                 'string'   => 'Nama produk harus berupa teks.',
@@ -48,11 +38,11 @@ class StorePendataanProdukRequest extends FormRequest
                 'integer'  => 'Harga produk harus berupa angka.',
             ],
             'foto' => [
-                'array' => 'Foto produk produk harus berupa array.',
-                'max'   => 'Jumlah foto produk tidak boleh lebih dari 5.',
+                'array' => 'Foto produk harus berupa array.',
+                'max'   => 'Jumlah foto tidak boleh lebih dari 5.',
             ],
-            'foto.*image' => 'Setiap file foto produk harus berupa gambar.',
-            'foto.*max'   => 'Ukuran setiap file foto produk tidak boleh lebih dari 2MB.',
+            'foto.*image' => 'Setiap file foto harus berupa gambar.',
+            'foto.*max'   => 'Ukuran setiap file foto tidak boleh lebih dari 2MB.',
         ];
     }
 }

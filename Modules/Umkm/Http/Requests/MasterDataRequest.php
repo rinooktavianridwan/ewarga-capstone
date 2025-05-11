@@ -21,9 +21,11 @@ class MasterDataRequest extends FormRequest
     public function messages()
     {
         return [
-            'nama.required' => 'Nama wajib diisi.',
-            'nama.string' => 'Nama harus berupa teks.',
-            'nama.max' => 'Nama tidak boleh lebih dari 255 karakter.',
+            'nama' => [
+                'required' => 'Nama wajib diisi.',
+                'string' => 'Nama harus berupa teks.',
+                'max' => 'Nama tidak boleh lebih dari 255 karakter.',
+            ],
         ];
     }
 }
