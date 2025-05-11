@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Umkm\Http\Requests;
+namespace Modules\Umkm\Http\Requests\Umkm;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -93,16 +93,14 @@ class CreateUmkmRequest extends FormRequest
                 'numeric' => 'Longitude harus berupa angka.',
             ],
             'fotos' => [
-                'required' => 'Foto UMKM wajib diunggah.',
-                'array' => 'Foto harus berupa array.',
-                'max' => 'Jumlah foto tidak boleh lebih dari 5.',
+                'required' => 'Foto umkm wajib diunggah.',
+                'array' => 'Foto umkm harus berupa array.',
+                'max' => 'Jumlah foto umkm tidak boleh lebih dari 5.',
             ],
-            'fotos.*' => [
-                'required' => 'Setiap file foto wajib diisi.',
-                'file' => 'Setiap foto harus berupa file.',
-                'image' => 'Setiap file foto umkm harus berupa gambar.',
-                'max' => 'Ukuran setiap foto tidak boleh lebih dari 2MB.',
-            ],
+            'fotos.*.required' => 'Setiap file foto wajib diisi.',
+            'fotos.*.file' => 'Setiap file foto harus berupa file.',
+            'fotos.*.image' => 'Setiap file foto umkm harus berupa gambar.',
+            'fotos.*.max' => 'Ukuran setiap file foto tidak boleh lebih dari 2MB.',
         ];
     }
 }

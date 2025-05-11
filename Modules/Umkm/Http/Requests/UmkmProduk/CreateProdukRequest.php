@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\Umkm\Http\Requests;
+namespace Modules\Umkm\Http\Requests\UmkmProduk;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StorePendataanProdukRequest extends FormRequest
+class CreateProdukRequest extends FormRequest
 {
     public function authorize(): bool
     {

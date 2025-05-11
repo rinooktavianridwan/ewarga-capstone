@@ -3,38 +3,11 @@
 namespace App\Services;
 
 use App\Exceptions\FlowException;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use App\Models\User;
-use Laravel\Sanctum\PersonalAccessToken;
-use Closure;
 
 class AuthorizationService
 {
-    public function validasi(User $user, $instansi_id, Closure $callback)
-    {
-        $cekUserAkses = $user->isOwner($instansi_id) || $user->isPengurus($instansi_id);
-
-        if (!$cekUserAkses) {
-            throw new AuthorizationException("Akses hanya untuk pengurus");
-        }
-
-        return $callback();
-    }
-
-    private function validasiUserByEmail(string $email): User
-    {
-        return User::where('email', $email)->firstOrFail();
-    }
-
-    private function validasiGetToken(User $user, array $credentials)
-    {
-        if (!Hash::check($credentials['password'], $user->password)) {
-            throw new FlowException("Email atau password salah");
-        }
-    }
-
     public function createToken(array $credentials = []): array
     {
         if (!Auth::attempt($credentials)) {

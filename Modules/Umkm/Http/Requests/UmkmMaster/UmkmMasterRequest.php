@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\Umkm\Http\Requests;
+namespace Modules\Umkm\Http\Requests\UmkmMaster;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class MasterDataRequest extends FormRequest
+class UmkmMasterRequest extends FormRequest
 {
     public function rules()
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Umkm\Http\Requests;
+namespace Modules\Umkm\Http\Requests\Umkm;
 
 use Illuminate\Foundation\Http\FormRequest;
 

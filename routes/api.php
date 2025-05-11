@@ -18,34 +18,11 @@ use App\Http\Controllers\InstansiController;
 |
 */
 
-
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/instansi/{instansiId}/is-owner', [InstansiController::class, 'isOwner']);
-    Route::get('/instansi/{instansiId}/is-pengurus', [InstansiController::class, 'isPengurus']);
-});
-
-
-Route::get('/users/{userId}/warga', [UserController::class, 'getWarga']);
-Route::post('/users/{userId}/is-owner', [UserController::class, 'isOwner']);
-Route::post('/users/{userId}/is-pengurus', [UserController::class, 'isPengurus']);
-
-
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
     Route::delete('/logout', [AuthController::class, 'logout']);
-    Route::delete('/logout-all', [AuthController::class, 'logoutAll']);
 });
-
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/warga', [WargaController::class, 'daftar']);
-    Route::get('/warga/{id}', [WargaController::class, 'validasiWarga']);
-    Route::post('/warga/email', [WargaController::class, 'validasiWargaByEmail']);
-    Route::get('/warga/me', [WargaController::class, 'validasiWargaByMe']);
-    Route::post('/warga/save', [WargaController::class, 'save']);
-});
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-

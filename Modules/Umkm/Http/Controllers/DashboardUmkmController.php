@@ -5,13 +5,13 @@ namespace Modules\Umkm\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Modules\Umkm\Services\DashboardUmkmService;
+use Modules\Umkm\Services\DashboardService;
 
 class DashboardUmkmController extends Controller
 {
-    protected DashboardUmkmService $dashboardService;
+    protected DashboardService $dashboardService;
 
-    public function __construct(DashboardUmkmService $dashboardService)
+    public function __construct(DashboardService $dashboardService)
     {
         $this->dashboardService = $dashboardService;
     }

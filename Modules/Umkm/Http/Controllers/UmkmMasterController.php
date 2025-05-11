@@ -5,9 +5,9 @@ namespace Modules\Umkm\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Modules\Umkm\Http\Requests\MasterDataRequest;
-use App\Services\Traits\ResponseFormatter;
+use Modules\Umkm\Http\Requests\UmkmMaster\UmkmMasterRequest;
 use Modules\Umkm\Services\UmkmMasterService;
+use App\Services\Traits\ResponseFormatter;
 
 class UmkmMasterController extends Controller
 {
@@ -37,7 +37,7 @@ class UmkmMasterController extends Controller
         return response()->json($this->formatResponse(true, 200, $message, $data), 200);
     }
 
-    public function store(MasterDataRequest $request, string $type): JsonResponse
+    public function store(UmkmMasterRequest $request, string $type): JsonResponse
     {
         try {
             $data = $this->service->create($type, $request->validated());
@@ -59,7 +59,7 @@ class UmkmMasterController extends Controller
         }
     }
 
-    public function update(MasterDataRequest $request, string $type, int $id): JsonResponse
+    public function update(UmkmMasterRequest $request, string $type, int $id): JsonResponse
     {
         try {
             $data = $this->service->update($type, $id, $request->validated());

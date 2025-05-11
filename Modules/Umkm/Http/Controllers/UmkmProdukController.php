@@ -5,16 +5,17 @@ namespace Modules\Umkm\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Http\JsonResponse;
-use Modules\Umkm\Services\ProdukService;
 use Modules\Umkm\Entities\UmkmProduk;
-use Modules\Umkm\Http\Requests\StorePendataanProdukRequest;
-use Modules\Umkm\Http\Requests\UpdatePendataanProdukRequest;
+use Modules\Umkm\Http\Requests\UmkmProduk\CreateProdukRequest;
+use Modules\Umkm\Http\Requests\UmkmProduk\UpdateProdukRequest;
+use Modules\Umkm\Services\UmkmProdukService;
 
-class PendataanProdukController extends Controller
+
+class UmkmProdukController extends Controller
 {
-    protected ProdukService $service;
+    protected UmkmProdukService $service;
 
-    public function __construct(ProdukService $service)
+    public function __construct(UmkmProdukService $service)
     {
         $this->service = $service;
     }
@@ -33,7 +34,7 @@ class PendataanProdukController extends Controller
         ]);
     }
 
-    public function store(StorePendataanProdukRequest $request): JsonResponse
+    public function store(CreateProdukRequest $request): JsonResponse
     {
         $validated = $request->validated();
         $produk = $this->service->store($validated, $request->file('foto', []));
@@ -44,7 +45,7 @@ class PendataanProdukController extends Controller
         ], 201);
     }
 
-    public function update(UpdatePendataanProdukRequest $request, UmkmProduk $produk): JsonResponse
+    public function update(UpdateProdukRequest $request, UmkmProduk $produk): JsonResponse
     {
         $validated = $request->validated();
         $updatedProduk = $this->service->update($produk->id, $validated, $request->file('foto', []));

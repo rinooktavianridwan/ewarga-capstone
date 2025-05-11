@@ -4,12 +4,12 @@ namespace Modules\Umkm\Http\Controllers;
 
 use Illuminate\Routing\Controller;
 use Illuminate\Http\JsonResponse;
-use App\Services\Traits\ResponseFormatter;
-use Modules\Umkm\Http\Requests\CreateUmkmRequest;
-use Modules\Umkm\Services\UmkmService;
 use Modules\Umkm\Entities\Umkm;
-use Modules\Umkm\Http\Requests\UpdatePendataanUmkmRequest;
-use Modules\Umkm\Http\Requests\GetFilteredRequest;
+use Modules\Umkm\Services\UmkmService;
+use Modules\Umkm\Http\Requests\Umkm\CreateUmkmRequest;
+use Modules\Umkm\Http\Requests\Umkm\UpdateUmkmRequest;
+use Modules\Umkm\Http\Requests\Umkm\GetFilteredRequest;
+use App\Services\Traits\ResponseFormatter;
 
 class UmkmController extends Controller
 {
@@ -43,22 +43,16 @@ class UmkmController extends Controller
         return response()->json($this->formatResponse(true, 201, 'Data umkm berhasil dibuat', $data), 201);
     }
 
-    public function update(UpdatePendataanUmkmRequest $request, Umkm $umkm): JsonResponse
+    public function update(UpdateUmkmRequest $request, Umkm $umkm): JsonResponse
     {
-        $data = $request->validated();
-        $fotoFiles = $request->file('foto');
-
-        $updatedUmkm = $this->umkmService->updateUmkmWithValidation($umkm->id, $data, $fotoFiles);
-
-        return response()->json([
-            'message' => 'UMKM berhasil diperbarui',
-            'data' => $updatedUmkm
-        ]);
+        $validated = $request->validated();
+        $data = $this->umkmService->update($umkm, $validated);
+        return response()->json($this->formatResponse(true, 200, "Data umkm berhasil diperbarui", $data), 200);
     }
 
     public function destroy(Umkm $umkm): JsonResponse
     {
-        $this->umkmService->deleteUmkm($umkm->id);
-        return response()->json(['message' => 'UMKM berhasil dihapus']);
+        $deletedUmkm = $this->umkmService->delete($umkm);
+        return response()->json($this->formatResponse(true, 200, 'Data umkm berhasil dihapus', $deletedUmkm), 200);
     }
 }
