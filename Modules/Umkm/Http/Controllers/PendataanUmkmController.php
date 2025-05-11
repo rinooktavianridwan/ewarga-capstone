@@ -2,13 +2,13 @@
 
 namespace Modules\Umkm\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Http\JsonResponse;
 use Modules\Umkm\Services\UmkmService;
 use Modules\Umkm\Entities\Umkm;
 use Modules\Umkm\Http\Requests\StorePendataanUmkmRequest;
 use Modules\Umkm\Http\Requests\UpdatePendataanUmkmRequest;
+use Modules\Umkm\Http\Requests\UmkmFilterRequest;
 
 class PendataanUmkmController extends Controller
 {
@@ -19,7 +19,7 @@ class PendataanUmkmController extends Controller
         $this->umkmService = $umkmService;
     }
 
-    public function index(Request $request): JsonResponse
+    public function index(UmkmFilterRequest $request): JsonResponse
     {
         $umkmList = $this->umkmService->getFilteredUmkm($request);
         return response()->json(['data' => $umkmList]);

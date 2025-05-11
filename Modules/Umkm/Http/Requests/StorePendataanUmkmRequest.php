@@ -16,18 +16,20 @@ class StorePendataanUmkmRequest extends FormRequest
         return [
             'nama' => 'required|string|max:255',
             'instansi_id' => 'required|exists:instansi,id',
-            'bentuk_usaha_id' => 'nullable|exists:umkm_m_bentuk,id',
-            'jenis_usaha_id' => 'nullable|exists:umkm_m_jenis,id',
+            'umkm_m_bentuk_id' => 'nullable|exists:umkm_m_bentuk,id',
+            'umkm_m_jenis_id' => 'nullable|exists:umkm_m_jenis,id',
             'keterangan' => 'nullable|string',
             'warga_ids' => 'nullable|array',
             'warga_ids.*' => 'exists:warga,id',
             'kontak' => 'nullable|array',
-            'kontak.*' => 'nullable|string',
-            'alamat' => 'nullable|array',
-            'alamat.*.latitude' => 'required_with:alamat|numeric',
-            'alamat.*.longitude' => 'required_with:alamat|numeric',
-            'foto' => 'nullable|array', // Foto menjadi opsional
-            'foto.*' => 'nullable|file|mimes:jpg,jpeg,png|max:2048', // Validasi untuk file foto
+            'kontak.*.umkm_m_kontak_id' => 'required|exists:umkm_m_kontak,id',
+            'kontak.*.kontak' => 'required|string|max:255',
+            'alamat' => 'nullable|string',
+            'lokasi' => 'nullable|array',
+            'lokasi.*.latitude' => 'required_with:lokasi|numeric',
+            'lokasi.*.longitude' => 'required_with:lokasi|numeric',
+            'foto' => 'nullable|array',
+            'foto.*' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
         ];
     }
 }

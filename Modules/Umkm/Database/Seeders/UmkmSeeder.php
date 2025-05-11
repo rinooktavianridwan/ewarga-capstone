@@ -38,8 +38,8 @@ class UmkmSeeder extends Seeder
 
         $umkmId = DB::table('umkm')->insertGetId([
             'instansi_id' => $instansiId,
-            'umkm_M_bentuk_id' => $bentukId,
-            'umkm_M_jenis_id' => $jenisId,
+            'umkm_m_bentuk_id' => $bentukId,
+            'umkm_m_jenis_id' => $jenisId,
             'nama' => 'UMKM Roti Bakar 88',
             'alamat' => 'Jl. Mawar No. 123',
             'keterangan' => 'UMKM legendaris sejak 1945. Spesialis roti bakar isi tebal.',
@@ -48,13 +48,32 @@ class UmkmSeeder extends Seeder
             'updated_at' => $now,
         ]);
 
-        DB::table('umkm_kontak')->insert([
-            'umkm_id' => $umkmId,
-            'umkm_m_kontak_id' => $kontakTypeId,
-            'created_at' => $now,
-            'updated_at' => $now,
+        $kontakTypes = DB::table('umkm_m_kontak')->pluck('id', 'nama')->toArray();
 
+        DB::table('umkm_kontak')->insert([
+            [
+                'umkm_id' => $umkmId,
+                'umkm_m_kontak_id' => $kontakTypes['WhatsApp'],
+                'kontak' => '081234567890',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+            [
+                'umkm_id' => $umkmId,
+                'umkm_m_kontak_id' => $kontakTypes['Instagram'],
+                'kontak' => '@rotibakar88',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+            [
+                'umkm_id' => $umkmId,
+                'umkm_m_kontak_id' => $kontakTypes['Email'],
+                'kontak' => 'rotibakar88@email.com',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
         ]);
+
 
         DB::table('umkm_produk')->insert([
             [

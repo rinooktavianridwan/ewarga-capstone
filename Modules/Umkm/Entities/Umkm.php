@@ -3,15 +3,16 @@
 namespace Modules\Umkm\Entities;
 
 use App\Models\Instansi;
-use App\Models\Warga;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 use Modules\Umkm\Entities\UmkmProduk;
 use Modules\Umkm\Entities\UmkmFoto;
 use Modules\Umkm\Entities\UmkmKontak;
+
 
 class Umkm extends Model
 {
@@ -20,6 +21,22 @@ class Umkm extends Model
     protected $table = 'umkm';
 
     protected $fillable = ['nama', 'instansi_id', 'umkm_m_bentuk_id', 'umkm_m_jenis_id', 'keterangan', 'alamat', 'lokasi'];
+    protected $hidden = ['lokasi'];
+    protected $appends = ['lokasi_point'];
+
+    public function getLokasiPointAttribute()
+    {
+        if (!$this->attributes['lokasi']) {
+            return null;
+        }
+
+        $point = DB::selectOne("SELECT ST_X(lokasi) as longitude, ST_Y(lokasi) as latitude FROM umkm WHERE id = ?", [$this->id]);
+
+        return [
+            'latitude' => $point->latitude,
+            'longitude' => $point->longitude
+        ];
+    }
 
     public function instansi(): BelongsTo
     {

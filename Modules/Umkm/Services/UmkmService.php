@@ -13,39 +13,15 @@ class UmkmService
     {
         $umkm = Umkm::with([
             'instansi',
-            'umkmKontak',
-            'umkmAlamat',
-            'umkmFoto',
-            'warga',
-            'umkmMBentuk',
-            'umkmMJenis',
+            'jenis',
+            'bentuk',
+            'umkmWargas',
+            'produks',
+            'kontaks',
+            'fotos',
         ])->findOrFail($id);
 
-        $formattedAlamat = collect($umkm->umkmAlamat)->map(function ($alamat) {
-            $point = DB::selectOne("SELECT ST_X(alamat) AS longitude, ST_Y(alamat) AS latitude FROM umkm_alamat WHERE id = ?", [$alamat->id]);
-            return [
-                'id' => $alamat->id,
-                'umkm_id' => $alamat->umkm_id,
-                'latitude' => $point->latitude,
-                'longitude' => $point->longitude,
-                'created_at' => $alamat->created_at,
-                'updated_at' => $alamat->updated_at,
-                'deleted_at' => $alamat->deleted_at,
-            ];
-        });
-
-        return [
-            'id' => $umkm->id,
-            'nama' => $umkm->nama,
-            'keterangan' => $umkm->keterangan,
-            'instansi' => $umkm->instansi,
-            'kontak' => $umkm->umkmKontak,
-            'fotos' => $umkm->umkmFoto,
-            'wargas' => $umkm->warga,
-            'bentuk_usaha' => $umkm->umkmMBentuk,
-            'jenis_usaha' => $umkm->umkmMJenis,
-            'alamat' => $formattedAlamat,
-        ];
+        return $umkm;
     }
 
     public function getFilteredUmkm(Request $request)
@@ -65,18 +41,18 @@ class UmkmService
             abort(403, 'Anda tidak memiliki akses ke instansi ini.');
         }
 
-        $query = Umkm::with(['umkmBentukUsaha', 'umkmJenisUsaha', 'umkmFoto'])
+        $query = Umkm::with(['instansi', 'bentuk', 'jenis', 'fotos', 'umkmWargas', 'produks', 'kontaks'])
             ->where('instansi_id', $instansiId);
 
-        if ($request->filled('jenis_usaha_id')) {
-            $query->where('umkm_M_jenis_id', $request->jenis_usaha_id);
+        if ($request->filled('jenis')) {
+            $query->where('umkm_m_jenis_id', $request->jenis_usaha_id);
         }
 
-        if ($request->filled('bentuk_usaha_id')) {
-            $query->where('umkm_M_bentuk_id', $request->bentuk_usaha_id);
+        if ($request->filled('bentuk')) {
+            $query->where('umkm_m_bentuk_id', $request->bentuk_usaha_id);
         }
 
-        if ($request->filled('search')) {
+        if ($request->filled('nama')) {
             $query->where('nama', 'like', '%' . $request->search . '%');
         }
 
@@ -91,31 +67,27 @@ class UmkmService
                 'nama' => $data['nama'],
                 'keterangan' => $data['keterangan'] ?? null,
                 'instansi_id' => $data['instansi_id'] ?? null,
-                'umkm_M_bentuk_id' => $data['bentuk_usaha_id'] ?? null,
-                'umkm_M_jenis_id' => $data['jenis_usaha_id'] ?? null,
+                'umkm_m_bentuk_id' => $data['umkm_m_bentuk_id'] ?? null,
+                'umkm_m_jenis_id' => $data['umkm_m_jenis_id'] ?? null,
+                'alamat' => $data['alamat'] ?? null,
+                'lokasi' => DB::raw("ST_GeomFromText('POINT({$data['lokasi'][0]['longitude']} {$data['lokasi'][0]['latitude']})')")
             ]);
 
             if (!empty($data['warga_ids']) && is_array($data['warga_ids'])) {
-                $umkm->warga()->attach($data['warga_ids']);
-            }
-
-            if (!empty($data['kontak']) && is_array($data['kontak'])) {
-                foreach ($data['kontak'] as $kontak) {
-                    UmkmKontak::create([
-                        'umkm_id' => $umkm->id,
-                        'kontak' => $kontak,
+                foreach ($data['warga_ids'] as $wargaId) {
+                    $umkm->umkmWargas()->create([
+                        'warga_id' => $wargaId
                     ]);
                 }
             }
 
-            if (!empty($data['alamat']) && is_array($data['alamat'])) {
-                foreach ($data['alamat'] as $item) {
-                    if (!empty($item['latitude']) && !empty($item['longitude'])) {
-                        UmkmAlamat::create([
-                            'umkm_id' => $umkm->id,
-                            'alamat' => DB::raw("ST_GeomFromText('POINT({$item['longitude']} {$item['latitude']})')"),
-                        ]);
-                    }
+            if (!empty($data['kontak']) && is_array($data['kontak'])) {
+                foreach ($data['kontak'] as $kontakItem) {
+                    UmkmKontak::create([
+                        'umkm_id' => $umkm->id,
+                        'umkm_m_kontak_id' => $kontakItem['umkm_m_kontak_id'],
+                        'kontak' => $kontakItem['kontak'],
+                    ]);
                 }
             }
 
@@ -123,7 +95,14 @@ class UmkmService
                 $this->handleFotoUpload($umkm, $fotoFiles);
             }
 
-            return $umkm->load(['umkmBentukUsaha', 'umkmJenisUsaha', 'warga', 'umkmFoto']);
+            return $umkm->load([
+                'instansi',
+                'jenis',
+                'bentuk',
+                'umkmWargas',
+                'kontaks',
+                'fotos',
+            ]);
         });
     }
 
@@ -150,19 +129,64 @@ class UmkmService
                 'nama' => $data['nama'],
                 'keterangan' => $data['keterangan'] ?? null,
                 'instansi_id' => $instansiIdToCheck,
-                'umkm_M_bentuk_id' => $data['bentuk_usaha_id'] ?? $umkm->umkm_M_bentuk_id,
-                'umkm_M_jenis_id' => $data['jenis_usaha_id'] ?? $umkm->umkm_M_jenis_id,
+                'umkm_m_bentuk_id' => $data['umkm_m_bentuk_id'] ?? $umkm->umkm_m_bentuk_id,
+                'umkm_m_jenis_id' => $data['umkm_m_jenis_id'] ?? $umkm->umkm_m_jenis_id,
+                'alamat' => $data['alamat'] ?? null,
+                'lokasi' => isset($data['lokasi'][0]['longitude'], $data['lokasi'][0]['latitude'])
+                    ? DB::raw("ST_GeomFromText('POINT({$data['lokasi'][0]['longitude']} {$data['lokasi'][0]['latitude']})')")
+                    : $umkm->lokasi,
+
             ]);
 
             if (!empty($data['warga_ids']) && is_array($data['warga_ids'])) {
-                $umkm->warga()->sync($data['warga_ids']);
+                $umkm->umkmWargas()->delete();
+                foreach ($data['warga_ids'] as $wargaId) {
+                    $umkm->umkmWargas()->create([
+                        'warga_id' => $wargaId
+                    ]);
+                }
+            }
+
+            if (!empty($data['kontak']) && is_array($data['kontak'])) {
+                $existingKontakIds = collect($data['kontak'])->pluck('id')->filter()->all();
+
+                if (!empty($existingKontakIds)) {
+                    $umkm->umkmKontak()->whereNotIn('id', $existingKontakIds)->delete();
+                }
+
+                foreach ($data['kontak'] as $kontakItem) {
+                    if (!empty($kontakItem['id'])) {
+                        $kontak = UmkmKontak::where('umkm_id', $umkm->id)->where('id', $kontakItem['id'])->first();
+                        if ($kontak) {
+                            $kontak->update([
+                                'umkm_m_kontak_id' => $kontakItem['umkm_m_kontak_id'],
+
+                                'kontak' => $kontakItem['kontak'],
+                            ]);
+                            continue;
+                        }
+                    }
+
+                    UmkmKontak::create([
+                        'umkm_id' => $umkm->id,
+                        'umkm_m_kontak_id' => $kontakItem['umkm_m_kontak_id'],
+                        'kontak' => $kontakItem['kontak'],
+                    ]);
+                }
             }
 
             if ($fotoFiles && is_array($fotoFiles)) {
                 $this->syncFotos($umkm, $fotoFiles);
             }
 
-            return $umkm->fresh(['umkmBentukUsaha', 'umkmJenisUsaha', 'warga', 'umkmFoto']);
+            return $umkm->fresh([
+                'instansi',
+                'jenis',
+                'bentuk',
+                'umkmWargas',
+                'kontaks',
+                'fotos',
+            ]);
         });
     }
 
@@ -170,23 +194,21 @@ class UmkmService
     public function deleteUmkm($id)
     {
         $umkm = Umkm::with([
-            'umkmProduk.umkmProdukFoto',
-            'umkmKontak',
-            'umkmAlamat',
-            'umkmFoto',
-            'warga',
+            'produks.fotos',
+            'kontaks',
+            'fotos',
+            'umkmWargas',
         ])->findOrFail($id);
 
         DB::transaction(function () use ($umkm) {
-            foreach ($umkm->umkmProduk as $produk) {
-                $produk->umkmProdukFoto()->delete();
+            foreach ($umkm->produks as $produk) {
+                $produk->fotos()->delete();
             }
 
-            $umkm->umkmProduk()->delete();
-            $umkm->umkmKontak()->delete();
-            $umkm->umkmAlamat()->delete();
-            $umkm->umkmFoto()->delete();
-            $umkm->warga()->detach();
+            $umkm->produks()->delete();
+            $umkm->kontaks()->delete();
+            $umkm->fotos()->delete();
+            $umkm->umkmWargas()->delete();
             $umkm->delete();
         });
     }

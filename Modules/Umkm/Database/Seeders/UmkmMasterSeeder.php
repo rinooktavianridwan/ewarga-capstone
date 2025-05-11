@@ -28,6 +28,8 @@ class UmkmMasterSeeder extends Seeder
             ['nama' => 'WhatsApp', 'created_at' => $now, 'updated_at' => $now],
             ['nama' => 'Telepon', 'created_at' => $now, 'updated_at' => $now],
             ['nama' => 'Email', 'created_at' => $now, 'updated_at' => $now],
+            ['nama' => 'Instagram', 'created_at' => $now, 'updated_at' => $now],
+            ['nama' => 'Facebook', 'created_at' => $now, 'updated_at' => $now],
         ]);
     }
 }
