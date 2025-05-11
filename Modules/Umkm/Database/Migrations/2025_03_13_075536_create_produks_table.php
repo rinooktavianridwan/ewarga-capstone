@@ -10,10 +10,10 @@ return new class extends Migration
     {
         Schema::create('umkm_produk', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('umkm_id')->constrained('umkm')->cascadeOnDelete();
-            $table->foreignId('instansi_id')->constrained('instansi')->cascadeOnDelete();
+            $table->foreignId('umkm_id')->constrained('umkm')->onDelete('cascade');
+            $table->foreignId('instansi_id')->constrained('instansi')->onDelete('cascade');
             $table->string('nama');
-            $table->string('keterangan')->nullable();
+            $table->string('keterangan');
             $table->integer('harga');
             $table->timestamps();
             $table->softDeletes();
@@ -21,7 +21,7 @@ return new class extends Migration
 
         Schema::create('umkm_produk_foto', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('umkm_produk_id')->constrained('umkm_produk')->cascadeOnDelete();
+            $table->foreignId('umkm_produk_id')->constrained('umkm_produk')->onDelete('cascade');
             $table->string('nama');
             $table->string('file_path', 255);
             $table->timestamps();
@@ -31,7 +31,7 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('umkm_produk_foto');
         Schema::dropIfExists('umkm_produk');
+        Schema::dropIfExists('umkm_produk_foto');
     }
 };
