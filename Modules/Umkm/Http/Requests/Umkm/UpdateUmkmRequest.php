@@ -31,6 +31,8 @@ class UpdateUmkmRequest extends FormRequest
             'lokasi.*.longitude' => ['required_with:lokasi', 'numeric'],
             'foto' => ['nullable', 'array', 'max:5'],
             'foto.*' => ['image', 'max:2048'],
+            'hapus_foto' => ['sometimes', 'array', 'max:5'],
+            'hapus_foto.*' => ['integer', 'exists:umkm_foto,id,deleted_at,NULL'],
         ];
     }
 

@@ -2,39 +2,52 @@
 
 namespace Modules\Umkm\Services;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Modules\Umkm\Entities\Umkm;
 use Modules\Umkm\Entities\UmkmFoto;
+use Modules\Umkm\Entities\UmkmProduk;
+use Modules\Umkm\Entities\UmkmProdukFoto;
 
 class UmkmFotoService
 {
     public function getAll()
     {
-        $data = UmkmFoto::with('umkm')->get();
+        $umkmFotos = UmkmFoto::with('umkm')->get();
+        $produkFotos = UmkmProdukFoto::with('umkmProduk')->get();
 
-        if ($data->isEmpty()) {
+        if ($umkmFotos->isEmpty() && $produkFotos->isEmpty()) {
             throw new ModelNotFoundException("Data foto tidak ditemukan");
         }
 
-        return $data;
+        return [
+            'umkm' => $umkmFotos,
+            'produk' => $produkFotos,
+        ];
     }
 
-    public function getAllByAset(Umkm $umkm)
+    public function getAllByModel(Model $model)
     {
-        $data = $umkm->fotos()->get();
+        $fotos = $model->fotos()->get();
 
-        if ($data->isEmpty()) {
+        if ($fotos->isEmpty()) {
             throw new ModelNotFoundException("Data foto tidak ditemukan");
         }
 
-        return $data;
+        return $fotos;
     }
 
-    public function getById(int $id): UmkmFoto
+    public function getById(int $id, Model $model): Model
     {
-        $foto = UmkmFoto::with('aset')->find($id);
+        if ($model instanceof Umkm) {
+            $foto = UmkmFoto::with('umkm')->find($id);
+        } elseif ($model instanceof UmkmProduk) {
+            $foto = UmkmProdukFoto::with('produk')->find($id);
+        } else {
+            throw new \InvalidArgumentException("Model tidak dikenali");
+        }
 
         if (!$foto) {
             throw new ModelNotFoundException("Data foto tidak ditemukan");
@@ -42,24 +55,34 @@ class UmkmFotoService
 
         return $foto;
     }
-    public function store(Umkm $umkm, array $fotoFiles, int $instansiId)
+
+    public function store(Model $model, array $fotoFiles, int $instansiId)
     {
         foreach ($fotoFiles as $file) {
             if ($file instanceof UploadedFile) {
                 $filename = uniqid() . '_' . $file->getClientOriginalName();
-                $file->storeAs("umkm_foto/{$instansiId}", $filename, 'public');
 
-                $umkm->fotos()->create([
+                if ($model instanceof Umkm) {
+                    $directory = "umkm_foto/{$instansiId}";
+                } elseif ($model instanceof UmkmProduk) {
+                    $directory = "produk_foto/{$instansiId}";
+                } else {
+                    throw new \InvalidArgumentException('Model tidak didukung untuk penyimpanan foto');
+                }
+
+                $file->storeAs($directory, $filename, 'public');
+
+                $model->fotos()->create([
                     'nama' => $file->getClientOriginalName(),
-                    'file_path' => "umkm_foto/{$instansiId}/{$filename}",
+                    'file_path' => "{$directory}/{$filename}",
                 ]);
             }
         }
     }
 
-    public function delete(Umkm $umkm, array $hapusFotoIds)
+    public function delete(Model $model, array $hapusFotoIds)
     {
-        $fotos = $umkm->fotos()->whereIn('id', $hapusFotoIds)->get();
+        $fotos = $model->fotos()->whereIn('id', $hapusFotoIds)->get();
 
         foreach ($fotos as $foto) {
             if (Storage::disk('public')->exists($foto->file_path)) {

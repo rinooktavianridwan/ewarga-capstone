@@ -2,177 +2,149 @@
 
 namespace Modules\Umkm\Services;
 
-use App\Models\Warga;
-use Illuminate\Http\Request;
+use App\Services\WargaService;
+use App\Exceptions\FlowException;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Modules\Umkm\Entities\UmkmProduk;
-use Modules\Umkm\Entities\UmkmProdukFoto;
+use Modules\Umkm\Entities\UmkmWarga;
+use Modules\Umkm\Services\UmkmFotoService;
 
 class UmkmProdukService
 {
-    public function getFilteredProduk(Request $request)
+    protected $wargaService;
+    protected $umkmFotoService;
+
+    public function __construct(WargaService $wargaService, UmkmFotoService $umkmFotoService)
     {
-        if (!$request->filled('instansi_id')) {
-            abort(400, 'instansi_id wajib dikirim');
-        }
+        $this->wargaService = $wargaService;
+        $this->umkmFotoService = $umkmFotoService;
+    }
 
-        if (!$request->filled('umkm_id')) {
-            abort(400, 'umkm_id wajib dikirim');
-        }
+    public function getFiltered(array $data)
+    {
+        $instansiId = $data['instansi_id'];
+        $umkmId = $data['umkm_id'];
+        $userId = auth()->user()->id;
 
-        $instansiId = $request->instansi_id;
-        $umkmId = $request->umkm_id;
-        $user = auth()->user();
-
-        $hasAccess = Warga::where('user_id', $user->id)
-            ->where('instansi_id', $instansiId)
-            ->exists();
+        $hasAccess = $this->wargaService->hasAccess($userId, $instansiId);
 
         if (!$hasAccess) {
-            abort(403, 'Anda tidak memiliki akses ke instansi ini.');
+            throw new FlowException("Pengguna tidak memiliki akses ke instansi ini");
         }
 
-        $query = UmkmProduk::with(['umkm', 'instansi', 'umkmProdukFoto'])
+        $produk = UmkmProduk::with(['umkm', 'instansi', 'fotos'])
             ->where('umkm_id', $umkmId)
             ->where('instansi_id', $instansiId);
 
-        if ($request->filled('search')) {
-            $query->where('nama', 'like', '%' . $request->search . '%');
+        $produk = $produk->get();
+
+        if ($produk->isEmpty()) {
+            throw new ModelNotFoundException("Data produk tidak ditemukan");
         }
 
-        return $query->get();
+        return $produk;
     }
 
-    public function getById($id)
+    public function getById($id): UmkmProduk
     {
-        return UmkmProduk::with(['umkm', 'instansi', 'umkmProdukFoto'])->findOrFail($id);
-    }
+        $produk = UmkmProduk::with([
+            'umkm',
+            'instansi',
+            'fotos',
+        ])->find($id);
 
-    public function store(array $data, array $fotoFiles): UmkmProduk
-    {
-        $user = auth()->user();
-
-        $hasAccess = Warga::where('user_id', $user->id)
-            ->where('instansi_id', $data['instansi_id'])
-            ->exists();
-
-        if (!$hasAccess) {
-            abort(403, 'Pengguna tidak terikat dengan instansi tersebut.');
+        if (!$produk) {
+            throw new ModelNotFoundException("Data produk tidak ditemukan");
         }
 
-        $produk = UmkmProduk::create($data);
-
-        $this->handleFotoUpload($produk, $fotoFiles);
-
-        return $produk->load('umkmProdukFoto');
+        return $produk;
     }
 
-    public function update($id, array $data, array $fotoFiles = [])
+    public function create(array $data): UmkmProduk
     {
-        $produk = UmkmProduk::findOrFail($id);
-        $user = auth()->user();
+        $instansiId = $data['instansi_id'];
+        $umkmId = $data['umkm_id'];
+        $userId = auth()->user()->id;
 
-        $hasAccess = Warga::where('user_id', $user->id)
-            ->where('instansi_id', $produk->instansi_id)
-            ->exists();
+        if (!$this->isOwner($umkmId, $userId)) {
+            $hasAccess = $this->wargaService->hasAccess($userId, $instansiId);
 
-        if (!$hasAccess) {
-            abort(403, 'Pengguna tidak terikat dengan instansi tersebut.');
-        }
-
-        $produk->update($data);
-
-        if (!empty($fotoFiles)) {
-            $this->syncFotos($produk, $fotoFiles);
-        }
-
-        return $produk->fresh('umkmProdukFoto');
-    }
-
-    public function delete($id): void
-    {
-        $produk = UmkmProduk::with('umkmProdukFoto')->findOrFail($id);
-
-        foreach ($produk->umkmProdukFoto as $foto) {
-            $foto->delete();
-        }
-
-        $produk->delete();
-    }
-
-    public function restoreFotoProduk($produkId): void
-    {
-        $produk = UmkmProduk::withTrashed()->findOrFail($produkId);
-
-        UmkmProdukFoto::onlyTrashed()
-            ->where('umkm_produk_id', $produk->id)
-            ->restore();
-    }
-
-    protected function handleFotoUpload(UmkmProduk $produk, array $fotoFiles): void
-    {
-        foreach ($fotoFiles as $file) {
-            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
-            $path = 'produk_foto/' . $filename;
-            $file->storeAs('public', $path);
-
-            UmkmProdukFoto::create([
-                'umkm_produk_id' => $produk->id,
-                'nama' => $path,
-            ]);
-        }
-    }
-
-    protected function syncFotos(UmkmProduk $produk, array $fotoFiles): void
-    {
-        $fotoBaruHashes = [];
-        $fileMap = [];
-
-        foreach ($fotoFiles as $file) {
-            $hash = md5_file($file->getRealPath());
-            $fotoBaruHashes[] = $hash;
-            $fileMap[$hash] = $file;
-        }
-
-        $fotoAktif = $produk->umkmProdukFoto()->get();
-        $fotoSemua = $produk->umkmProdukFoto()->withTrashed()->get();
-
-        $hashFotoLama = [];
-        foreach ($fotoSemua as $foto) {
-            $path = storage_path("app/public/{$foto->nama}");
-            if (file_exists($path)) {
-                $hashFotoLama[md5_file($path)] = $foto;
+            if (!$hasAccess) {
+                throw new FlowException("Pengguna tidak memiliki izin untuk menambah produk pada umkm ini");
             }
         }
 
-        $fotoBaruUntukUpload = [];
+        $fotoFiles = $data['fotos'] ?? [];
+        unset($data['fotos']);
 
-        foreach ($fotoBaruHashes as $hash) {
-            if (isset($hashFotoLama[$hash])) {
-                $foto = $hashFotoLama[$hash];
-                if ($foto->trashed()) {
-                    $foto->restore();
-                }
-            } else {
-                $fotoBaruUntukUpload[] = $fileMap[$hash];
+        return DB::transaction(function () use ($data, $fotoFiles) {
+            $produk = UmkmProduk::create($data);
+
+            if (!empty($fotoFiles)) {
+                $this->umkmFotoService->store($produk, $fotoFiles, $data['instansi_id']);
+            }
+
+            return $produk->load('umkm', 'instansi', 'fotos');
+        });
+    }
+
+    public function update(UmkmProduk $produk, array $data)
+    {
+        $instansiId = $data['instansi_id'];
+        $umkmId = $data['umkm_id'];
+        $userId = auth()->user()->id;
+
+        if (!$this->isOwner($umkmId, $userId)) {
+            $hasAccess = $this->wargaService->hasAccess($userId, $instansiId);
+
+            if (!$hasAccess) {
+                throw new FlowException("Pengguna tidak memiliki izin untuk mengubah umkm ini");
             }
         }
 
-        foreach ($fotoAktif as $foto) {
-            $path = storage_path("app/public/{$foto->nama}");
-            if (file_exists($path)) {
-                $hash = md5_file($path);
-                if (!in_array($hash, $fotoBaruHashes)) {
-                    $foto->delete();
-                }
-            }
-        }
+        return DB::transaction(function () use ($produk, $data) {
+            $fotoBaru = $data['fotos'] ?? [];
+            $hapusFotoIds = $data['hapus_foto'] ?? [];
 
-        if (count($fotoBaruUntukUpload) > 0) {
-            if (count($fotoBaruUntukUpload) > 5) {
-                throw new \Exception("Maksimal 5 foto diperbolehkan untuk satu produk.");
+            unset($data['fotos'], $data['hapus_foto']);
+
+            $fotoTersisa = $produk->fotos->count() - count($hapusFotoIds);
+
+            if (($fotoTersisa + count($fotoBaru)) > 5) {
+                throw new \Exception('Jumlah total foto tidak boleh lebih dari 5');
             }
 
-            $this->handleFotoUpload($produk, $fotoBaruUntukUpload);
-        }
+            $produk->update($data);
+
+            if (!empty($hapusFotoIds)) {
+                $this->umkmFotoService->delete($produk, $hapusFotoIds);
+            }
+
+            if (!empty($fotoBaru)) {
+                $this->umkmFotoService->store($produk, $fotoBaru, $data['instansi_id']);
+            }
+
+            return $produk->load('umkm', 'instansi', 'fotos');
+        });
+    }
+
+    public function delete(UmkmProduk $produk): array
+    {
+        return DB::transaction(function () use ($produk) {
+            $this->umkmFotoService->delete($produk, $produk->fotos->pluck('id')->toArray());
+            $produkData = $produk->toArray();
+            $produk->delete();
+
+            return $produkData;
+        });
+    }
+
+    public function isOwner($umkmId, $userId): bool
+    {
+        return UmkmWarga::where('umkm_id', $umkmId)
+            ->whereHas('warga', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })->exists();
     }
 }

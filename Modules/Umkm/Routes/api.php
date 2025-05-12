@@ -21,17 +21,17 @@ Route::middleware('auth:sanctum')->prefix('umkm')->group(function () {
     Route::delete('/{umkm}', [UmkmController::class, 'destroy']);
 
     Route::prefix('produk')->group(function () {
-        Route::get('/search', [UmkmProdukController::class, 'index']);
+        Route::get('/index', [UmkmProdukController::class, 'index']);
         Route::get('/{produk}', [UmkmProdukController::class, 'show']);
-        Route::post('/store', [UmkmProdukController::class, 'store']);
+        Route::post('/', [UmkmProdukController::class, 'store']);
         Route::put('/{produk}', [UmkmProdukController::class, 'update']);
         Route::delete('/{produk}', [UmkmProdukController::class, 'destroy']);
     });
 
     Route::prefix('umkm-master')->group(function () {
         Route::get('/', [UmkmMasterController::class, 'index']);
-        Route::post('/{type}', [UmkmMasterController::class, 'store']);
         Route::get('/{type}/{id}', [UmkmMasterController::class, 'show']);
+        Route::post('/{type}', [UmkmMasterController::class, 'store']);
         Route::put('/{type}/{id}', [UmkmMasterController::class, 'update']);
         Route::delete('/{type}/{id}', [UmkmMasterController::class, 'destroy']);
     });

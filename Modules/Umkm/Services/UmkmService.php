@@ -92,15 +92,9 @@ class UmkmService
         unset($data['fotos']);
 
         return DB::transaction(function () use ($data, $fotoFiles) {
-            $umkm = Umkm::create([
-                'nama' => $data['nama'],
-                'keterangan' => $data['keterangan'] ?? null,
-                'instansi_id' => $data['instansi_id'] ?? null,
-                'umkm_m_bentuk_id' => $data['umkm_m_bentuk_id'] ?? null,
-                'umkm_m_jenis_id' => $data['umkm_m_jenis_id'] ?? null,
-                'alamat' => $data['alamat'] ?? null,
-                'lokasi' => DB::raw("ST_GeomFromText('POINT({$data['lokasi'][0]['longitude']} {$data['lokasi'][0]['latitude']})')")
-            ]);
+            $data['lokasi'] = DB::raw("ST_GeomFromText('POINT({$data['lokasi'][0]['longitude']} {$data['lokasi'][0]['latitude']})')");
+
+            $umkm = Umkm::create($data);
 
             if (!empty($data['warga_ids']) && is_array($data['warga_ids'])) {
                 foreach ($data['warga_ids'] as $wargaId) {
@@ -153,6 +147,8 @@ class UmkmService
             $hapusFotoIds = $data['hapus_foto'] ?? [];
 
             unset($data['fotos'], $data['hapus_foto']);
+
+            $updateData = $data;
 
             $fotoTersisa = $umkm->fotos->count() - count($hapusFotoIds);
 
@@ -222,19 +218,19 @@ class UmkmService
     }
 
 
-    public function delete(Umkm $umkm): Umkm
+    public function delete(Umkm $umkm): array
     {
         return DB::transaction(function () use ($umkm) {
             $this->umkmFotoService->delete($umkm, $umkm->fotos->pluck('id')->toArray());
-
-            $deletedAset = $umkm->replicate();
+            $umkmData = $umkm->toArray();
             $umkm->delete();
 
-            return $deletedAset;
+            return $umkmData;
         });
     }
 
-    protected function isOwner(Umkm $umkm, int $userId): bool
+
+    public function isOwner(Umkm $umkm, int $userId): bool
     {
         return $umkm->umkmWargas()->whereHas('warga', function ($query) use ($userId) {
             $query->where('user_id', $userId);

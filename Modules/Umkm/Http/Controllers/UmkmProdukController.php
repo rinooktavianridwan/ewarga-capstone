@@ -2,63 +2,60 @@
 
 namespace Modules\Umkm\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Routing\Controller;
 use Modules\Umkm\Entities\UmkmProduk;
 use Modules\Umkm\Http\Requests\UmkmProduk\CreateProdukRequest;
 use Modules\Umkm\Http\Requests\UmkmProduk\UpdateProdukRequest;
+use Modules\Umkm\Http\Requests\UmkmProduk\GetFilteredRequest;
+use Modules\Umkm\Services\UmkmService;
 use Modules\Umkm\Services\UmkmProdukService;
-
+use App\Services\Traits\ResponseFormatter;
 
 class UmkmProdukController extends Controller
 {
-    protected UmkmProdukService $service;
+    use ResponseFormatter;
 
-    public function __construct(UmkmProdukService $service)
+    protected UmkmService $umkmService;
+    protected UmkmProdukService $umkmProdukService;
+
+    public function __construct(UmkmService $umkmService, UmkmProdukService $umkmProdukService)
     {
-        $this->service = $service;
+        $this->umkmService = $umkmService;
+        $this->umkmProdukService = $umkmProdukService;
     }
 
-    public function index(Request $request): JsonResponse
+    public function index(GetFilteredRequest $request): JsonResponse
     {
-        return response()->json([
-            'data' => $this->service->getFilteredProduk($request)
-        ]);
+        $validated = $request->validated();
+        $data = $this->umkmProdukService->getFiltered($validated);
+        return response()->json($this->formatResponse(true, 201, 'Data produk berhasil diambil', $data), 201);
     }
 
-    public function show(UmkmProduk $produk): JsonResponse
+    public function show($id): JsonResponse
     {
-        return response()->json([
-            'data' => $this->service->getById($produk->id)
-        ]);
+        $data = $this->umkmProdukService->getById($id);
+        return response()->json($this->formatResponse(true, 200, "Data produk berhasil ditemukan", $data), 200);
     }
 
     public function store(CreateProdukRequest $request): JsonResponse
     {
         $validated = $request->validated();
-        $produk = $this->service->store($validated, $request->file('foto', []));
+        $data = $this->umkmProdukService->create($validated);
 
-        return response()->json([
-            'message' => 'Produk berhasil ditambahkan.',
-            'data' => $produk,
-        ], 201);
+        return response()->json($this->formatResponse(true, 201, 'Data produk berhasil dibuat', $data), 201);
     }
 
     public function update(UpdateProdukRequest $request, UmkmProduk $produk): JsonResponse
     {
         $validated = $request->validated();
-        $updatedProduk = $this->service->update($produk->id, $validated, $request->file('foto', []));
-
-        return response()->json([
-            'message' => 'Produk berhasil diperbarui.',
-            'data' => $updatedProduk,
-        ]);
+        $data = $this->umkmProdukService->update($produk, $validated);
+        return response()->json($this->formatResponse(true, 200, "Data produk berhasil diperbarui", $data), 200);
     }
 
     public function destroy(UmkmProduk $produk): JsonResponse
     {
-        $this->service->delete($produk->id);
-        return response()->json(['message' => 'Produk berhasil dihapus.']);
+        $deletedProduk = $this->umkmProdukService->delete($produk);
+        return response()->json($this->formatResponse(true, 200, 'Data produk berhasil dihapus', $deletedProduk), 200);
     }
 }

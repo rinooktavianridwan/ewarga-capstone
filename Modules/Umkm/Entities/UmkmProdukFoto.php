@@ -13,7 +13,7 @@ class UmkmProdukFoto extends Model
 
     protected $table = 'umkm_produk_foto';
 
-    protected $fillable = ['umkm_produk_id', 'nama'];
+    protected $fillable = ['umkm_produk_id', 'nama', 'file_path'];
 
     protected $hidden = ['created_at', 'updated_at', 'deleted_at'];
 
