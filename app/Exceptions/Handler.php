@@ -39,6 +39,16 @@ class Handler extends ExceptionHandler
                 'AsetMJenis' => 'Data jenis aset tidak ditemukan',
                 'AsetMStatus' => 'Data status aset tidak ditemukan',
                 'AsetPenghuni' => 'Data penghuni aset tidak ditemukan',
+
+                'Umkm' => 'Data UMKM tidak ditemukan',
+                'UmkmFoto' => 'Data foto UMKM tidak ditemukan',
+                'UmkmKontak' => 'Data kontak UMKM tidak ditemukan',
+                'UmkmMBentuk' => 'Data bentuk UMKM tidak ditemukan',
+                'UmkmMJenis' => 'Data jenis UMKM tidak ditemukan',
+                'UmkmMKontak' => 'Data kontak UMKM tidak ditemukan',
+                'UmkmProduk' => 'Data produk UMKM tidak ditemukan',
+                'UmkmProdukFoto' => 'Data foto produk UMKM tidak ditemukan',
+                'UmkmWarga' => 'Data warga UMKM tidak ditemukan',
             ];
 
             $message = $messages[$modelName] ?? $exception->getMessage();

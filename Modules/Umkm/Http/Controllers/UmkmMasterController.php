@@ -37,49 +37,29 @@ class UmkmMasterController extends Controller
         return response()->json($this->formatResponse(true, 200, $message, $data), 200);
     }
 
-    public function store(UmkmMasterRequest $request, string $type): JsonResponse
-    {
-        try {
-            $data = $this->service->create($type, $request->validated());
-            return response()->json($this->formatResponse(true, 201, "Data $type berhasil dibuat", $data), 201);
-        } catch (\Exception $e) {
-            return response()->json($this->formatResponse(false, 500, $e->getMessage()), 500);
-        }
-    }
-
     public function show(string $type, int $id): JsonResponse
     {
-        try {
-            $data = $this->service->getById($type, $id);
-            return response()->json($this->formatResponse(true, 200, "Data $type berhasil diambil", $data), 200);
-        } catch (ModelNotFoundException $e) {
-            return response()->json($this->formatResponse(false, 404, "Data $type tidak ditemukan"), 404);
-        } catch (\Exception $e) {
-            return response()->json($this->formatResponse(false, 500, $e->getMessage()), 500);
-        }
+        $data = $this->service->getById($type, $id);
+        return response()->json($this->formatResponse(true, 200, "Data $type berhasil diambil", $data), 200);
+    }
+
+    public function store(UmkmMasterRequest $request, string $type): JsonResponse
+    {
+        $data = $request->validated();
+        $createdData = $this->service->create($type, $data);
+        return response()->json($this->formatResponse(true, 201, "Data $type berhasil dibuat", $createdData), 201);
     }
 
     public function update(UmkmMasterRequest $request, string $type, int $id): JsonResponse
     {
-        try {
-            $data = $this->service->update($type, $id, $request->validated());
-            return response()->json($this->formatResponse(true, 200, "Data $type berhasil diperbarui", $data), 200);
-        } catch (ModelNotFoundException $e) {
-            return response()->json($this->formatResponse(false, 404, "Data $type tidak ditemukan"), 404);
-        } catch (\Exception $e) {
-            return response()->json($this->formatResponse(false, 500, $e->getMessage()), 500);
-        }
+        $data = $request->validated();
+        $updatedData = $this->service->update($type, $id, $data);
+        return response()->json($this->formatResponse(true, 200, "Data $type berhasil diperbarui", $updatedData), 200);
     }
 
     public function destroy(string $type, int $id): JsonResponse
     {
-        try {
-            $data = $this->service->delete($type, $id);
-            return response()->json($this->formatResponse(true, 200, "Data $type berhasil dihapus", $data), 200);
-        } catch (ModelNotFoundException $e) {
-            return response()->json($this->formatResponse(false, 404, "Data $type tidak ditemukan"), 404);
-        } catch (\Exception $e) {
-            return response()->json($this->formatResponse(false, 500, $e->getMessage()), 500);
-        }
+        $deletedData = $this->service->delete($type, $id);
+        return response()->json($this->formatResponse(true, 200, "Data $type berhasil dihapus", $deletedData), 200);
     }
 }

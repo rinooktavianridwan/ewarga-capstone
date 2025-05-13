@@ -41,7 +41,15 @@ class UmkmMasterService
     public function getAll(string $type)
     {
         $model = $this->getModel($type);
-        return $model::all(['id', 'nama']);
+        $relation = $this->getRelation($type);
+
+        $data =  $relation
+            ? $model::with($relation)->get()
+            : $model::all();
+        if ($data->isEmpty()) {
+            throw new ModelNotFoundException("Data $type aset tidak ditemukan");
+        }
+        return $data;
     }
 
     public function getMultiple(array $types)
@@ -64,21 +72,23 @@ class UmkmMasterService
     public function getById(string $type, int $id)
     {
         $model = $this->getModel($type);
-        return $model::findOrFail($id);
+        $relation = $this->getRelation($type);
+
+        $query = $relation ? $model::with($relation) : $model::query();
+        return $query->findOrFail($id);
     }
 
     public function create(string $type, array $data)
     {
         $model = $this->getModel($type);
-        return DB::transaction(function () use ($model, $data) {
-            return $model::create($data);
-        });
+        return DB::transaction(fn() => $model::create($data));
     }
 
     public function update(string $type, int $id, array $data)
     {
         $model = $this->getModel($type);
         $record = $model::findOrFail($id);
+
         DB::transaction(fn() => $record->update($data));
         return $record;
     }
@@ -87,6 +97,7 @@ class UmkmMasterService
     {
         $model = $this->getModel($type);
         $record = $model::findOrFail($id);
+
         DB::transaction(fn() => $record->delete());
         return $record;
     }
