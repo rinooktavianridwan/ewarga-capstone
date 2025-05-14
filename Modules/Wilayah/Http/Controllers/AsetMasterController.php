@@ -17,10 +17,22 @@ class AsetMasterController extends Controller
     {
         $this->service = $service;
     }
-    public function index(string $type)
+
+    public function index()
     {
-        $data = $this->service->getAll($type);
-        return response()->json($this->formatResponse(true, 200, "Data $type berhasil diambil", $data), 200);
+        $dataParam = request()->query('data');
+
+        if (empty($dataParam)) {
+            return response()->json($this->formatResponse(false, 400, "Parameter 'data' tidak boleh kosong"), 400);
+        }
+
+        $types = explode(',', $dataParam);
+        $data = $this->service->getMultiple($types);
+
+        $typesList = implode(', ', $types);
+        $message = "Data {$typesList} berhasil diambil";
+
+        return response()->json($this->formatResponse(true, 200, $message, $data), 200);
     }
 
     public function show(string $type, int $id)
