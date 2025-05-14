@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Services\Softdelete\SoftDeletesBoolean;
 use Modules\Umkm\Entities\Umkm;
 use Modules\UMKM\Entities\UmkmProduk;
+use Modules\Wilayah\Entities\Aset;
 
 /**
  * App\Models\Instansi
@@ -81,9 +82,12 @@ class Instansi extends Model
     }
 
     public function umkmProduks(): HasMany
-{
-    return $this->hasMany(UmkmProduk::class, 'instansi_id');
-}
+    {
+        return $this->hasMany(UmkmProduk::class, 'instansi_id');
+    }
 
-
+    public function asets(): HasMany
+    {
+        return $this->hasMany(Aset::class, 'instansi_id');
+    }
 }

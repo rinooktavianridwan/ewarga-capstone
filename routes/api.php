@@ -4,7 +4,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\WargaController;
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\InstansiController;
 
 /*
@@ -25,4 +24,10 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
     Route::delete('/logout', [AuthController::class, 'logout']);
+
+    Route::get('/warga', [WargaController::class, 'index']);
+    Route::get('/warga/{id}', [WargaController::class, 'show']);
+
+    Route::get('/instansi', [InstansiController::class, 'index']);
+    Route::get('/instansi/{id}', [InstansiController::class, 'show']);
 });

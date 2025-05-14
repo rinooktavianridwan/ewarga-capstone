@@ -2,78 +2,26 @@
 
 namespace App\Services;
 
-use App\Exceptions\FlowException;
 use App\Models\Warga;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class WargaService
 {
-    public function listWarga($params = [], $user){
-
-        $keyword = $params['keyword'] ?? null;
-        $instansi_id = $params['instansi_id'] ?? null;
-        $wargas = $this->queryWarga()->where('instansi_id', $instansi_id);
-        if($keyword){
-            $wargas->where('nama', 'like', "%".$keyword."%");
-        }
-        return $wargas;
-
-    }
-
-    public function validasiWarga(int $wargaId, $instansi_id): Warga
+    public function getAll()
     {
-        if($instansi_id){
-            $warga = Warga::where('instansi_id', $instansi_id)->where('id', $wargaId)->first();
-        }else{
-            $warga = Warga::whereNull('instansi_id')->where('id', $wargaId)->first();
+        $warga = Warga::with(['user', 'instansi'])->get();
+        if ($warga->isEmpty()) {
+            throw new ModelNotFoundException("Data warga tidak ditemukan");
         }
-
-
-        if (!$warga) {
-            throw new FlowException("Data warga tidak ditemukan");
-        }
-
         return $warga;
     }
 
-    public function validasiWargaByEmail(string $email, $instansi_id): Warga
+    public function getById($id)
     {
-
-        if($instansi_id){
-            $warga = Warga::where('instansi_id', $instansi_id)->where('email', $email)->first();
-        }else{
-            $warga = Warga::whereNull('instansi_id')->where('email', $email)->first();
-        }
+        $warga = Warga::with(['user', 'instansi'])->find($id);
         if (!$warga) {
-            throw new FlowException("Data warga tidak ditemukan");
+            throw new ModelNotFoundException("Data warga tidak ditemukan");
         }
-
-        return $warga;
-    }
-
-    public function validasiWargaByMe(int $userId)
-    {
-
-        $warga = Warga::whereNull('instansi_id')->where('user_id', $userId)
-            ->where('created_by', $userId)
-            ->first();
-
-        if (!$warga) {
-            throw new FlowException("Data warga tidak ditemukan");
-        }
-
-        return $warga;
-    }
-
-    public function queryWarga()
-    {
-        return Warga::query();
-    }
-
-    public function save(Warga $warga, $dataWarga)
-    {
-        $warga->fill($dataWarga);
-        $warga->save();
-
         return $warga;
     }
 

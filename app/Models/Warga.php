@@ -3,16 +3,14 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Services\Softdelete\SoftDeletesBoolean;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Support\Facades\Crypt;
-use Modules\Umkm\Entities\Umkm;
+use Modules\Umkm\Entities\UmkmWarga;
+use Modules\Wilayah\Entities\Aset;
+use Modules\Wilayah\Entities\AsetPenghuni;
 
 /**
  * App\Models\Warga
@@ -48,43 +46,28 @@ class Warga extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-
     public function instansi(): BelongsTo
     {
         return $this->belongsTo(Instansi::class, 'instansi_id');
     }
 
-
     public function wargaInstansi(): HasMany
     {
-        return $this->hasMany(WargaInstansi::class, 'warga_id', 'id');
+        return $this->hasMany(WargaInstansi::class, 'warga_id');
     }
 
-
-    public function umkm(): BelongsToMany
+    public function umkmWargas(): HasMany
     {
-        return $this->belongsToMany(Umkm::class, 'umkm_warga', 'warga_id', 'umkm_id');
+        return $this->hasMany(UmkmWarga::class, 'warga_id');
     }
 
-
-    public function umkms(): BelongsToMany
+    public function asets(): HasMany
     {
-        return $this->belongsToMany(
-            Umkm::class,
-            'umkm_warga',
-            'warga_id',
-            'umkm_id'
-        )->withTimestamps()->withTrashed();
+        return $this->hasMany(Aset::class, 'warga_id');
     }
 
-
-
-
-
+    public function asetPenghunis(): HasMany
+    {
+        return $this->hasMany(AsetPenghuni::class, 'warga_id');
+    }
 }
-
-
-
-
-
-
