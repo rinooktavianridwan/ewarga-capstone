@@ -216,24 +216,38 @@ class UmkmService
             }
 
             if (!empty($data['kontak']) && is_array($data['kontak'])) {
-                $kontakBaruUnik = collect($data['kontak'])
-                    ->unique(fn($item) => $item['umkm_m_kontak_id'] . '|' . $item['kontak'])
-                    ->values()
-                    ->all();
+                $kontakBaru = $data['kontak'];
+
+                $kontakBaruUnik = [];
+                $kombinasiTerekam = [];
+
+                foreach ($kontakBaru as $item) {
+                    $key = $item['umkm_m_kontak_id'] . '|' . $item['kontak'];
+                    if (!in_array($key, $kombinasiTerekam)) {
+                        $kombinasiTerekam[] = $key;
+                        $kontakBaruUnik[] = $item;
+                    }
+                }
 
                 $kontakLama = $umkm->kontaks()->withTrashed()->get();
+
+                foreach ($kontakLama as $kontak) {
+                    $kontak->delete();
+                }
 
                 foreach ($kontakBaruUnik as $kontakItem) {
                     $kontakValue = $kontakItem['kontak'];
                     $jenisId = $kontakItem['umkm_m_kontak_id'];
 
-                    $existing = $kontakLama->first(function ($k) use ($kontakValue, $jenisId) {
-                        return $k->kontak === $kontakValue && $k->umkm_m_kontak_id === $jenisId;
-                    });
+                    $kontakSama = $umkm->kontaks()
+                        ->withTrashed()
+                        ->where('kontak', $kontakValue)
+                        ->where('umkm_m_kontak_id', $jenisId)
+                        ->first();
 
-                    if ($existing) {
-                        if ($existing->trashed()) {
-                            $existing->restore();
+                    if ($kontakSama) {
+                        if ($kontakSama->trashed()) {
+                            $kontakSama->restore();
                         }
                     } else {
                         UmkmKontak::create([
@@ -241,17 +255,6 @@ class UmkmService
                             'umkm_m_kontak_id' => $jenisId,
                             'kontak' => $kontakValue,
                         ]);
-                    }
-                }
-
-                $kombinasiBaru = collect($kontakBaruUnik)
-                    ->map(fn($item) => $item['umkm_m_kontak_id'] . '|' . $item['kontak'])
-                    ->toArray();
-
-                foreach ($kontakLama as $kontak) {
-                    $key = $kontak->umkm_m_kontak_id . '|' . $kontak->kontak;
-                    if (!in_array($key, $kombinasiBaru) && !$kontak->trashed()) {
-                        $kontak->delete();
                     }
                 }
             }
