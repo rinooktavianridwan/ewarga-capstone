@@ -20,9 +20,9 @@ class UpdateProdukRequest extends FormRequest
             'keterangan'  => ['nullable', 'string'],
             'harga'       => ['sometimes', 'required', 'integer'],
             'fotos'        => ['nullable', 'array', 'max:5'],
-            'fotos.*'      => ['image', 'max:2048'],
+            'fotos.*'      => ['file', 'image', 'max:2048'],
             'hapus_foto' => ['sometimes', 'array', 'max:5'],
-            'hapus_foto.*' => ['integer', 'exists:umkm_foto,id,deleted_at,NULL'],
+            'hapus_foto.*' => ['integer', 'exists:umkm_produk_foto,id,deleted_at,NULL'],
         ];
     }
 
@@ -53,6 +53,7 @@ class UpdateProdukRequest extends FormRequest
                 'array' => 'Foto produk harus berupa array.',
                 'max'   => 'Jumlah foto tidak boleh lebih dari 5.',
             ],
+            'fotos.*.file' => 'Setiap file foto harus berupa file.',
             'fotos.*.image' => 'Setiap file foto harus berupa gambar.',
             'fotos.*.max'   => 'Ukuran setiap file foto tidak boleh lebih dari 2MB.',
         ];

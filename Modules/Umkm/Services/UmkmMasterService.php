@@ -99,6 +99,15 @@ class UmkmMasterService
     {
         $model = $this->getModel($type);
         $record = $model::findOrFail($id);
+        $relations = $this->getRelation($type);
+
+        if ($relations) {
+            foreach ($relations as $relation) {
+                if ($record->$relation()->exists()) {
+                    throw new \Exception("Data referensi $type sedang digunakan dan tidak bisa dihapus.");
+                }
+            }
+        }
 
         DB::transaction(fn() => $record->delete());
         return $record;

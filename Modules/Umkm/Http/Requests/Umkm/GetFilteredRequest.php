@@ -21,4 +21,18 @@ class GetFilteredRequest extends FormRequest
     {
         return true;
     }
+
+    public function messages(): array
+    {
+        return [
+            'instansi_id.required' => 'Instansi wajib diisi.',
+            'instansi_id.exists'   => 'Instansi tidak valid atau tidak ditemukan.',
+
+            'jenis.exists'  => 'Jenis usaha tidak valid atau tidak ditemukan.',
+            'bentuk.exists' => 'Bentuk usaha tidak valid atau tidak ditemukan.',
+
+            'nama.string' => 'Nama UMKM harus berupa teks.',
+            'nama.max'    => 'Nama UMKM tidak boleh lebih dari 100 karakter.',
+        ];
+    }
 }

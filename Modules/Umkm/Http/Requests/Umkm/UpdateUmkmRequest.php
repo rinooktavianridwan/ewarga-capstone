@@ -29,8 +29,8 @@ class UpdateUmkmRequest extends FormRequest
             'lokasi' => ['nullable', 'array'],
             'lokasi.*.latitude' => ['required_with:lokasi', 'numeric'],
             'lokasi.*.longitude' => ['required_with:lokasi', 'numeric'],
-            'foto' => ['nullable', 'array', 'max:5'],
-            'foto.*' => ['image', 'max:2048'],
+            'fotos' => ['nullable', 'array', 'max:5'],
+            'fotos.*' => ['file','image', 'max:2048'],
             'hapus_foto' => ['sometimes', 'array', 'max:5'],
             'hapus_foto.*' => ['integer', 'exists:umkm_foto,id,deleted_at,NULL'],
         ];
@@ -100,6 +100,7 @@ class UpdateUmkmRequest extends FormRequest
                 'array' => 'Foto harus berupa array.',
                 'max'   => 'Jumlah foto tidak boleh lebih dari 5.',
             ],
+            'fotos.*.file' => 'Setiap file foto harus berupa file.',
             'foto.*image' => 'Setiap file foto harus berupa gambar.',
             'foto.*max'   => 'Ukuran setiap file foto tidak boleh lebih dari 2MB.',
         ];
