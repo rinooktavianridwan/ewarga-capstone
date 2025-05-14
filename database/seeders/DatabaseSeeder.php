@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Modules\Umkm\Database\Seeders\ProdukSeederTableSeeder;
+use Modules\Umkm\Database\Seeders\UmkmDatabaseSeeder;
 use Modules\Umkm\Database\Seeders\UmkmMasterSeeder;
 use Modules\Umkm\Database\Seeders\UmkmSeeder;
 use Modules\Umkm\Database\Seeders\UmkmSeederTableSeeder;
@@ -117,8 +118,7 @@ class DatabaseSeeder extends Seeder
             ]);
         }
         $this->call([
-            UmkmMasterSeeder::class,
-            UmkmSeeder::class,
+            UmkmDatabaseSeeder::class,
         ]);
 
 

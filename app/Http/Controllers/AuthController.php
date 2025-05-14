@@ -44,23 +44,8 @@ class AuthController extends Controller
             return response()->json(['message' => 'User tidak terautentikasi'], 401);
         }
 
-        // Menghapus hanya token sesi saat ini (logout dari perangkat ini)
         $request->user()->currentAccessToken()->delete();
 
         return response()->json(['message' => 'Logout berhasil'], 200);
-    }
-
-    public function logoutAll(Request $request)
-    {
-        $user = Auth::user();
-
-        if (!$user) {
-            return response()->json(['message' => 'User tidak terautentikasi'], 401);
-        }
-
-        // Menghapus semua token user (logout dari semua perangkat)
-        $user->tokens()->delete();
-
-        return response()->json(['message' => 'Logout dari semua perangkat berhasil'], 200);
     }
 }

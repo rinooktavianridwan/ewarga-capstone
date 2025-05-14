@@ -5,29 +5,30 @@ namespace Modules\Umkm\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Modules\Umkm\Services\DashboardUmkmService;
+use Modules\Umkm\Services\DashboardService;
+use App\Services\Traits\ResponseFormatter;
 
 class DashboardUmkmController extends Controller
 {
-    protected DashboardUmkmService $dashboardService;
+    use ResponseFormatter;
 
-    public function __construct(DashboardUmkmService $dashboardService)
+    protected DashboardService $dashboardService;
+
+    public function __construct(DashboardService $dashboardService)
     {
         $this->dashboardService = $dashboardService;
     }
 
     public function index(): JsonResponse
     {
-        return response()->json([
-            'data' => $this->dashboardService->getDashboardData()
-        ]);
+        $data = $this->dashboardService->getDashboardData();
+        return response()->json($this->formatResponse(true, 200, 'Data umkm berhasil diambil', $data), 200);
     }
 
     public function latestUmkm(): JsonResponse
     {
-        return response()->json([
-            'data' => $this->dashboardService->getLatestUmkm()
-        ]);
+        $data = $this->dashboardService->getLatestUmkm();
+        return response()->json($this->formatResponse(true, 200, 'Data umkm berhasil diambil', $data), 200);
     }
 
     public function growthByMonth(Request $request): JsonResponse
@@ -38,6 +39,6 @@ class DashboardUmkmController extends Controller
 
         $data = $this->dashboardService->getMonthlyGrowth((int) $tahun, $bentukUsahaId, $jenisUsahaId);
 
-        return response()->json(['data' => $data]);
+        return response()->json($this->formatResponse(true, 200, 'Data umkm berhasil diambil', $data), 200);
     }
 }

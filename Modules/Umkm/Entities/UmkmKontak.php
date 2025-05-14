@@ -13,10 +13,24 @@ class UmkmKontak extends Model
 
     protected $table = 'umkm_kontak';
 
-    protected $fillable = ['umkm_id', 'kontak'];
+    protected $fillable = ['umkm_id', 'umkm_m_kontak_id', 'kontak'];
 
-    public function Umkm(): BelongsTo
+    protected $appends = ['jenis_kontak'];
+
+    protected $hidden = ['masterKontak', 'created_at', 'updated_at', 'deleted_at'];
+
+    public function getJenisKontakAttribute()
+    {
+        return $this->masterKontak ? $this->masterKontak->nama : null;
+    }
+
+    public function umkm(): BelongsTo
     {
         return $this->belongsTo(Umkm::class, 'umkm_id');
+    }
+
+    public function masterKontak(): BelongsTo
+    {
+        return $this->belongsTo(UmkmMKontak::class, 'umkm_m_kontak_id');
     }
 }

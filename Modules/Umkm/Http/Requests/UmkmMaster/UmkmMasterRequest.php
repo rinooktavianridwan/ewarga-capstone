@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\Umkm\Http\Requests;
+namespace Modules\Umkm\Http\Requests\UmkmMaster;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class MasterDataRequest extends FormRequest
+class UmkmMasterRequest extends FormRequest
 {
     public function rules()
     {
@@ -21,9 +21,11 @@ class MasterDataRequest extends FormRequest
     public function messages()
     {
         return [
-            'nama.required' => 'Nama wajib diisi.',
-            'nama.string' => 'Nama harus berupa teks.',
-            'nama.max' => 'Nama tidak boleh lebih dari 255 karakter.',
+            'nama' => [
+                'required' => 'Nama wajib diisi.',
+                'string' => 'Nama harus berupa teks.',
+                'max' => 'Nama tidak boleh lebih dari 255 karakter.',
+            ],
         ];
     }
 }

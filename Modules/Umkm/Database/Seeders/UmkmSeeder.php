@@ -11,73 +11,86 @@ class UmkmSeeder extends Seeder
     public function run()
     {
         $now = Carbon::now();
-
-        // Ambil warga & instansi
-        $warga = DB::table('warga')->first();
         $instansi = DB::table('instansi')->first();
-        $instansiId = $instansi?->id ?? null;
+        $instansiId = $instansi?->id;
+        $wargaIds = DB::table('warga')->pluck('id')->take(5);
 
-        if (!$warga) {
-            $wargaId = DB::table('warga')->insertGetId([
-                'nama' => 'Ridha Warga Dummy',
-                'created_at' => $now,
-                'updated_at' => $now,
-            ]);
-        } else {
-            $wargaId = $warga->id;
+        if ($wargaIds->isEmpty()) {
+            foreach (range(1, 5) as $i) {
+                $id = DB::table('warga')->insertGetId([
+                    'nama' => "Warga Dummy $i",
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]);
+                $wargaIds->push($id);
+            }
         }
 
-        $bentukId = DB::table('umkm_M_bentuk')->first()->id;
-        $jenisId = DB::table('umkm_M_jenis')->first()->id;
+        $bentukId = DB::table('umkm_m_bentuk')->first()->id ?? null;
+        $jenisId = DB::table('umkm_m_jenis')->first()->id ?? null;
+        $kontakTypes = DB::table('umkm_m_kontak')->pluck('id', 'nama')->toArray();
 
-        if (!$bentukId || !$jenisId) {
-            $this->command->warn('⚠️ Tidak ada data bentuk/jenis usaha di tabel master. Seeder dibatalkan.');
+        if (!$bentukId || !$jenisId || empty($kontakTypes)) {
+            $this->command->warn('⚠️ Data master UMKM belum tersedia. Seeder dibatalkan.');
             return;
         }
 
-        $umkmId = DB::table('umkm')->insertGetId([
-            'instansi_id' => $instansiId,
-            'umkm_M_bentuk_id' => $bentukId,
-            'umkm_M_jenis_id' => $jenisId,
-            'nama' => 'UMKM Roti Bakar 88',
-            'keterangan' => 'UMKM legendaris sejak 1945. Spesialis roti bakar isi tebal.',
-            'created_at' => $now,
-            'updated_at' => $now,
-        ]);
-        
-        DB::table('umkm_produk')->insert([
-            [
+        $umkmData = [];
+        foreach (range(1, 5) as $i) {
+            $umkmData[] = [
                 'instansi_id' => $instansiId,
-                'umkm_id' => $umkmId,
-                'nama' => 'Roti Coklat Keju',
-                'keterangan' => 'Roti isi coklat & keju lumer',
-                'harga' => 15000,
+                'umkm_m_bentuk_id' => $bentukId,
+                'umkm_m_jenis_id' => $jenisId,
+                'nama' => "UMKM Contoh $i",
+                'alamat' => "Jl. Contoh No. $i",
+                'keterangan' => "UMKM ke-$i untuk keperluan seeding.",
+                'lokasi' => DB::raw("ST_GeomFromText('POINT(112.61$i -7.96$i)')"),
                 'created_at' => $now,
                 'updated_at' => $now,
-            ]
-        ]);
+            ];
+        }
 
-        DB::table('umkm_kontak')->insert([
-            ['umkm_id' => $umkmId, 'kontak' => '081234567890', 'created_at' => $now, 'updated_at' => $now],
-        ]);
- 
-        $latitude = -7.966;
-        $longitude = 112.615;
-        DB::table('umkm_alamat')->insert([
-            [
+        DB::table('umkm')->insert($umkmData);
+
+        $umkmIds = DB::table('umkm')->orderByDesc('id')->take(5)->pluck('id');
+
+        $kontakData = [];
+        $fotoData = [];
+        $wargaData = [];
+        foreach ($umkmIds as $index => $umkmId) {
+            $kontakData[] = [
                 'umkm_id' => $umkmId,
-                'alamat' => DB::raw("ST_GeomFromText('POINT($longitude $latitude)')"),
+                'umkm_m_kontak_id' => $kontakTypes['WhatsApp'],
+                'kontak' => "08123456$index",
                 'created_at' => $now,
                 'updated_at' => $now,
-            ]
-        ]);
+            ];
+            $kontakData[] = [
+                'umkm_id' => $umkmId,
+                'umkm_m_kontak_id' => $kontakTypes['Instagram'],
+                'kontak' => "@umkmcontoh$index",
+                'created_at' => $now,
+                'updated_at' => $now,
+            ];
 
-        DB::table('umkm_foto')->insert([
-            ['umkm_id' => $umkmId, 'nama' => 'foto1.jpg', 'created_at' => $now, 'updated_at' => $now],
-        ]);
+            $fotoData[] = [
+                'umkm_id' => $umkmId,
+                'nama' => "foto$index.jpg",
+                'file_path' => "umkm_foto/foto$index.jpg",
+                'created_at' => $now,
+                'updated_at' => $now,
+            ];
 
-        DB::table('umkm_warga')->insert([
-            ['umkm_id' => $umkmId, 'warga_id' => $wargaId, 'created_at' => $now, 'updated_at' => $now],
-        ]);
+            $wargaData[] = [
+                'umkm_id' => $umkmId,
+                'warga_id' => $wargaIds[$index],
+                'created_at' => $now,
+                'updated_at' => $now,
+            ];
+        }
+
+        DB::table('umkm_kontak')->insert($kontakData);
+        DB::table('umkm_foto')->insert($fotoData);
+        DB::table('umkm_warga')->insert($wargaData);
     }
 }
