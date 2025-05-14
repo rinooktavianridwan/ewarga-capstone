@@ -76,7 +76,7 @@ class AsetService
                 $this->asetFotoService->store($aset, $fotoFiles, $data['instansi_id'], $data['warga_id']);
             }
 
-            return $aset->load(['fotos']);
+            return $aset->load(['instansi', 'warga', 'jenis', 'fotos', 'asetPenghunis']);
         });
     }
 
@@ -104,7 +104,7 @@ class AsetService
                 $this->asetFotoService->store($aset, $fotoBaru, $aset->instansi_id, $aset->warga_id);
             }
 
-            return $aset->load(['fotos']);
+            return $aset->load(['instansi', 'warga', 'jenis', 'fotos', 'asetPenghunis']);
         });
     }
 

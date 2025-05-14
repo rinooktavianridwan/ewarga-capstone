@@ -42,10 +42,27 @@ class AsetPenghuniService
 
         DB::transaction(function () use ($aset, $penghuniData, &$created) {
             foreach ($penghuniData as $data) {
-                $created[] = $aset->asetPenghunis()->create([
-                    'warga_id' => $data['warga_id'],
-                    'aset_m_status_id' => $data['aset_m_status_id'],
-                ]);
+                $existing = AsetPenghuni::withTrashed()
+                    ->where('aset_id', $aset->id)
+                    ->where('warga_id', $data['warga_id'])
+                    ->first();
+
+                if ($existing) {
+                    if ($existing->trashed()) {
+                        $existing->restore();
+                        $existing->update([
+                            'aset_m_status_id' => $data['aset_m_status_id'],
+                        ]);
+                        $created[] = $existing;
+                    } else {
+                        throw new \Exception("Penghuni tidak boleh duplikat");
+                    }
+                } else {
+                    $created[] = $aset->asetPenghunis()->create([
+                        'warga_id' => $data['warga_id'],
+                        'aset_m_status_id' => $data['aset_m_status_id'],
+                    ]);
+                }
             }
         });
 

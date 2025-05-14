@@ -14,10 +14,15 @@ class AsetMasterService
         'status' => AsetMStatus::class,
     ];
 
-    protected array $relations = [
-        'jenis' => 'asetJenis',
-        'status' => 'asetStatus',
-    ];
+    protected function getRelation(string $type): ?array
+    {
+        $relations = [
+            'jenis' => ['asetJenis'],
+            'status' => ['asetStatus'],
+        ];
+
+        return $relations[$type] ?? null;
+    }
 
     protected function getModel(string $type): string
     {
@@ -25,11 +30,6 @@ class AsetMasterService
             throw new ModelNotFoundException("Tipe $type tidak valid");
         }
         return $this->models[$type];
-    }
-
-    protected function getRelation(string $type): ?string
-    {
-        return $this->relations[$type] ?? null;
     }
 
     public function getAll(string $type)
@@ -75,7 +75,9 @@ class AsetMasterService
     public function create(string $type, array $data)
     {
         $model = $this->getModel($type);
-        return DB::transaction(fn() => $model::create($data));
+        return DB::transaction(function () use ($model, $data) {
+            return $model::create($data);
+        });
     }
 
     public function update(string $type, int $id, array $data)
@@ -91,6 +93,16 @@ class AsetMasterService
     {
         $model = $this->getModel($type);
         $record = $model::findOrFail($id);
+
+        $relations = $this->getRelation($type);
+
+        if ($relations) {
+            foreach ($relations as $relation) {
+                if ($record->$relation()->exists()) {
+                    throw new \Exception("Data referensi $type sedang digunakan dan tidak bisa dihapus.");
+                }
+            }
+        }
 
         DB::transaction(fn() => $record->delete());
         return $record;
