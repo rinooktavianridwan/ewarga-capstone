@@ -29,7 +29,7 @@ Route::middleware('auth:sanctum')->prefix('umkm')->group(function () {
     });
 
     Route::prefix('umkm-master')->group(function () {
-        Route::get('/', [UmkmMasterController::class, 'index']);
+        Route::get('/index', [UmkmMasterController::class, 'index']);
         Route::get('/{type}/{id}', [UmkmMasterController::class, 'show']);
         Route::post('/{type}', [UmkmMasterController::class, 'store']);
         Route::put('/{type}/{id}', [UmkmMasterController::class, 'update']);

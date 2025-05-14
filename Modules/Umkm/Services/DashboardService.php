@@ -16,32 +16,33 @@ class DashboardService
             $totalUmkm = Umkm::count();
             $totalProduk = UmkmProduk::count();
 
-            $online = UmkmMJenis::where('nama', 'like', '%Online%')->first();
-            $offline = UmkmMJenis::where('nama', 'like', '%Offline%')->first();
-            $hybrid = UmkmMJenis::where('nama', 'like', '%Hybrid%')->first();
+            $jenisList = UmkmMJenis::withCount('umkmJenis')->get();
 
-            return [
+            $jenisStatistik = $jenisList->mapWithKeys(function ($jenis) {
+                return [
+                    'umkm_' . strtolower(str_replace(' ', '_', $jenis->nama)) => $jenis->umkm_jenis_count,
+                ];
+            });
+
+            return array_merge([
                 'total_umkm' => $totalUmkm,
                 'total_produk' => $totalProduk,
-                'umkm_online' => $online?->umkm()->count() ?? 0,
-                'umkm_offline' => $offline?->umkm()->count() ?? 0,
-                'umkm_hybrid' => $hybrid?->umkm()->count() ?? 0,
-            ];
+            ], $jenisStatistik->toArray());
         });
     }
 
     public function getLatestUmkm(int $limit = 5): array
     {
         return DB::transaction(function () use ($limit) {
-            return Umkm::with(['umkmJenisUsaha', 'umkmProduk'])
+            return Umkm::with(['jenis', 'produks'])
                 ->latest()
                 ->take($limit)
                 ->get()
                 ->map(function ($umkm) {
                     return [
                         'nama_umkm' => $umkm->nama,
-                        'jenis_usaha' => $umkm->umkmJenisUsaha->nama ?? '-',
-                        'jumlah_produk' => $umkm->umkmProduk->count(),
+                        'jenis_usaha' => $umkm->jenis->nama ?? '-',
+                        'jumlah_produk' => $umkm->produks->count(),
                     ];
                 })
                 ->toArray();
@@ -57,11 +58,11 @@ class DashboardService
             )->whereYear('created_at', $tahun);
 
             if ($bentukUsahaId) {
-                $query->where('umkm_M_bentuk_id', $bentukUsahaId);
+                $query->where('umkm_m_bentuk_id', $bentukUsahaId);
             }
 
             if ($jenisUsahaId) {
-                $query->where('umkm_M_jenis_id', $jenisUsahaId);
+                $query->where('umkm_m_jenis_id', $jenisUsahaId);
             }
 
             $result = $query->groupBy('month')

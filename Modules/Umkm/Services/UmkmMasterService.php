@@ -81,7 +81,9 @@ class UmkmMasterService
     public function create(string $type, array $data)
     {
         $model = $this->getModel($type);
-        return DB::transaction(fn() => $model::create($data));
+        return DB::transaction(function () use ($model, $data) {
+            return $model::create($data);
+        });
     }
 
     public function update(string $type, int $id, array $data)
