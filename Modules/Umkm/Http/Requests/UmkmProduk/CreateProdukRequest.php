@@ -20,7 +20,7 @@ class CreateProdukRequest extends FormRequest
             'keterangan'  => ['nullable', 'string'],
             'harga'       => ['required', 'integer'],
             'fotos'        => ['required', 'array', 'max:5'],
-            'fotos.*'      => ['image', 'max:2048'],
+            'fotos.*'      => ['required', 'file', 'image', 'max:2048'],
         ];
     }
 
@@ -52,6 +52,8 @@ class CreateProdukRequest extends FormRequest
                 'array' => 'Foto produk produk harus berupa array.',
                 'max'   => 'Jumlah foto produk tidak boleh lebih dari 5.',
             ],
+            'fotos.*.required' => 'Setiap file foto wajib diisi.',
+            'fotos.*.file' => 'Setiap file foto harus berupa file.',
             'fotos.*.image' => 'Setiap file foto produk harus berupa gambar.',
             'fotos.*.max'   => 'Ukuran setiap file foto produk tidak boleh lebih dari 2MB.',
         ];
