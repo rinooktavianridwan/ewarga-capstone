@@ -73,8 +73,6 @@ class AsetPenghuniService
     {
         return DB::transaction(function () use ($aset, $penghuniData) {
             $penghuniLama = $aset->asetPenghunis()->get();
-            $penghuniLamaIds = $penghuniLama->pluck('warga_id')->toArray();
-
             $penghuniBaruIds = collect($penghuniData)->pluck('warga_id')->toArray();
 
             $hapusPenghuni = $penghuniLama->filter(function ($item) use ($penghuniBaruIds) {
@@ -85,26 +83,25 @@ class AsetPenghuniService
                 $this->delete($aset, [$penghuni->id]);
             }
 
-            $tambahPenghuni = collect($penghuniData)->filter(function ($item) use ($penghuniLamaIds) {
-                return !in_array($item['warga_id'], $penghuniLamaIds);
-            });
+            foreach ($penghuniData as $data) {
+                $existing = AsetPenghuni::withTrashed()
+                    ->where('aset_id', $aset->id)
+                    ->where('warga_id', $data['warga_id'])
+                    ->first();
 
-            $created = [];
-            foreach ($tambahPenghuni as $data) {
-                $created[] = $aset->asetPenghunis()->create([
-                    'warga_id' => $data['warga_id'],
-                    'aset_m_status_id' => $data['aset_m_status_id'],
-                ]);
-            }
+                if ($existing) {
+                    if ($existing->trashed()) {
+                        $existing->restore();
+                    }
 
-            $updatePenghuni = collect($penghuniData)->filter(function ($item) use ($penghuniLamaIds) {
-                return in_array($item['warga_id'], $penghuniLamaIds);
-            });
-
-            foreach ($updatePenghuni as $data) {
-                $penghuni = $penghuniLama->firstWhere('warga_id', $data['warga_id']);
-                if ($penghuni && $penghuni->aset_m_status_id != $data['aset_m_status_id']) {
-                    $penghuni->update([
+                    if ($existing->aset_m_status_id != $data['aset_m_status_id']) {
+                        $existing->update([
+                            'aset_m_status_id' => $data['aset_m_status_id'],
+                        ]);
+                    }
+                } else {
+                    $aset->asetPenghunis()->create([
+                        'warga_id' => $data['warga_id'],
                         'aset_m_status_id' => $data['aset_m_status_id'],
                     ]);
                 }
