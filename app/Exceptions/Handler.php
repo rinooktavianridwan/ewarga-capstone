@@ -68,6 +68,13 @@ class Handler extends ExceptionHandler
             return response()->json($this->formatResponse(false, 401, 'Belum login, tidak dapat diakses'), 401);
         }
 
+        if ($exception instanceof \Exception) {
+            return response()->json(
+                $this->formatResponse(false, 500, $exception->getMessage()),
+                500
+            );
+        }
+
         return response()->json($this->formatResponse(false, 500, 'Terjadi kesalahan pada server', $exception->getMessage()), 500);
     }
 }
