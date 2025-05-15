@@ -53,6 +53,13 @@ class Handler extends ExceptionHandler
             return response()->json($this->formatResponse(false, 404, 'Endpoint tidak ditemukan'), 404);
         }
 
+        if ($exception instanceof \Exception) {
+            return response()->json(
+                $this->formatResponse(false, 500, $exception->getMessage()),
+                500
+            );
+        }
+
         return response()->json($this->formatResponse(false, 500, 'Terjadi kesalahan pada server', $exception->getMessage()), 500);
     }
 }
