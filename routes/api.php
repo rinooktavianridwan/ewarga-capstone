@@ -18,6 +18,7 @@ use App\Http\Controllers\InstansiController;
 */
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/register', [AuthController::class, 'register']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
@@ -27,6 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/warga', [WargaController::class, 'index']);
     Route::get('/warga/{id}', [WargaController::class, 'show']);
+    Route::post('/warga/register', [WargaController::class, 'register']);
 
     Route::get('/instansi', [InstansiController::class, 'index']);
     Route::get('/instansi/{id}', [InstansiController::class, 'show']);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\AuthorizationService;
+use App\Http\Requests\RegisterUserRequest;
 use Exception;
 
 class AuthController extends Controller
@@ -47,5 +48,16 @@ class AuthController extends Controller
         $request->user()->currentAccessToken()->delete();
 
         return response()->json(['message' => 'Logout berhasil'], 200);
+    }
+
+    public function register(RegisterUserRequest $request)
+    {
+        $data = $this->authorizationService->registerAndCreateToken($request->validated());
+
+        return response()->json([
+            'user' => $data['user'],
+            'access_token' => $data['access_token'],
+            'token_type' => $data['token_type']
+        ], 201);
     }
 }

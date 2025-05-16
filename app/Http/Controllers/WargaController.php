@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\WargaService;
 use App\Services\Traits\ResponseFormatter;
+use App\Http\Requests\RegisterWargaRequest;
 
 class WargaController extends Controller
 {
@@ -19,12 +20,21 @@ class WargaController extends Controller
     public function index()
     {
         $data = $this->service->getAll();
-        return response()->json($this->formatResponse(true, 200, 'Data warga berhasil diambil', $data));
+        return response()->json($this->formatResponse(true, 200, 'Data warga berhasil diambil', $data), 200);
     }
 
     public function show($id)
     {
         $data = $this->service->getById($id);
-        return response()->json($this->formatResponse(true, 200, 'Data warga berhasil ditemukan', $data));
+        return response()->json($this->formatResponse(true, 200, 'Data warga berhasil ditemukan', $data), 200);
+    }
+
+    public function register(RegisterWargaRequest $request)
+    {
+        $user = auth()->user();
+        $data = array_merge($request->validated(), ['user_id' => $user->id]);
+        $warga = $this->service->registerWarga($data);
+
+        return response()->json($this->formatResponse(true, 201, 'Warga berhasil didaftarkan', $warga), 201);
     }
 }

@@ -43,4 +43,21 @@ class AuthorizationService
             $user->currentAccessToken()->delete();
         }
     }
+
+    public function registerAndCreateToken(array $data): array
+    {
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => bcrypt($data['password']),
+        ]);
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return [
+            'user' => $user,
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+        ];
+    }
 }
