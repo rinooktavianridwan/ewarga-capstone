@@ -45,6 +45,11 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    public function isPengurus(): bool
+    {
+        return $this->profilWarga && $this->profilWarga->pengurus()->exists();
+    }
+
     public function instansi(): BelongsToMany
     {
         return $this->belongsToMany(Instansi::class, 'warga_instansi', 'user_id', 'instansi_id');
@@ -55,13 +60,13 @@ class User extends Authenticatable
         return $this->HasMany(WargaInstansi::class, 'user_id');
     }
 
-    public function isPengurus($instansi_id): bool
+    public function isOwner($instansi_id): bool
     {
         return true;
     }
 
-    public function isOwner($instansi_id): bool
+    public function profilWarga()
     {
-        return true;
+        return $this->hasOne(Warga::class, 'user_id');
     }
 }

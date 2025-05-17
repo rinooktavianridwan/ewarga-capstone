@@ -32,7 +32,6 @@ return new class extends Migration
             $table->foreignId('instansi_id')->nullable()->constrained('instansi')->nullOnDelete();
             $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('nama');
-            $table->text('nomor_induk')->nullable();
             $table->string('nik', 16)->nullable();
             $table->string('no_kk', 16)->nullable();
             $table->string('no_tlp', 13)->nullable();
@@ -40,8 +39,8 @@ return new class extends Migration
             $table->date('tgl_lahir')->nullable();
             $table->string('jenis_kelamin', 1)->nullable();
             $table->string('alamat')->nullable();
-            $table->string('file_foto')->nullable();
-            $table->string('file_foto_thumbnail')->nullable();
+            $table->string('foto_name')->nullable();
+            $table->string('foto_path')->nullable();
             $table->string('email')->nullable();
             $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();
             $table->timestamps();
@@ -56,6 +55,12 @@ return new class extends Migration
             $table->string('alamat')->nullable();
             $table->timestamps();
             $table->unique(['warga_id', 'instansi_id']);
+        });
+
+        Schema::create('warga_pengurus', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('warga_id')->constrained('warga')->onDelete('cascade');
+            $table->timestamps();
         });
     }
 

@@ -16,7 +16,6 @@ class RegisterWargaRequest extends FormRequest
         return [
             'instansi_id' => 'required|exists:instansi,id',
             'nama' => 'required|string|max:255',
-            'nomor_induk' => 'required|string|max:50',
             'nik' => 'required|string|max:16|unique:warga,nik',
             'no_kk' => 'nullable|string|max:16',
             'no_tlp' => 'nullable|string|max:20',

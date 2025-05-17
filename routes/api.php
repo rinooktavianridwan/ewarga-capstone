@@ -29,6 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/warga', [WargaController::class, 'index']);
     Route::get('/warga/{id}', [WargaController::class, 'show']);
     Route::post('/warga/register', [WargaController::class, 'register']);
+    Route::put('/warga/{id}', [WargaController::class, 'update']);
 
     Route::get('/instansi', [InstansiController::class, 'index']);
     Route::get('/instansi/{id}', [InstansiController::class, 'show']);

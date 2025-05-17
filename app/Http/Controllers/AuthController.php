@@ -27,8 +27,18 @@ class AuthController extends Controller
         try {
             $data = $this->authorizationService->createToken($request->only('email', 'password'));
 
+            $user = $data['user'];
+            $warga = $user->profilWarga;
+            $responseUser = $user->toArray();
+            unset($responseUser['profil_warga']);
+
+            $responseUser['is_pengurus'] = $user->isPengurus();
+            $responseUser['umkms'] = $warga
+                ? $warga->umkmWargas()->pluck('umkm_id')
+                : [];
+
             return response()->json([
-                'user' => $data['user'],
+                'user' => $responseUser,
                 'access_token' => $data['access_token'],
                 'token_type' => $data['token_type']
             ], 200);

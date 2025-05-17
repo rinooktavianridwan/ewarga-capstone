@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Services\Softdelete\SoftDeletesBoolean;
+use App\Models\WargaPengurus;
 use Modules\Umkm\Entities\UmkmWarga;
 use Modules\Wilayah\Entities\Aset;
 use Modules\Wilayah\Entities\AsetPenghuni;
@@ -20,7 +21,6 @@ use Modules\Wilayah\Entities\AsetPenghuni;
  * @property      int                            $user_id
  * @property      int                            $hubungan_keluarga_id
  * @property      string                         $nama
- * @property      string                         $nomor_induk
  * @property      string                         $nik
  * @property      null|string                    $no_kk
  * @property      null|string                    $no_tlp
@@ -69,5 +69,10 @@ class Warga extends Model
     public function asetPenghunis(): HasMany
     {
         return $this->hasMany(AsetPenghuni::class, 'warga_id');
+    }
+
+    public function pengurus()
+    {
+        return $this->hasOne(WargaPengurus::class, 'warga_id');
     }
 }
