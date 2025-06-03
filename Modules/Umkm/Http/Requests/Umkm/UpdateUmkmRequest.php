@@ -16,11 +16,11 @@ class UpdateUmkmRequest extends FormRequest
         return [
             'nama' => ['sometimes', 'required', 'string', 'max:255'],
             'keterangan' => ['nullable', 'string'],
-            'instansi_id' => ['sometimes', 'required', 'exists:instansi,id'],
-            'umkm_m_bentuk_id' => ['sometimes', 'required', 'exists:umkm_M_bentuk,id'],
-            'umkm_m_jenis_id' => ['sometimes', 'required', 'exists:umkm_M_jenis,id'],
-            'warga_ids' => ['required', 'array', 'min:1'],
-            'warga_ids.*' => ['exists:warga,id'],
+            'instansi_id' => ['sometimes', 'exists:instansi,id'],
+            'umkm_m_bentuk_id' => ['sometimes', 'required', 'exists:umkm_m_bentuk,id'],
+            'umkm_m_jenis_id' => ['sometimes', 'required', 'exists:umkm_m_jenis,id'],
+            'warga_ids' => ['sometimes', 'array'],
+            'warga_ids.*' => ['sometimes', 'exists:warga,id'],
             'kontak' => ['nullable', 'array'],
             'kontak.*.id' => ['sometimes', 'exists:umkm_kontak,id'],
             'kontak.*.umkm_m_kontak_id' => ['required', 'exists:umkm_m_kontak,id'],
@@ -60,12 +60,12 @@ class UpdateUmkmRequest extends FormRequest
                 'exists'   => 'Jenis usaha tidak valid atau telah dihapus.',
             ],
             'warga_ids' => [
-                'required' => 'Minimal satu warga harus dipilih.',
-                'array'    => 'Warga harus berupa array.',
-                'min'      => 'Minimal satu warga harus dipilih.',
+                'required' => 'Data warga wajib diisi.',
+                'array' => 'Data warga harus berupa array.',
             ],
             'warga_ids.*' => [
-                'exists' => 'ID warga tidak valid atau telah dihapus.',
+                'required' => 'Setiap ID warga wajib diisi.',
+                'exists' => 'Salah satu warga tidak ditemukan.',
             ],
             'kontak' => [
                 'array' => 'Kontak harus berupa array.',

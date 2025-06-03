@@ -10,8 +10,8 @@ class UmkmDatabaseSeeder extends Seeder
     {
         $this->call([
             UmkmMasterSeeder::class,
-            UmkmSeeder::class,
-            UmkmProdukSeeder::class,
+            // UmkmSeeder::class,
+            // UmkmProdukSeeder::class,
         ]);
     }
 }

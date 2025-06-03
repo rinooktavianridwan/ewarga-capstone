@@ -24,11 +24,11 @@ class UpdateWargaRequest extends FormRequest
                 Rule::unique('warga', 'nik')->ignore($this->route('id')),
             ],
             'no_kk' => 'sometimes|nullable|string|max:16',
-            'no_tlp' => 'sometimes|nullable|string|max:20',
-            'tempat_lahir' => 'sometimes|nullable|string|max:100',
+            'no_tlp' => 'sometimes|nullable|string|max:13',
+            'tempat_lahir' => 'sometimes|nullable|string|max:60',
             'tgl_lahir' => 'sometimes|nullable|date',
             'jenis_kelamin' => 'sometimes|nullable|in:L,P',
-            'alamat' => 'sometimes|nullable|string',
+            'alamat' => 'sometimes|nullable|string|max:255',
             'foto' => 'sometimes|nullable|image|mimes:jpg,jpeg,png|max:2048',
         ];
     }

@@ -37,7 +37,7 @@ return new class extends Migration
             $table->string('nama');
             $table->text('alamat');
             $table->point('lokasi');
-            $table->text('keterangan');
+            $table->text('keterangan')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

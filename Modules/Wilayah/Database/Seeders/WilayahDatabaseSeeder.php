@@ -10,7 +10,7 @@ class WilayahDatabaseSeeder extends Seeder
     {
         $this->call(AsetMJenisSeeder::class);
         $this->call(AsetMStatusSeeder::class);
-        $this->call(AsetSeeder::class);
-        $this->call(AsetPenghuniSeeder::class);
+        // $this->call(AsetSeeder::class);
+        // $this->call(AsetPenghuniSeeder::class);
     }
 }

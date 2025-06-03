@@ -17,12 +17,12 @@ class RegisterWargaRequest extends FormRequest
             'instansi_id' => 'required|exists:instansi,id',
             'nama' => 'required|string|max:255',
             'nik' => 'required|string|max:16|unique:warga,nik',
-            'no_kk' => 'nullable|string|max:16',
-            'no_tlp' => 'nullable|string|max:20',
-            'tempat_lahir' => 'nullable|string|max:100',
-            'tgl_lahir' => 'nullable|date',
-            'jenis_kelamin' => 'nullable|in:L,P',
-            'alamat' => 'nullable|string',
+            'no_kk' => 'required|string|max:16',
+            'no_tlp' => 'required|string|max:20',
+            'tempat_lahir' => 'required|string|max:100',
+            'tgl_lahir' => 'required|date',
+            'jenis_kelamin' => 'required|in:L,P',
+            'alamat' => 'required|string',
         ];
     }
 }

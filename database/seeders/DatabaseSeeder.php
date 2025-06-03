@@ -70,23 +70,23 @@ class DatabaseSeeder extends Seeder
         ]);
 
         for ($i = 1; $i <= 20; $i++) {
-            DB::table('warga')->insert([
-                'instansi_id' => null,
-                'user_id' => $i,
-                'nama' => 'Warga ' . $i,
-                'nik' => str_pad($i, 16, '0', STR_PAD_LEFT),
-                'no_kk' => str_pad($i + 1000, 16, '0', STR_PAD_LEFT),
-                'no_tlp' => '081234567' . str_pad($i, 2, '0', STR_PAD_LEFT),
-                'tempat_lahir' => 'Kota ' . $i,
-                'tgl_lahir' => now()->subYears(rand(18, 60))->toDateString(),
-                'jenis_kelamin' => $i % 2 == 0 ? 'L' : 'P',
-                'alamat' => 'Alamat Warga ' . $i,
-                'email' => 'warga' . $i . '@example.com',
-                'created_by' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
-                'is_deleted' => false,
-            ]);
+            // DB::table('warga')->insert([
+            //     'instansi_id' => null,
+            //     'user_id' => $i,
+            //     'nama' => 'Warga ' . $i,
+            //     'nik' => str_pad($i, 16, '0', STR_PAD_LEFT),
+            //     'no_kk' => str_pad($i + 1000, 16, '0', STR_PAD_LEFT),
+            //     'no_tlp' => '081234567' . str_pad($i, 2, '0', STR_PAD_LEFT),
+            //     'tempat_lahir' => 'Kota ' . $i,
+            //     'tgl_lahir' => now()->subYears(rand(18, 60))->toDateString(),
+            //     'jenis_kelamin' => $i % 2 == 0 ? 'L' : 'P',
+            //     'alamat' => 'Alamat Warga ' . $i,
+            //     'email' => 'warga' . $i . '@example.com',
+            //     'created_by' => 1,
+            //     'created_at' => now(),
+            //     'updated_at' => now(),
+            //     'is_deleted' => false,
+            // ]);
 
             $id = DB::table('warga')->insertGetId([
                 'instansi_id' => 1,

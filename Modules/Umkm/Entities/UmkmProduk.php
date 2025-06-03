@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\UMKM\Entities;
+namespace Modules\Umkm\Entities;
 
 use App\Models\Instansi;
 use Illuminate\Database\Eloquent\Model;
@@ -25,6 +25,8 @@ class UmkmProduk extends Model
         'keterangan',
         'harga',
     ];
+
+    protected $with = ['fotos'];
 
     public function umkm(): BelongsTo
     {
